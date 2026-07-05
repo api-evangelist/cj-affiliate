@@ -1,0 +1,108 @@
+aid: cj-affiliate
+name: CJ Affiliate
+review:
+  question: Does CJ Affiliate expose a documented public WebSocket API?
+  answer: false
+  date: '2026-07-05'
+  reviewer: API Evangelist
+  asyncapiSpecCreated: false
+  asyncapiScopeNote: |
+    No AsyncAPI document was authored. CJ Affiliate's documented developer
+    surface is request/response only: GraphQL over HTTPS (POST to
+    commissions.api.cj.com/query and ads.api.cj.com/query) and a set of legacy
+    REST APIs over HTTPS (link-search, advertiser-lookup, publisher-lookup, and
+    the legacy product-search on their respective *.api.cj.com subdomains).
+    There is no server-push transport (WebSocket or SSE) on CJ's own public API
+    to model. "Near-real-time" commission data is delivered by polling the
+    Commission Detail GraphQL query, not by a streaming socket.
+findings:
+  summary: |
+    CJ Affiliate (Commission Junction) does not publish a documented public
+    WebSocket API. CJ is an affiliate marketing network. Its developer platform
+    is primarily GraphQL: the Commission Detail API at
+    https://commissions.api.cj.com/query (publisherCommissions,
+    advertiserCommissions) and the Product Search / ads GraphQL API at
+    https://ads.api.cj.com/query (products, shoppingProducts,
+    shoppingProductFeeds). A set of legacy REST APIs remains documented for
+    finding links, advertisers, publishers, and products. All endpoints
+    authenticate with a personal access token (Bearer) created in the CJ
+    developer portal. Every documented transport is request/response over
+    HTTPS - GraphQL POST or REST GET. No realtime, bidirectional, or streaming
+    WebSocket (ws:// or wss://) endpoint is documented. Commission data is
+    described as "near-real-time" but is retrieved by polling the GraphQL query
+    over a posting-date window, with a payloadComplete flag indicating whether
+    more records remain - a pull model, not server push.
+  transports:
+    - protocol: GraphQL
+      scheme: https
+      baseURL: https://commissions.api.cj.com/query
+      documented: true
+      note: Commission Detail API. POST GraphQL with a Bearer personal access token.
+    - protocol: GraphQL
+      scheme: https
+      baseURL: https://ads.api.cj.com/query
+      documented: true
+      note: Product Search / ads GraphQL API. POST GraphQL with a Bearer personal access token.
+    - protocol: REST
+      scheme: https
+      baseURL: https://advertiser-lookup.api.cj.com/v2/advertiser-lookup
+      documented: true
+      note: Legacy REST family on *.api.cj.com subdomains (link-search, advertiser-lookup, publisher-lookup, product-search). GET with a Bearer personal access token.
+    - protocol: WebSocket
+      scheme: wss
+      documented: false
+      note: No WebSocket endpoint is documented anywhere in CJ's GraphQL reference or REST API docs as of the review date.
+  endpointsConfirmedGraphql:
+    - POST https://commissions.api.cj.com/query   # publisherCommissions, advertiserCommissions
+    - POST https://ads.api.cj.com/query           # products, shoppingProducts, shoppingProductFeeds, travelExperienceProducts
+  endpointsConfirmedRest:
+    - GET https://advertiser-lookup.api.cj.com/v2/advertiser-lookup
+    - GET https://publisher-lookup.api.cj.com/v2/joined-publisher-lookup
+  endpointsModeledRest:
+    - GET https://link-search.api.cj.com/v2/link-search
+    - GET https://product-search.api.cj.com/v2/product-search
+  groundingNotes: |
+    Confirmed from CJ docs and knowledge-base articles: the two GraphQL
+    endpoints and their query names, the Bearer personal access token + company
+    id (CID) auth model, and the advertiser-lookup and publisher-lookup REST
+    endpoints (documented with curl examples using requestor-cid). The
+    link-search and legacy product-search REST base URLs follow the same
+    <service>.api.cj.com/v2/<service> family pattern and are documented by CJ,
+    but their exact current paths and several parameter / field names in the
+    OpenAPI and GraphQL schema in this repo are MODELED from those sources and
+    CJ shopping-feed conventions; verify against the live reference at
+    https://developers.cj.com/ before relying on them.
+sources:
+  - url: https://developers.cj.com/
+    type: Documentation
+    note: CJ developer portal home; lists GraphQL and REST APIs and personal access token auth.
+  - url: https://developers.cj.com/graphql/reference/Commission%20Detail
+    type: APIReference
+    note: Commission Detail GraphQL API; publisherCommissions / advertiserCommissions at commissions.api.cj.com/query.
+  - url: https://developers.cj.com/graphql/reference/Product%20Search
+    type: APIReference
+    note: Product Search GraphQL API at ads.api.cj.com/query; products / shoppingProducts / shoppingProductFeeds.
+  - url: https://developers.cj.com/docs/rest-apis/overview
+    type: Documentation
+    note: REST APIs overview - Advertiser Lookup, Link Search, Publisher Lookup, Commission Detail (Legacy), Product Search (Legacy).
+  - url: https://developers.cj.com/docs/rest-apis/advertiser-lookup
+    type: APIReference
+    note: Advertiser Lookup REST API; GET advertiser-lookup.api.cj.com/v2/advertiser-lookup with Bearer PAT (curl example uses requestor-cid).
+  - url: https://developers.cj.com/docs/rest-apis/publisher-lookup
+    type: APIReference
+    note: Publisher Lookup REST API; GET publisher-lookup.api.cj.com/v2/joined-publisher-lookup with Bearer PAT.
+  - url: https://developers.cj.com/docs/rest-apis/link-search
+    type: APIReference
+    note: Link Search REST API; JavaScript-rendered docs, endpoint path modeled from the v2 REST family.
+  - url: https://junction.cj.com/article/cj-affiliates-apis-5-things-you-should-know
+    type: Article
+    note: CJ overview of its five APIs (Product Catalog Search, Link Search, Advertiser Lookup, Commission Detail, Deep Link Generator).
+actions:
+  asyncapiPath: null
+  apisYmlUpdated: true
+  reason: |
+    No WebSocket protocol surface exists. CJ's own public API is request/response
+    GraphQL (POST) plus legacy REST (GET), all over HTTPS. No AsyncAPI document
+    was created because there is no server-push transport (WebSocket or SSE) to
+    model; near-real-time commission data is delivered by polling the Commission
+    Detail GraphQL query, not by a streaming socket.

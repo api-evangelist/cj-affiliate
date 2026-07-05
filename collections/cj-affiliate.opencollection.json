@@ -1,0 +1,141 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "CJ Affiliate APIs",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{personalAccessToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "GraphQL - Commission Detail",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": { "name": "publisherCommissions", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://commissions.api.cj.com/query",
+            "headers": [
+              { "name": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "type": "json", "data": "{\n  \"query\": \"{ publisherCommissions(forPublishers: [\\\"1234567\\\"], sincePostingDate: \\\"2026-06-01T00:00:00Z\\\", beforePostingDate: \\\"2026-07-01T00:00:00Z\\\") { count payloadComplete records { actionTrackerName websiteName advertiserName orderId shopperId postingDate pubCommissionAmountUsd items { quantity perItemSaleAmountPubCurrency totalCommissionPubCurrency } } } }\"\n}" }
+          },
+          "docs": "Near-real-time publisher commission / transaction records over a posting-date range."
+        },
+        {
+          "info": { "name": "advertiserCommissions", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://commissions.api.cj.com/query",
+            "headers": [
+              { "name": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "type": "json", "data": "{\n  \"query\": \"{ advertiserCommissions(forAdvertisers: [\\\"7654321\\\"], sincePostingDate: \\\"2026-06-01T00:00:00Z\\\", beforePostingDate: \\\"2026-07-01T00:00:00Z\\\") { count records { actionTrackerName publisherName orderId postingDate advCommissionAmountUsd } } }\"\n}" }
+          },
+          "docs": "Near-real-time advertiser commission records over a posting-date range."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "GraphQL - Product Search",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": { "name": "shoppingProductFeeds", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://ads.api.cj.com/query",
+            "headers": [
+              { "name": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "type": "json", "data": "{\n  \"query\": \"{ shoppingProductFeeds(companyId: \\\"7654321\\\", limit: 25) { totalCount resultList { advertiserId advertiserName feedName currency productCount lastUpdated } } }\"\n}" }
+          },
+          "docs": "List every advertiser product feed in the network for cold discovery."
+        },
+        {
+          "info": { "name": "products", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://ads.api.cj.com/query",
+            "headers": [
+              { "name": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "type": "json", "data": "{\n  \"query\": \"{ products(companyId: \\\"7654321\\\", keywords: [\\\"running shoes\\\"], limit: 25) { totalCount resultList { advertiserName title price { amount currency } link imageLink } } }\"\n}" }
+          },
+          "docs": "Search products you can promote from advertisers you have joined."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "REST - Link Search",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": { "name": "Search links", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://link-search.api.cj.com/v2/link-search?website-id=1234567&advertiser-ids=joined&keywords=shoes",
+            "params": [
+              { "name": "website-id", "value": "1234567", "type": "query", "description": "Your promotional property / website (PID)." },
+              { "name": "advertiser-ids", "value": "joined", "type": "query", "description": "Advertiser CIDs, or joined / notjoined." },
+              { "name": "keywords", "value": "shoes", "type": "query", "description": "Keywords to match." }
+            ]
+          },
+          "docs": "Search advertiser links by keyword, category, link type, and promotion type."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "REST - Advertiser Lookup",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": { "name": "Find advertisers", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://advertiser-lookup.api.cj.com/v2/advertiser-lookup?requestor-cid=4567&advertiser-ids=joined",
+            "params": [
+              { "name": "requestor-cid", "value": "4567", "type": "query", "description": "Your CJ company id (CID)." },
+              { "name": "advertiser-ids", "value": "joined", "type": "query", "description": "Advertiser CIDs, or joined / notjoined." }
+            ]
+          },
+          "docs": "Find advertisers and program details by CID, name, URL, or relationship status."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "REST - Publisher Lookup",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": { "name": "Find publishers", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://publisher-lookup.api.cj.com/v2/joined-publisher-lookup?requestor-cid=4567&country=US",
+            "params": [
+              { "name": "requestor-cid", "value": "4567", "type": "query", "description": "Your CJ company id (CID)." },
+              { "name": "country", "value": "US", "type": "query", "description": "Filter publishers by country." }
+            ]
+          },
+          "docs": "Advertisers search publishers within their program by country or relationship status."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

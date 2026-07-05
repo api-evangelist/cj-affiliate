@@ -1,0 +1,200 @@
+aid: cj-affiliate
+url: https://raw.githubusercontent.com/api-evangelist/cj-affiliate/refs/heads/main/apis.yml
+name: CJ Affiliate
+kind: company
+description: CJ Affiliate (formerly Commission Junction) is one of the largest affiliate
+  marketing networks, connecting publishers with thousands of advertiser programs.
+  Its developer platform is primarily a modern GraphQL API - the Commission Detail
+  API at commissions.api.cj.com and the Product Search / ads GraphQL API at
+  ads.api.cj.com - covering commission and transaction data, product feeds, and
+  advertiser discovery. A set of legacy REST APIs (Link Search, Advertiser Lookup,
+  Publisher Lookup, and the legacy Product Search) remains documented for finding
+  links, advertisers, publishers, and products. All APIs authenticate with a
+  personal access token (Bearer) created in the CJ developer portal.
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+tags:
+- Affiliate Marketing
+- Affiliate Network
+- Commission
+- Product Search
+- Publisher
+- Advertiser
+- GraphQL
+- Ecommerce
+created: '2026-07-05'
+modified: '2026-07-05'
+specificationVersion: '0.19'
+apis:
+- aid: cj-affiliate:cj-affiliate-commission-detail-api
+  name: CJ Commission Detail API
+  tags:
+  - Commissions
+  - Transactions
+  - GraphQL
+  - Reporting
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://developers.cj.com/graphql/reference/Commission%20Detail
+  baseURL: https://commissions.api.cj.com/query
+  properties:
+  - url: https://developers.cj.com/graphql/reference/Commission%20Detail
+    type: Documentation
+  - url: https://developers.cj.com/graphql/reference/Commission%20Detail
+    type: APIReference
+  - url: graphql/cj-affiliate-schema.graphql
+    type: GraphQL
+  - url: graphql/cj-affiliate-graphql.md
+    type: GraphQL
+  - url: collections/cj-affiliate.postman_collection.json
+    type: PostmanCollection
+  - url: collections/cj-affiliate.opencollection.json
+    type: OpenCollection
+  description: Modern GraphQL API serving near-real-time commission and transaction
+    data. The publisherCommissions and advertiserCommissions queries return
+    commission records filtered by posting date range, action status, advertiser
+    or publisher IDs, order and shopper IDs, with monetary amounts and line-item
+    detail. Single endpoint POST https://commissions.api.cj.com/query with a Bearer
+    personal access token.
+- aid: cj-affiliate:cj-affiliate-product-search-api
+  name: CJ Product Search API
+  tags:
+  - Products
+  - Product Feed
+  - GraphQL
+  - Shopping
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://developers.cj.com/graphql/reference/Product%20Search
+  baseURL: https://ads.api.cj.com/query
+  properties:
+  - url: https://developers.cj.com/graphql/reference/Product%20Search
+    type: Documentation
+  - url: https://developers.cj.com/graphql/reference/Product%20Search
+    type: APIReference
+  - url: graphql/cj-affiliate-schema.graphql
+    type: GraphQL
+  - url: graphql/cj-affiliate-graphql.md
+    type: GraphQL
+  description: Modern GraphQL API for product discovery across advertiser product
+    feeds. The products and shoppingProducts queries search products you can
+    promote by keyword, price range, currency, country / serviceable area, UPC,
+    and advertiser, while shoppingProductFeeds lists every advertiser feed in the
+    network for cold discovery regardless of join status. Single endpoint POST
+    https://ads.api.cj.com/query with a Bearer personal access token.
+- aid: cj-affiliate:cj-affiliate-link-search-api
+  name: CJ Link Search API
+  tags:
+  - Links
+  - Deep Links
+  - Promotions
+  - REST
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://developers.cj.com/docs/rest-apis/link-search
+  baseURL: https://link-search.api.cj.com/v2/link-search
+  properties:
+  - url: https://developers.cj.com/docs/rest-apis/link-search
+    type: Documentation
+  - url: https://developers.cj.com/docs/rest-apis/link-search
+    type: APIReference
+  - url: openapi/cj-affiliate-openapi.yml
+    type: OpenAPI
+  - url: collections/cj-affiliate.postman_collection.json
+    type: PostmanCollection
+  - url: collections/cj-affiliate.opencollection.json
+    type: OpenCollection
+  description: Legacy REST API to search advertiser links by keyword, country,
+    category, targeted / serviceable area, advertiser relationship status, link
+    type, and promotion type (Coupon, Free Shipping, Sale). Returns link HTML,
+    click and destination URLs, advertiser name, and promotion start / end dates.
+    GET https://link-search.api.cj.com/v2/link-search with a Bearer personal access
+    token.
+- aid: cj-affiliate:cj-affiliate-advertiser-lookup-api
+  name: CJ Advertiser Lookup API
+  tags:
+  - Advertisers
+  - Programs
+  - Discovery
+  - REST
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://developers.cj.com/docs/rest-apis/advertiser-lookup
+  baseURL: https://advertiser-lookup.api.cj.com/v2/advertiser-lookup
+  properties:
+  - url: https://developers.cj.com/docs/rest-apis/advertiser-lookup
+    type: Documentation
+  - url: https://developers.cj.com/docs/rest-apis/advertiser-lookup
+    type: APIReference
+  - url: openapi/cj-affiliate-openapi.yml
+    type: OpenAPI
+  - url: collections/cj-affiliate.postman_collection.json
+    type: PostmanCollection
+  - url: collections/cj-affiliate.opencollection.json
+    type: OpenCollection
+  description: Legacy REST API letting publishers find advertisers by CID, program
+    name, program URL, keywords, category, or relationship status, and read program
+    details such as commission rates, category, and performance-incentive options.
+    GET https://advertiser-lookup.api.cj.com/v2/advertiser-lookup with a Bearer
+    personal access token.
+- aid: cj-affiliate:cj-affiliate-publisher-lookup-api
+  name: CJ Publisher Lookup API
+  tags:
+  - Publishers
+  - Discovery
+  - REST
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://developers.cj.com/docs/rest-apis/publisher-lookup
+  baseURL: https://publisher-lookup.api.cj.com/v2/joined-publisher-lookup
+  properties:
+  - url: https://developers.cj.com/docs/rest-apis/publisher-lookup
+    type: Documentation
+  - url: https://developers.cj.com/docs/rest-apis/publisher-lookup
+    type: APIReference
+  - url: openapi/cj-affiliate-openapi.yml
+    type: OpenAPI
+  - url: collections/cj-affiliate.postman_collection.json
+    type: PostmanCollection
+  - url: collections/cj-affiliate.opencollection.json
+    type: OpenCollection
+  description: Legacy REST API letting advertisers search publishers within their
+    program by criteria such as country or relationship status, and view details
+    about those publishers. GET
+    https://publisher-lookup.api.cj.com/v2/joined-publisher-lookup with a Bearer
+    personal access token.
+- aid: cj-affiliate:cj-affiliate-product-search-legacy-api
+  name: CJ Product Search (Legacy) API
+  tags:
+  - Products
+  - Legacy
+  - REST
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://developers.cj.com/docs/rest-apis/product-search-(legacy)
+  baseURL: https://product-search.api.cj.com/v2/product-search
+  properties:
+  - url: https://developers.cj.com/docs/rest-apis/product-search-(legacy)
+    type: Documentation
+  - url: https://developers.cj.com/docs/rest-apis/product-search-(legacy)
+    type: APIReference
+  - url: openapi/cj-affiliate-openapi.yml
+    type: OpenAPI
+  description: Legacy REST product catalog search across advertiser product feeds by
+    keyword, advertiser, price, and other criteria. CJ now steers new integrations
+    to the GraphQL Product Search API; this REST endpoint remains documented for
+    existing integrations. GET https://product-search.api.cj.com/v2/product-search
+    with a Bearer personal access token.
+common:
+- type: Website
+  url: https://www.cj.com/
+- type: LinkedIn
+  url: https://www.linkedin.com/company/cj-affiliate-by-conversant
+- type: Documentation
+  url: https://developers.cj.com/
+- type: Authentication
+  url: https://developers.cj.com/account/personal-access-tokens
+- type: Plans
+  url: plans/cj-affiliate-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/cj-affiliate-rate-limits.yml
+- type: FinOps
+  url: finops/cj-affiliate-finops.yml
+- type: Blog
+  url: https://junction.cj.com/
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

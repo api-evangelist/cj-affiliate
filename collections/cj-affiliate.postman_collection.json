@@ -1,0 +1,164 @@
+{
+  "info": {
+    "name": "CJ Affiliate APIs",
+    "description": "CJ Affiliate (Commission Junction) developer APIs: modern GraphQL (Commission Detail at commissions.api.cj.com, Product Search at ads.api.cj.com) plus legacy REST (Link Search, Advertiser Lookup, Publisher Lookup). All authenticate with a personal access token (Bearer).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      { "key": "token", "value": "{{personalAccessToken}}", "type": "string" }
+    ]
+  },
+  "variable": [
+    { "key": "personalAccessToken", "value": "" },
+    { "key": "companyId", "value": "" },
+    { "key": "websiteId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "GraphQL - Commission Detail",
+      "item": [
+        {
+          "name": "publisherCommissions",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "https://commissions.api.cj.com/query", "protocol": "https", "host": ["commissions", "api", "cj", "com"], "path": ["query"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"{ publisherCommissions(forPublishers: [\\\"1234567\\\"], sincePostingDate: \\\"2026-06-01T00:00:00Z\\\", beforePostingDate: \\\"2026-07-01T00:00:00Z\\\") { count payloadComplete records { actionTrackerName websiteName advertiserName orderId shopperId postingDate pubCommissionAmountUsd items { quantity perItemSaleAmountPubCurrency totalCommissionPubCurrency } } } }\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Near-real-time publisher commission / transaction records over a posting-date range."
+          }
+        },
+        {
+          "name": "advertiserCommissions",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "https://commissions.api.cj.com/query", "protocol": "https", "host": ["commissions", "api", "cj", "com"], "path": ["query"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"{ advertiserCommissions(forAdvertisers: [\\\"7654321\\\"], sincePostingDate: \\\"2026-06-01T00:00:00Z\\\", beforePostingDate: \\\"2026-07-01T00:00:00Z\\\") { count records { actionTrackerName publisherName orderId postingDate advCommissionAmountUsd } } }\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Near-real-time advertiser commission records over a posting-date range."
+          }
+        }
+      ]
+    },
+    {
+      "name": "GraphQL - Product Search",
+      "item": [
+        {
+          "name": "shoppingProductFeeds",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "https://ads.api.cj.com/query", "protocol": "https", "host": ["ads", "api", "cj", "com"], "path": ["query"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"{ shoppingProductFeeds(companyId: \\\"{{companyId}}\\\", limit: 25) { totalCount resultList { advertiserId advertiserName feedName currency productCount lastUpdated } } }\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "List every advertiser product feed in the network for cold discovery."
+          }
+        },
+        {
+          "name": "products",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "https://ads.api.cj.com/query", "protocol": "https", "host": ["ads", "api", "cj", "com"], "path": ["query"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"{ products(companyId: \\\"{{companyId}}\\\", keywords: [\\\"running shoes\\\"], limit: 25) { totalCount resultList { advertiserName title price { amount currency } link imageLink } } }\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Search products you can promote from advertisers you have joined."
+          }
+        }
+      ]
+    },
+    {
+      "name": "REST - Link Search",
+      "item": [
+        {
+          "name": "Search links",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://link-search.api.cj.com/v2/link-search?website-id={{websiteId}}&advertiser-ids=joined&keywords=shoes",
+              "protocol": "https",
+              "host": ["link-search", "api", "cj", "com"],
+              "path": ["v2", "link-search"],
+              "query": [
+                { "key": "website-id", "value": "{{websiteId}}" },
+                { "key": "advertiser-ids", "value": "joined" },
+                { "key": "keywords", "value": "shoes" }
+              ]
+            },
+            "description": "Search advertiser links by keyword, category, link type, and promotion type."
+          }
+        }
+      ]
+    },
+    {
+      "name": "REST - Advertiser Lookup",
+      "item": [
+        {
+          "name": "Find advertisers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://advertiser-lookup.api.cj.com/v2/advertiser-lookup?requestor-cid=4567&advertiser-ids=joined",
+              "protocol": "https",
+              "host": ["advertiser-lookup", "api", "cj", "com"],
+              "path": ["v2", "advertiser-lookup"],
+              "query": [
+                { "key": "requestor-cid", "value": "4567" },
+                { "key": "advertiser-ids", "value": "joined" }
+              ]
+            },
+            "description": "Find advertisers and program details by CID, name, URL, or relationship status."
+          }
+        }
+      ]
+    },
+    {
+      "name": "REST - Publisher Lookup",
+      "item": [
+        {
+          "name": "Find publishers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://publisher-lookup.api.cj.com/v2/joined-publisher-lookup?requestor-cid=4567&country=US",
+              "protocol": "https",
+              "host": ["publisher-lookup", "api", "cj", "com"],
+              "path": ["v2", "joined-publisher-lookup"],
+              "query": [
+                { "key": "requestor-cid", "value": "4567" },
+                { "key": "country", "value": "US" }
+              ]
+            },
+            "description": "Advertisers search publishers within their program by country or relationship status."
+          }
+        }
+      ]
+    }
+  ]
+}

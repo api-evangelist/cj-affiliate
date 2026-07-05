@@ -1,0 +1,65 @@
+specification: API Commons Rate Limits
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
+provider: CJ Affiliate
+providerId: cj-affiliate
+created: '2026-07-05'
+modified: '2026-07-05'
+reconciled: false
+tags:
+- Affiliate Marketing
+- Affiliate Network
+- Commission
+- Rate Limiting
+- Quotas
+description: >-
+  CJ Affiliate governs API usage with per-token / per-account rate limits and
+  paginated result sets rather than dollar-metered pricing. Exact numeric
+  ceilings are not comprehensively published; historically CJ has enforced
+  request-rate throttling on the REST APIs (returning HTTP 429 when exceeded)
+  and returns large result sets in pages controlled by records-per-page and
+  page-number parameters. The GraphQL Commission Detail and Product Search
+  endpoints similarly page results (limit / offset, and a payloadComplete flag
+  on commission responses signalling whether more records remain).
+notes: >-
+  Numeric per-minute / per-day request ceilings are not fully documented as of
+  the review date and should be confirmed with CJ. Design clients to page
+  through results, honor the payloadComplete flag on commission queries, and
+  back off with exponential retry on HTTP 429.
+sources:
+- https://developers.cj.com/
+- https://developers.cj.com/docs/rest-apis/overview
+- https://developers.cj.com/graphql/reference/Commission%20Detail
+responseCodes:
+  throttled: 429
+limits:
+- name: REST Request Rate
+  scope: token
+  metric: requests
+  limit: not published (throttled with HTTP 429)
+  notes: CJ throttles the legacy REST APIs per personal access token / account; exact ceiling not published.
+- name: GraphQL Request Rate
+  scope: token
+  metric: requests
+  limit: not published
+  notes: Per-token throttling applies to commissions.api.cj.com and ads.api.cj.com; exact ceiling not published.
+- name: Records Per Page (REST)
+  scope: request
+  metric: records
+  limit: paginated via records-per-page / page-number
+  notes: REST responses are paged; iterate page-number to retrieve the full set.
+- name: Commission Payload Completeness
+  scope: request
+  metric: records
+  limit: signalled by payloadComplete
+  notes: publisherCommissions / advertiserCommissions return a payloadComplete boolean; page by posting date when false.
+policies:
+- name: Pagination
+  description: Page through REST results with records-per-page and page-number; page GraphQL results with limit / offset.
+- name: Backoff Strategy
+  description: On HTTP 429 responses, retry with exponential backoff and jitter.
+- name: Posting-Date Windowing
+  description: Constrain commission queries to bounded sincePostingDate / beforePostingDate windows and iterate when payloadComplete is false.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com
