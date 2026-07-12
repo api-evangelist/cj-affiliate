@@ -1,0 +1,14 @@
+generated: '2026-07-11'
+method: derived
+source: openapi/cj-affiliate-openapi.yml
+summary:
+  types:
+  - http
+schemes:
+- name: personalAccessToken
+  type: http
+  scheme: bearer
+  description: 'Personal access token created in the CJ developer portal at https://developers.cj.com/account/personal-access-tokens
+    and sent as ''Authorization: Bearer <token>''.'
+  sources:
+  - openapi/cj-affiliate-openapi.yml

@@ -179,6 +179,10 @@ apis:
     existing integrations. GET https://product-search.api.cj.com/v2/product-search
     with a Bearer personal access token.
 common:
+- type: DomainSecurity
+  url: security/cj-affiliate-domain-security.yml
+- type: Authentication
+  url: authentication/cj-affiliate-authentication.yml
 - type: Website
   url: https://www.cj.com/
 - type: LinkedIn
