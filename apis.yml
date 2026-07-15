@@ -179,6 +179,8 @@ apis:
     existing integrations. GET https://product-search.api.cj.com/v2/product-search
     with a Bearer personal access token.
 common:
+- type: AgenticAccess
+  url: agentic-access/cj-affiliate-agentic-access.yml
 - type: DomainSecurity
   url: security/cj-affiliate-domain-security.yml
 - type: Authentication
