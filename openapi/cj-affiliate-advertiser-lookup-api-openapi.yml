@@ -1,0 +1,90 @@
+openapi: 3.1.0
+info:
+  title: CJ Affiliate Legacy REST APIs Advertiser Lookup API
+  version: '2.0'
+  description: 'CJ Affiliate''s legacy REST APIs for finding links, advertisers, publishers, and products. CJ now steers new integrations to its GraphQL APIs (commissions.api.cj.com and ads.api.cj.com), but these REST endpoints remain documented. Each service is hosted on its own subdomain of api.cj.com and authenticates with a personal access token (Bearer).
+
+
+    GROUNDING: The Advertiser Lookup and Publisher Lookup endpoints, paths, and the requestor-cid + Bearer PAT auth model are grounded in CJ documentation (confirmed curl examples). The Link Search and Product Search (Legacy) base URLs follow the same "<service>.api.cj.com/v2/<service>" family pattern and are documented by CJ, but several individual query parameters and response fields below are MODELED from CJ knowledge-base articles. Verify exact parameter and field names against https://developers.cj.com/docs/rest-apis/ before relying on them.'
+  contact:
+    name: API Evangelist
+    email: kin@apievangelist.com
+servers:
+- url: https://link-search.api.cj.com
+  description: Link Search API
+- url: https://advertiser-lookup.api.cj.com
+  description: Advertiser Lookup API
+- url: https://publisher-lookup.api.cj.com
+  description: Publisher Lookup API
+- url: https://product-search.api.cj.com
+  description: Product Search (Legacy) API
+security:
+- personalAccessToken: []
+tags:
+- name: Advertiser Lookup
+paths:
+  /v2/advertiser-lookup:
+    get:
+      tags:
+      - Advertiser Lookup
+      operationId: advertiserLookup
+      summary: Find advertisers and program details
+      description: Find advertisers by CID, program name, program URL, keywords, category, or relationship status, and read program details such as commission rates, category, and performance-incentive options.
+      servers:
+      - url: https://advertiser-lookup.api.cj.com
+      parameters:
+      - name: requestor-cid
+        in: query
+        required: true
+        description: Your CJ company id (CID) making the request.
+        schema:
+          type: string
+      - name: advertiser-ids
+        in: query
+        required: false
+        description: Comma-separated advertiser CIDs, or 'joined' / 'notjoined' to filter by relationship status.
+        schema:
+          type: string
+          default: joined
+      - name: advertiser-name
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: keywords
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: records-per-page
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 100
+      - name: page-number
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+      responses:
+        '200':
+          description: Matching advertisers and program details.
+          content:
+            application/xml:
+              schema:
+                type: object
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Missing or invalid personal access token.
+        '429':
+          description: Rate limit exceeded.
+components:
+  securitySchemes:
+    personalAccessToken:
+      type: http
+      scheme: bearer
+      description: 'Personal access token created in the CJ developer portal at https://developers.cj.com/account/personal-access-tokens and sent as ''Authorization: Bearer <token>''.'

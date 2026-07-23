@@ -1,0 +1,108 @@
+openapi: 3.1.0
+info:
+  title: CJ Affiliate Legacy REST APIs Advertiser Lookup Link Search API
+  version: '2.0'
+  description: 'CJ Affiliate''s legacy REST APIs for finding links, advertisers, publishers, and products. CJ now steers new integrations to its GraphQL APIs (commissions.api.cj.com and ads.api.cj.com), but these REST endpoints remain documented. Each service is hosted on its own subdomain of api.cj.com and authenticates with a personal access token (Bearer).
+
+
+    GROUNDING: The Advertiser Lookup and Publisher Lookup endpoints, paths, and the requestor-cid + Bearer PAT auth model are grounded in CJ documentation (confirmed curl examples). The Link Search and Product Search (Legacy) base URLs follow the same "<service>.api.cj.com/v2/<service>" family pattern and are documented by CJ, but several individual query parameters and response fields below are MODELED from CJ knowledge-base articles. Verify exact parameter and field names against https://developers.cj.com/docs/rest-apis/ before relying on them.'
+  contact:
+    name: API Evangelist
+    email: kin@apievangelist.com
+servers:
+- url: https://link-search.api.cj.com
+  description: Link Search API
+- url: https://advertiser-lookup.api.cj.com
+  description: Advertiser Lookup API
+- url: https://publisher-lookup.api.cj.com
+  description: Publisher Lookup API
+- url: https://product-search.api.cj.com
+  description: Product Search (Legacy) API
+security:
+- personalAccessToken: []
+tags:
+- name: Link Search
+paths:
+  /v2/link-search:
+    get:
+      tags:
+      - Link Search
+      operationId: linkSearch
+      summary: Search advertiser links
+      description: Search advertiser links by keyword, country, category, targeted / serviceable area, advertiser relationship status, link type, and promotion type (Coupon, Free Shipping, Sale). Returns link HTML, click and destination URLs, advertiser name, and promotion start / end dates.
+      servers:
+      - url: https://link-search.api.cj.com
+      parameters:
+      - name: website-id
+        in: query
+        required: true
+        description: Your promotional property / website (PID) identifier.
+        schema:
+          type: string
+      - name: advertiser-ids
+        in: query
+        required: false
+        description: Comma-separated advertiser CIDs, or 'joined' / 'notjoined' to filter by relationship status. Defaults to all.
+        schema:
+          type: string
+          default: joined
+      - name: keywords
+        in: query
+        required: false
+        description: Space- or plus-delimited keywords to match against links.
+        schema:
+          type: string
+      - name: category
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: link-type
+        in: query
+        required: false
+        description: 'Filter by link type (for example: Text Link, Banner, Content).'
+        schema:
+          type: string
+      - name: promotion-type
+        in: query
+        required: false
+        description: 'Promotional link type: coupon, free shipping, or sale/discount.'
+        schema:
+          type: string
+      - name: serviceable-area
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: records-per-page
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 100
+      - name: page-number
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+      responses:
+        '200':
+          description: Matching links.
+          content:
+            application/xml:
+              schema:
+                type: object
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Missing or invalid personal access token.
+        '429':
+          description: Rate limit exceeded.
+components:
+  securitySchemes:
+    personalAccessToken:
+      type: http
+      scheme: bearer
+      description: 'Personal access token created in the CJ developer portal at https://developers.cj.com/account/personal-access-tokens and sent as ''Authorization: Bearer <token>''.'
