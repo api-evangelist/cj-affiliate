@@ -1,0 +1,20 @@
+{
+  "provider": "cj-affiliate",
+  "sources": [
+    "cj-affiliate-advertiser-lookup-api-openapi.yml",
+    "cj-affiliate-link-search-api-openapi.yml",
+    "cj-affiliate-product-search-legacy-api-openapi.yml",
+    "cj-affiliate-publisher-lookup-api-openapi.yml"
+  ],
+  "outputs": [
+    "cj-affiliate-advertiser-lookup-api-openapi.yml",
+    "cj-affiliate-link-search-api-openapi.yml",
+    "cj-affiliate-product-search-legacy-api-openapi.yml",
+    "cj-affiliate-publisher-lookup-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}
