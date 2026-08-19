@@ -1,42 +1,72 @@
 openapi: 3.1.0
 info:
-  title: CJ Affiliate Legacy REST APIs
-  version: '2.0'
+  title: CJ Affiliate REST APIs
+  version: '2026-08-13'
   description: >-
-    CJ Affiliate's legacy REST APIs for finding links, advertisers, publishers,
-    and products. CJ now steers new integrations to its GraphQL APIs
-    (commissions.api.cj.com and ads.api.cj.com), but these REST endpoints remain
-    documented. Each service is hosted on its own subdomain of api.cj.com and
-    authenticates with a personal access token (Bearer).
+    CJ Affiliate's published REST APIs, transcribed from CJ's own developer
+    documentation. Two families are covered:
 
 
-    GROUNDING: The Advertiser Lookup and Publisher Lookup endpoints, paths, and
-    the requestor-cid + Bearer PAT auth model are grounded in CJ documentation
-    (confirmed curl examples). The Link Search and Product Search (Legacy) base
-    URLs follow the same "<service>.api.cj.com/v2/<service>" family pattern and
-    are documented by CJ, but several individual query parameters and response
-    fields below are MODELED from CJ knowledge-base articles. Verify exact
-    parameter and field names against https://developers.cj.com/docs/rest-apis/
-    before relying on them.
+    1. The classic XML lookup / search APIs on `*.api.cj.com` — Link Search,
+    Advertiser Lookup, Publisher Lookup and the deprecated Commission Detail
+    (Legacy). Each is documented with a stated call limit of 25 calls per
+    minute and returns an `application/xml` `<cj-api>` document.
+
+
+    2. The JSON click-tracking APIs — the Click Events API
+    (`clicks.api.cj.com`) for partners and the Publisher Tracking API
+    (`publishertracking.api.cj.com`) for publishers. Both accept a JSON body
+    and return `{ destinationUrl, errorMessages }`.
+
+
+    PROVENANCE: every path, parameter name, response field, status code and
+    error message below was read on 2026-08-13 from CJ's machine-readable
+    documentation corpus, which the CJ Developer Portal single-page app loads
+    from https://production-docs-assets.p.cjpowered.com/ (index at
+    /index.yaml, one markdown file per page). Nothing here is modeled.
+    CJ's modern surface is GraphQL — see graphql/ in this repo for the three
+    live schemas captured by introspection.
   contact:
     name: API Evangelist
     email: kin@apievangelist.com
+    url: https://developers.cj.com/
+  x-source:
+  - https://production-docs-assets.p.cjpowered.com/REST%20APIs/Overview.md
+  - https://production-docs-assets.p.cjpowered.com/REST%20APIs/Link%20Search.md
+  - https://production-docs-assets.p.cjpowered.com/REST%20APIs/Advertiser%20Lookup.md
+  - https://production-docs-assets.p.cjpowered.com/REST%20APIs/Publisher%20Lookup.md
+  - https://production-docs-assets.p.cjpowered.com/REST%20APIs/Commission%20Detail%20(Legacy).md
+  - https://production-docs-assets.p.cjpowered.com/REST%20APIs/Automated%20Offer%20Feed.md
+  - https://production-docs-assets.p.cjpowered.com/Publisher%20Site%20Tracking/Click%20Events%20API.md
+  - https://production-docs-assets.p.cjpowered.com/Publisher%20Site%20Tracking/Publisher%20Tracking%20API.md
 servers:
 - url: https://link-search.api.cj.com
-  description: Link Search API
+  description: Link Search API (also serves the Automated Offer Feed)
 - url: https://advertiser-lookup.api.cj.com
   description: Advertiser Lookup API
 - url: https://publisher-lookup.api.cj.com
   description: Publisher Lookup API
-- url: https://product-search.api.cj.com
-  description: Product Search (Legacy) API
+- url: https://commission-detail.api.cj.com
+  description: Commission Detail API (Legacy, deprecated)
+- url: https://clicks.api.cj.com
+  description: Click Events API
+- url: https://publishertracking.api.cj.com
+  description: Publisher Tracking API
 security:
 - personalAccessToken: []
 tags:
 - name: Link Search
+  description: Publisher link discovery across the CJ network.
 - name: Advertiser Lookup
+  description: Publisher-side advertiser and program discovery.
 - name: Publisher Lookup
-- name: Product Search (Legacy)
+  description: Advertiser-side lookup of publishers joined to a program.
+- name: Commission Detail (Legacy)
+  description: Deprecated REST commission data. Superseded by the GraphQL Commission Detail API.
+- name: Click Events
+  description: Server-side click registration returning a tracked destination URL.
+- name: Publisher Tracking
+  description: Publisher server-side click registration (bounceless tracking).
 paths:
   /v2/link-search:
     get:
@@ -45,278 +75,936 @@ paths:
       operationId: linkSearch
       summary: Search advertiser links
       description: >-
-        Search advertiser links by keyword, country, category, targeted /
-        serviceable area, advertiser relationship status, link type, and
-        promotion type (Coupon, Free Shipping, Sale). Returns link HTML, click
-        and destination URLs, advertiser name, and promotion start / end dates.
+        Find links across all advertisers in one call, filtered by keywords,
+        category, link type, promotion type, relationship status, language,
+        target country and more. All parameter names and values are
+        case-insensitive. You must supply at least one optional parameter — an
+        empty request returns zero results. Publishers only. Documented call
+        limit: 25 calls per minute. The same endpoint serves the Automated
+        Offer Feed for financial advertisers.
       servers:
       - url: https://link-search.api.cj.com
       parameters:
       - name: website-id
         in: query
-        required: true
-        description: Your promotional property / website (PID) identifier.
+        description: >-
+          Your Website ID / Property ID (PID). Enables the system to generate the
+          appropriate link code in the response. Must match the Website PID used
+          to register for the developer key.
         schema:
           type: string
       - name: advertiser-ids
         in: query
-        required: false
         description: >-
-          Comma-separated advertiser CIDs, or 'joined' / 'notjoined' to filter
-          by relationship status. Defaults to all.
+          Comma-separated advertiser CIDs, or `joined`, or `notjoined`. An empty
+          string currently behaves the same as `notjoined`.
         schema:
           type: string
-          default: joined
       - name: keywords
         in: query
-        required: false
-        description: Space- or plus-delimited keywords to match against links.
+        description: >-
+          Restricts results by keywords found in the link's advertiser name, link
+          name, description and advertiser-tagged search keywords. Supports simple
+          boolean operators `+` and `-`; default logic is OR.
         schema:
           type: string
       - name: category
         in: query
-        required: false
+        description: >-
+          Comma-separated advertiser SUB-category. Top-level/parent categories are
+          not searchable. See the enumerations page.
         schema:
           type: string
       - name: link-type
         in: query
-        required: false
-        description: 'Filter by link type (for example: Text Link, Banner, Content).'
+        description: >-
+          Limits results to a specific link type. Product links are not available
+          here — use the Product Search API. See the enumerations page.
         schema:
           type: string
       - name: promotion-type
         in: query
-        required: false
-        description: 'Promotional link type: coupon, free shipping, or sale/discount.'
+        description: >-
+          Promotion type. Required if using promotion-start-date or
+          promotion-end-date.
         schema:
           type: string
-      - name: serviceable-area
+          enum:
+          - coupon
+          - sweepstakes
+          - product
+          - sale/discount
+          - free shipping
+          - seasonal link
+          - site to store
+      - name: promotion-start-date
         in: query
-        required: false
+        description: Promotion start date in MM/DD/YYYY format. Blank returns any start date.
         schema:
           type: string
-      - name: records-per-page
+      - name: promotion-end-date
         in: query
-        required: false
+        description: >-
+          Promotion end date in MM/DD/YYYY format, or the literal value `ongoing`
+          for a promotion with no end date. Blank returns any end date.
         schema:
-          type: integer
-          default: 100
+          type: string
       - name: page-number
         in: query
-        required: false
+        description: Page of the result set to view. Defaults to 1.
         schema:
           type: integer
-          default: 1
+      - name: records-per-page
+        in: query
+        description: Number of records per page. Defaults to 100 for this API.
+        schema:
+          type: integer
+      - name: language
+        in: query
+        description: Language the link was set at, using an accepted language code.
+        schema:
+          type: string
+      - name: allow-deep-linking
+        in: query
+        description: Limit to links whose destination URL can be modified.
+        schema:
+          type: string
+          enum: ['true', 'yes', 'false']
+      - name: event-name
+        in: query
+        description: The event or occurrence the link relates to. One event at a time.
+        schema:
+          type: string
+      - name: link-Id
+        in: query
+        description: >-
+          The AdId / Link ID of an individual link. One at a time. Only active
+          links are returned; invalid, deleted or archived links return 0 results.
+        schema:
+          type: string
+      - name: last-updated
+        in: query
+        description: >-
+          Return links updated since this date, inclusive. MM/DD/YYYY format.
+        schema:
+          type: string
+      - name: cross-device-only
+        in: query
+        description: Limit to links supporting cross-device tracking.
+        schema:
+          type: string
+          enum: ['true', 'false']
+      - name: mobile-app-download
+        in: query
+        description: Limit to links that direct the user to an App Store download.
+        schema:
+          type: string
+          enum: ['true', 'false']
+      - name: mobile-optimized
+        in: query
+        description: Limit to links the advertiser flagged as mobile-optimized.
+        schema:
+          type: string
+          enum: ['true', 'false']
+      - name: targeted-country
+        in: query
+        description: >-
+          Two-letter country code, one at a time. Appears as `targeted-countries`
+          in the response.
+        schema:
+          type: string
       responses:
         '200':
-          description: Matching links.
+          description: An XML `<cj-api><links>` document.
           content:
             application/xml:
               schema:
-                type: object
-            application/json:
-              schema:
-                type: object
+                $ref: '#/components/schemas/LinkSearchResponse'
         '401':
-          description: Missing or invalid personal access token.
-        '429':
-          description: Rate limit exceeded.
+          $ref: '#/components/responses/Unauthorized'
   /v2/advertiser-lookup:
     get:
       tags:
       - Advertiser Lookup
       operationId: advertiserLookup
-      summary: Find advertisers and program details
+      summary: Look up advertisers and their program details
       description: >-
-        Find advertisers by CID, program name, program URL, keywords, category,
-        or relationship status, and read program details such as commission
-        rates, category, and performance-incentive options.
+        Find advertisers in the CJ network by CID, program name or program URL,
+        joined or not joined, with account status, EPC, categories, link types
+        and default Program Term commission rates. Commission rates for
+        Situations and Promotional Properties are NOT included — use the GraphQL
+        Program Terms API for those. Publishers only. Documented call limit: 25
+        calls per minute.
       servers:
       - url: https://advertiser-lookup.api.cj.com
       parameters:
       - name: requestor-cid
         in: query
         required: true
-        description: Your CJ company id (CID) making the request.
+        description: >-
+          CID of the company you are making the request for. You must be a member
+          of that company.
         schema:
           type: string
       - name: advertiser-ids
         in: query
-        required: false
         description: >-
-          Comma-separated advertiser CIDs, or 'joined' / 'notjoined' to filter
-          by relationship status.
+          Comma-separated advertiser CIDs, or `joined`, or `notjoined`. An empty
+          string currently behaves the same as `notjoined`.
         schema:
           type: string
-          default: joined
       - name: advertiser-name
         in: query
-        required: false
+        description: Advertiser program name, or program URL.
         schema:
           type: string
       - name: keywords
         in: query
-        required: false
+        description: >-
+          Keywords found in the advertiser's name, product name or product
+          description. Supports `+` and `-`; default logic is OR.
         schema:
           type: string
-      - name: records-per-page
-        in: query
-        required: false
-        schema:
-          type: integer
-          default: 100
       - name: page-number
         in: query
-        required: false
+        description: Page of the result set to view.
         schema:
           type: integer
-          default: 1
+      - name: records-per-page
+        in: query
+        description: Records per page. Defaults to 25, maximum 100.
+        schema:
+          type: integer
+          default: 25
+          maximum: 100
+      - name: mobile-tracking-certified
+        in: query
+        description: Limit to advertisers certified (or not certified) for mobile tracking.
+        schema:
+          type: string
+          enum: ['True', 'False']
       responses:
         '200':
-          description: Matching advertisers and program details.
+          description: An XML `<cj-api><advertisers>` document.
           content:
             application/xml:
               schema:
-                type: object
-            application/json:
-              schema:
-                type: object
+                $ref: '#/components/schemas/AdvertiserLookupResponse'
         '401':
-          description: Missing or invalid personal access token.
-        '429':
-          description: Rate limit exceeded.
+          $ref: '#/components/responses/Unauthorized'
   /v2/joined-publisher-lookup:
     get:
       tags:
       - Publisher Lookup
       operationId: publisherLookup
-      summary: Find publishers in an advertiser program
+      summary: Look up publishers joined to your program
       description: >-
-        Advertisers search publishers within their program by criteria such as
-        country or relationship status, and view details about those publishers.
+        Advertiser-side lookup of the publishers in a program — program terms and
+        join status, promotional methods, websites and PIDs, categories, EPC and
+        network rating. Exactly one search criterion must be supplied alongside
+        requestor-cid. The request URI must be encoded per HTML 4 form content
+        encoding rules. Advertisers only. Documented call limit: 25 calls per
+        minute.
       servers:
       - url: https://publisher-lookup.api.cj.com
       parameters:
       - name: requestor-cid
         in: query
         required: true
-        description: Your CJ company id (CID) making the request.
+        description: >-
+          CID of the company you are making the request for. You must be a member
+          of that company.
+        schema:
+          type: string
+      - name: date-accepted
+        in: query
+        description: Date the publisher accepted the program terms, YYYY-MM-DD.
+        schema:
+          type: string
+      - name: publisher-name
+        in: query
+        description: Joined publisher's name. Must be more than 3 characters.
         schema:
           type: string
       - name: country
         in: query
-        required: false
+        description: ISO 3166-1 alpha-2 country code of the publisher's location.
         schema:
           type: string
-      - name: publisher-ids
+      - name: pid
         in: query
-        required: false
+        description: The publisher's website ID (numeric, positive).
         schema:
           type: string
-      - name: records-per-page
+      - name: cid
         in: query
-        required: false
+        description: The publisher's company ID (numeric, positive).
         schema:
-          type: integer
-          default: 100
-      - name: page-number
+          type: string
+      - name: url
         in: query
-        required: false
+        description: The publisher's website URL.
         schema:
-          type: integer
-          default: 1
+          type: string
+      - name: special-incentive
+        in: query
+        description: >-
+          Whether the publisher runs an incentive / special program. Only the
+          value `yes` (case-insensitive) is allowed.
+        schema:
+          type: string
+          enum: ['yes']
       responses:
         '200':
-          description: Matching publishers.
+          description: An XML `<cj-api><publishers>` document.
           content:
             application/xml:
               schema:
-                type: object
-            application/json:
+                $ref: '#/components/schemas/PublisherLookupResponse'
+        '400':
+          description: >-
+            Publisher Lookup validation error. Documented messages include
+            "Not Authorized" (a publisher developer key was used where an
+            advertiser key is required), "Invalid page-number provided.",
+            "Only positive value is allowed for page-number.", "At least one of
+            the required query parameters (url, cid, pid, country,
+            publisher-name, special-incentive) is needed.", "Only one of the
+            required query parameters ... is allowed.", "Invalid Key provided.",
+            "Search criterion is required.", "Only ISO Code is allowed for
+            country.", "Only numeric value is allowed for cid.", "Only positive
+            value is allowed for cid.", "Only numeric value is allowed for pid.",
+            "Only positive value is allowed for pid.", "Only 'yes' is allowed."
+            and "Publisher Name has to be greater than 3 characters."
+          content:
+            application/xml:
               schema:
-                type: object
+                $ref: '#/components/schemas/CjApiError'
         '401':
-          description: Missing or invalid personal access token.
-        '429':
-          description: Rate limit exceeded.
-  /v2/product-search:
+          $ref: '#/components/responses/Unauthorized'
+  /v3/commissions:
     get:
       tags:
-      - Product Search (Legacy)
-      operationId: productSearchLegacy
-      summary: Search advertiser product feeds (legacy)
+      - Commission Detail (Legacy)
+      operationId: commissionDetailLegacy
+      summary: Retrieve near-real-time commission records (deprecated)
+      deprecated: true
       description: >-
-        Legacy REST product catalog search across advertiser product feeds by
-        keyword, advertiser, price, and other criteria. CJ steers new
-        integrations to the GraphQL Product Search API; this endpoint remains
-        documented for existing integrations.
+        DEPRECATED. CJ's documentation states this API "has been deprecated and
+        will be removed on June 1, 2019" and directs integrators to the GraphQL
+        Commission Detail API at https://commissions.api.cj.com/query. The host
+        still answers (HTTP 401 without a token) as of 2026-08-13. Documented
+        call limit: 25 times per minute. Date ranges are 1 day minimum, 31 days
+        maximum; start-date is inclusive and end-date is exclusive.
       servers:
-      - url: https://product-search.api.cj.com
+      - url: https://commission-detail.api.cj.com
       parameters:
-      - name: website-id
+      - name: requestor-cid
         in: query
         required: true
-        description: Your promotional property / website (PID) identifier.
+        description: CID of the company you are making the request for.
         schema:
           type: string
-      - name: advertiser-ids
+      - name: date-type
         in: query
-        required: false
+        required: true
+        description: Whether the date range applies to the event date or the posting date.
         schema:
           type: string
-          default: joined
-      - name: keywords
+          enum: [event, posting]
+      - name: start-date
         in: query
-        required: false
+        description: First date in the query, inclusive. Required if end-date is used.
         schema:
           type: string
-      - name: low-price
+      - name: end-date
         in: query
-        required: false
-        schema:
-          type: number
-      - name: high-price
-        in: query
-        required: false
-        schema:
-          type: number
-      - name: currency
-        in: query
-        required: false
+        description: Last date in the query, exclusive. Required if start-date is used.
         schema:
           type: string
-      - name: records-per-page
+      - name: cids
         in: query
-        required: false
+        description: Comma-separated CIDs of joined advertisers or publishers.
         schema:
-          type: integer
-          default: 100
-      - name: page-number
+          type: string
+      - name: action-types
         in: query
-        required: false
+        description: >-
+          Comma-separated action types: bonus, click, impression, sale, lead,
+          advanced sale, advanced lead, performance incentive.
         schema:
-          type: integer
-          default: 1
+          type: string
+      - name: aids
+        in: query
+        description: Comma-separated Ad IDs.
+        schema:
+          type: string
+      - name: action-status
+        in: query
+        description: Action status filter.
+        schema:
+          type: string
+          enum: [new, locked, extended, closed]
+      - name: commission-id
+        in: query
+        description: >-
+          Return everything newer than this Commission ID. The documented
+          incremental-polling pattern: send the most recent Commission ID you
+          received and CJ returns all new data since then.
+        schema:
+          type: string
+      - name: website-ids
+        in: query
+        description: Comma-separated website IDs.
+        schema:
+          type: string
       responses:
         '200':
-          description: Matching products.
+          description: An XML `<cj-api>` commissions document.
           content:
             application/xml:
               schema:
-                type: object
+                $ref: '#/components/schemas/CjApiEnvelope'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /v3/item-detail/{original-action-id}:
+    get:
+      tags:
+      - Commission Detail (Legacy)
+      operationId: commissionItemDetailLegacy
+      summary: Retrieve item-level detail for a commission (deprecated)
+      deprecated: true
+      description: >-
+        DEPRECATED alongside the commissions resource. Returns item-detail
+        records correlated to an original action id.
+      servers:
+      - url: https://commission-detail.api.cj.com
+      parameters:
+      - name: original-action-id
+        in: path
+        required: true
+        description: >-
+          The identification number used to correlate the original transaction
+          and its corrections.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: An XML `<cj-api>` item-detail document.
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/CjApiEnvelope'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /partner/event:
+    post:
+      tags:
+      - Click Events
+      operationId: createClickEvent
+      summary: Register a consumer click and receive a tracked destination URL
+      description: >-
+        Server-to-server click registration for CJ partners. Returns the final
+        landing page URL carrying the `cjevent` tracking parameter; the partner
+        is responsible for navigating the consumer to it, and for falling back to
+        a traditional CJ tracking Click URL on any error. Cannot be called from a
+        browser. CJ asks partners to contact their CJ representative for
+        integration validation before implementing.
+      servers:
+      - url: https://clicks.api.cj.com
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClickEventRequest'
+      responses:
+        '200':
+          description: Destination URL resolved.
+          content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/ClickDestinationResponse'
+        '400':
+          description: >-
+            Schema or field-level validation error. Documented messages: "Please
+            specify valid JSON", "Please include required field: XXxXX", "Extra
+            Unknown Field Detected: XXxXX", "XXxXX included consumer Personally
+            Identifiable Information".
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClickDestinationResponse'
         '401':
-          description: Missing or invalid personal access token.
-        '429':
-          description: Rate limit exceeded.
+          description: 'Authentication failed — the personal access token provided is not valid.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClickDestinationResponse'
+        '403':
+          description: 'Authorization failed — you are not authorized to make this call.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClickDestinationResponse'
+        '500':
+          description: Internal Server Error. Contact CJ Support for assistance.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClickDestinationResponse'
+  /clickdestination:
+    post:
+      tags:
+      - Publisher Tracking
+      operationId: resolveClickDestination
+      summary: Resolve a publisher click into a bounceless destination URL
+      description: >-
+        Server-to-server click registration for publishers. Returns either a
+        destination URL directly to the advertiser (when a bounceless journey is
+        appropriate) or the original tracking link that was passed in. On any
+        error the publisher must navigate the consumer to the traditional Click
+        URL. Cannot be called from a browser — the browser-based equivalent is
+        CJ's Publisher Tag.
+      servers:
+      - url: https://publishertracking.api.cj.com
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PublisherTrackingRequest'
+      responses:
+        '200':
+          description: Destination URL resolved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClickDestinationResponse'
+        '400':
+          description: >-
+            Schema or field-level validation error. Documented messages: "Please
+            specify valid JSON", "Please include required field: XXxXX", "Extra
+            Unknown Field Detected: XXxXX", "XXxXX included consumer Personally
+            Identifiable Information".
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClickDestinationResponse'
+        '401':
+          description: >-
+            "The provided bearer token is invalid or has expired", or
+            "Authorization failed" — this API returns 401 for both
+            authentication and authorization failures.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClickDestinationResponse'
+        '500':
+          description: Internal Server Error. Contact CJ Support for assistance.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClickDestinationResponse'
 components:
   securitySchemes:
     personalAccessToken:
       type: http
       scheme: bearer
       description: >-
-        Personal access token created in the CJ developer portal at
-        https://developers.cj.com/account/personal-access-tokens and sent as
-        'Authorization: Bearer <token>'.
+        A CJ Personal Access Token created at
+        https://developers.cj.com/account/personal-access-tokens, sent as
+        `Authorization: Bearer <token>`. CJ's REST APIs also accept a legacy
+        Developer Key in the same Authorization header.
+  responses:
+    Unauthorized:
+      description: >-
+        HTTP 401 for all CJ REST APIs. Documented cases: no message at all
+        (incorrect resource URL); "You must specify a developer key." (no
+        developer key specified); "Not Authenticated: xxxxxx" (invalid developer
+        key, echoing the key used). A request with no Authorization header
+        returns `<cj-api><error-message>You must provide an Authorization
+        header.</error-message></cj-api>`.
+      content:
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/CjApiError'
+  schemas:
+    CjApiError:
+      type: object
+      description: The `<cj-api>` XML envelope carrying an error message.
+      properties:
+        error-message:
+          type: string
+      xml:
+        name: cj-api
+    CjApiEnvelope:
+      type: object
+      description: >-
+        The generic `<cj-api>` XML envelope. CJ does not publish an XSD; the
+        commissions and item-detail element lists are documented in prose on the
+        Commission Detail (Legacy) page.
+      xml:
+        name: cj-api
+    LinkSearchResponse:
+      type: object
+      description: The `<cj-api><links>` document.
+      properties:
+        links:
+          type: object
+          properties:
+            total-matched:
+              type: integer
+              description: Total matching results in the index.
+            records-returned:
+              type: integer
+              description: Records returned in this response. Defaults to 100 per page.
+            page-number:
+              type: integer
+              description: Page number returned. Defaults to 1.
+            link:
+              type: array
+              items:
+                $ref: '#/components/schemas/Link'
+      xml:
+        name: cj-api
+    Link:
+      type: object
+      properties:
+        ad-content:
+          type: string
+          description: >-
+            Ad copy provided by the advertiser. Text links max 200 characters;
+            Advanced and Content links up to 32,000 characters.
+        advertiser-id:
+          type: string
+          description: The advertiser's CID.
+        advertiser-name:
+          type: string
+        allow-deep-linking:
+          type: string
+        category:
+          type: string
+          description: The advertiser's sub/child category.
+        click-commission:
+          type: string
+        clickUrl:
+          type: string
+          description: The CJ tracking URL.
+        creative-height:
+          type: string
+        creative-width:
+          type: string
+        coupon-code:
+          type: string
+        cross-device-only:
+          type: string
+        description:
+          type: string
+        destination:
+          type: string
+        event-name:
+          type: string
+        language:
+          type: string
+        last-updated:
+          type: string
+        lead-commission:
+          type: string
+        link-code-html:
+          type: string
+        link-code-javascript:
+          type: string
+        link-id:
+          type: string
+        link-name:
+          type: string
+        link-type:
+          type: string
+        mobile-app-download:
+          type: string
+        mobile-optimized:
+          type: string
+        performance-incentive:
+          type: string
+        promotion-end-date:
+          type: string
+        promotion-start-date:
+          type: string
+        promotion-type:
+          type: string
+        relationship-status:
+          type: string
+        sale-commission:
+          type: string
+        seven-day-epc:
+          type: string
+        targeted-countries:
+          type: string
+        three-month-epc:
+          type: string
+    AdvertiserLookupResponse:
+      type: object
+      description: The `<cj-api><advertisers>` document.
+      properties:
+        advertisers:
+          type: object
+          properties:
+            total-matched:
+              type: integer
+            records-returned:
+              type: integer
+            page-number:
+              type: integer
+            advertiser:
+              type: array
+              items:
+                $ref: '#/components/schemas/Advertiser'
+      xml:
+        name: cj-api
+    Advertiser:
+      type: object
+      properties:
+        advertiser-id:
+          type: string
+          description: The advertiser's CID.
+        account-status:
+          type: string
+          description: >-
+            `Active` (in good standing and live in the CJ network) or `Deactive`
+            (temporarily deactivated). Only shown for your joined advertisers.
+        seven-day-epc:
+          type: string
+          description: 7-day EPC. Currently defaults to USD.
+        three-month-epc:
+          type: string
+          description: 3-month EPC. Currently defaults to USD.
+        language:
+          type: string
+        advertiser-name:
+          type: string
+        program-url:
+          type: string
+        relationship-status:
+          type: string
+          description: '`joined` or `notjoined`.'
+        mobile-supported:
+          type: string
+        mobile-tracking-certified:
+          type: string
+        cookieless-tracking-enabled:
+          type: string
+          description: >-
+            Whether the advertiser's CJ transactions used cookieless tracking
+            appropriately over the previous three days.
+        network-rank:
+          type: string
+        performance-incentives:
+          type: string
+        primary-category:
+          type: object
+          properties:
+            parent:
+              type: string
+            child:
+              type: string
+        actions:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdvertiserAction'
+        link-types:
+          type: array
+          items:
+            type: string
+    AdvertiserAction:
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+          description: The action's integration type.
+        id:
+          type: string
+        commission:
+          type: object
+          description: >-
+            The advertiser's default commission for the action, plus per-item-list
+            rates where item lists exist. Excludes Situations and Promotional
+            Property rates — use the GraphQL Program Terms API for those.
+    PublisherLookupResponse:
+      type: object
+      description: The `<cj-api><publishers>` document.
+      properties:
+        publishers:
+          type: object
+          properties:
+            total-matched:
+              type: integer
+            records-returned:
+              type: integer
+            page-number:
+              type: integer
+            publisher:
+              type: array
+              items:
+                $ref: '#/components/schemas/Publisher'
+      xml:
+        name: cj-api
+    Publisher:
+      type: object
+      properties:
+        cid:
+          type: string
+        country:
+          type: string
+        currency:
+          type: string
+          description: The functional currency used by the publisher.
+        join-date:
+          type: string
+        network-rating:
+          type: string
+          description: 0-5 rating relative to other publishers by commission volume.
+        publisher-name:
+          type: string
+        seven-day-epc:
+          type: string
+        three-month-epc:
+          type: string
+        program-terms:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              date-accepted:
+                type: string
+              date-expired:
+                type: string
+              join-status:
+                type: string
+                description: 'active, expired or cancelled.'
+        promotional-methods:
+          type: array
+          items:
+            type: string
+            description: 'search, email, software or content.'
+        websites:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              pid:
+                type: string
+              url:
+                type: string
+              category:
+                type: string
+    ClickEventRequest:
+      type: object
+      required:
+      - companyId
+      - adId
+      - promotionalPropertyId
+      - destinationUrl
+      properties:
+        companyId:
+          type: string
+          description: The partner CJ Account Number (CID).
+        advertiserCompanyId:
+          type: string
+          deprecated: true
+          description: >-
+            The advertiser CJ Account Number (CID). Deprecated by CJ and will be
+            removed in a future release — use `companyId`.
+        adId:
+          type: string
+          description: The ad ID (AID) associated with the link the consumer clicked.
+        promotionalPropertyId:
+          type: string
+          description: >-
+            The Promotional Property ID (PID) for the property where the publisher
+            posted the link.
+        destinationUrl:
+          type: string
+          description: >-
+            The page to navigate the consumer to. Send as plain text, unencoded.
+        clickParameters:
+          type: object
+          properties:
+            productCategory:
+              type: string
+            sid:
+              type: string
+              description: >-
+                Shopper ID. If an SID is present on the publisher link it must be
+                passed through.
+            propertyName:
+              type: string
+              description: Select partners only — contact CJ for confirmation.
+            trafficSource:
+              type: string
+              description: Select partners only.
+              enum:
+              - Storefront
+              - Short Link
+        userIpAddress:
+          type: string
+        userIdentifier:
+          type: string
+          description: >-
+            A persistent first-party non-PII user id. Must be perpetuated for as
+            long as the consumer's browser allows the cookie to be read.
+        userAgent:
+          type: string
+        referringUrl:
+          type: string
+    PublisherTrackingRequest:
+      type: object
+      required:
+      - publisherCompanyId
+      - promotionalPropertyId
+      - clickUrl
+      properties:
+        publisherCompanyId:
+          type: string
+          description: CJ Account Number (CID).
+        promotionalPropertyId:
+          type: string
+          description: >-
+            Your Promotional Property ID (PID). Must match the PID in your CJ
+            tracking URL.
+        clickUrl:
+          type: string
+          description: >-
+            The tracking link you would normally navigate the consumer to, in
+            current standard CJ tracking link format.
+        userIdentifier:
+          type: string
+          description: A persistent first-party non-PII user id.
+        userAgent:
+          type: string
+        userIpAddress:
+          type: string
+          description: Consumer IP address. Used by CJ to determine compliance requirements.
+        referringUrl:
+          type: string
+          description: Full URL of the page that navigated the consumer to the advertiser.
+    ClickDestinationResponse:
+      type: object
+      description: >-
+        The shared response envelope for both click APIs. `destinationUrl` is an
+        empty string when an error occurred.
+      properties:
+        destinationUrl:
+          type: string
+        errorMessages:
+          type: array
+          items:
+            type: string
+        statusCode:
+          type: integer
+          description: Documented in the response table as a returned field.

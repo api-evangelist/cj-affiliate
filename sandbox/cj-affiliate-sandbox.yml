@@ -1,0 +1,79 @@
+generated: '2026-08-13'
+method: searched
+source: https://production-docs-assets.p.cjpowered.com/Advertiser%20API%20Tracking/API%20Overview.md
+provider: CJ Affiliate
+providerId: cj-affiliate
+description: >-
+  CJ publishes exactly one sandbox, and it is a separate ENDPOINT rather than a
+  test key, a test mode flag or a distinct environment. The Tracking API's Test
+  Mode lives at https://tracking.api.cj.com/graphqltest, alongside the
+  production endpoint at https://tracking.api.cj.com/graphql. The same personal
+  access token authenticates both — there is no test-vs-live key prefix anywhere
+  on the CJ platform. No other CJ API (Commission Detail, Product Search / ads,
+  Link Search, Advertiser Lookup, Publisher Lookup, Click Events, Publisher
+  Tracking) has any sandbox at all.
+mode_selection:
+  mechanism: distinct endpoint path
+  test: https://tracking.api.cj.com/graphqltest
+  live: https://tracking.api.cj.com/graphql
+  key_prefixes: none
+  note: >-
+    Because mode is selected by URL rather than by credential, a
+    misconfigured base URL writes to production. There is no key-shaped guard
+    rail — the same token works in both places.
+surfaces:
+- api: cj-affiliate-tracking-api
+  sandbox: true
+  endpoint: https://tracking.api.cj.com/graphqltest
+  probe: 'POST introspection -> HTTP 200, schema identical to production, 2026-08-13'
+- api: cj-affiliate-commission-detail-api
+  sandbox: false
+- api: cj-affiliate-product-search-api
+  sandbox: false
+- api: cj-affiliate-link-search-api
+  sandbox: false
+- api: cj-affiliate-advertiser-lookup-api
+  sandbox: false
+- api: cj-affiliate-publisher-lookup-api
+  sandbox: false
+- api: cj-affiliate-click-events-api
+  sandbox: false
+  note: >-
+    CJ instead asks partners to contact their CJ representative for integration
+    validation before implementing.
+- api: cj-affiliate-publisher-tracking-api
+  sandbox: false
+  note: >-
+    CJ warns publishers to contact their CJ representative before implementing
+    "to avoid unintentional reporting implications while testing" — an explicit
+    statement that there is nowhere safe to test this API.
+semantics:
+  validation: >-
+    Test Mode applies the SAME validation as production. Requests are also run
+    through real order processing.
+  isolation: >-
+    Results are not posted into production reporting and do not affect real
+    affiliate program data.
+  divergence: >-
+    Test Mode does NOT validate whether an order is locked or closed, or whether
+    it uses open-ended locking. CJ states plainly that "it is possible for
+    something to process correctly in Test Mode but err out in production based
+    on the order status." A green Test Mode run is therefore not proof the same
+    call succeeds live.
+  results_access: >-
+    Test Mode output is not self-serve. CJ states "a CJ team member can provide
+    you with the results of your testing" — the caller cannot read back what
+    happened to a test submission through any API.
+test_data:
+  test_cards: none published
+  test_accounts: none published
+  fixtures: none published
+  time_simulation: none published
+  note: >-
+    CJ publishes no test card numbers, seeded test accounts, fixture generators
+    or clock-manipulation tooling. Test Mode is run against your own real
+    account identifiers (enterpriseId, actionTrackerId, orderId).
+gaps:
+- No sandbox for any read API, so a publisher cannot develop against Commission Detail or Product Search without live credentials and live data.
+- No self-serve way to inspect Test Mode results; a human at CJ is in the loop.
+- Test Mode skips order-status validation, so it cannot catch the most common production failure class.

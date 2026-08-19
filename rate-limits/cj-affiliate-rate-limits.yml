@@ -1,65 +1,121 @@
 specification: API Commons Rate Limits
 specificationVersion: '0.1'
 schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
+generated: '2026-08-13'
+method: searched
+source: https://production-docs-assets.p.cjpowered.com/REST%20APIs/Link%20Search.md
 provider: CJ Affiliate
 providerId: cj-affiliate
 created: '2026-07-05'
-modified: '2026-07-05'
-reconciled: false
+modified: '2026-08-13'
+reconciled: true
 tags:
 - Affiliate Marketing
 - Affiliate Network
 - Commission
 - Rate Limiting
 - Quotas
+docs:
+- https://developers.cj.com/docs/rest-apis/link-search
+- https://developers.cj.com/docs/rest-apis/advertiser-lookup
+- https://developers.cj.com/docs/rest-apis/publisher-lookup
+- https://developers.cj.com/docs/advertiser-api-tracking/api-overview
 description: >-
-  CJ Affiliate governs API usage with per-token / per-account rate limits and
-  paginated result sets rather than dollar-metered pricing. Exact numeric
-  ceilings are not comprehensively published; historically CJ has enforced
-  request-rate throttling on the REST APIs (returning HTTP 429 when exceeded)
-  and returns large result sets in pages controlled by records-per-page and
-  page-number parameters. The GraphQL Commission Detail and Product Search
-  endpoints similarly page results (limit / offset, and a payloadComplete flag
-  on commission responses signalling whether more records remain).
+  CJ Affiliate publishes an explicit numeric call ceiling on every one of its
+  classic REST APIs: 25 calls per minute. The figure appears in a "## Limits"
+  block at the top of each API's reference page, alongside a call restriction
+  naming which side of the network may call it (publishers only, or advertisers
+  only). The GraphQL Tracking API is limited by BATCH SIZE rather than call
+  rate — CJ asks advertisers to cap submissions at 10,000 orders per request and
+  documents an HTTP 504 as the signal that a batch was too large. Result-set
+  size is governed separately by pagination parameters.
 notes: >-
-  Numeric per-minute / per-day request ceilings are not fully documented as of
-  the review date and should be confirmed with CJ. Design clients to page
-  through results, honor the payloadComplete flag on commission queries, and
-  back off with exponential retry on HTTP 429.
+  CJ documents the ceilings but NOT the runtime signal. No page in CJ's
+  documentation corpus names a rate-limit response header (X-RateLimit-*,
+  RateLimit-*, Retry-After) or a 429 status code, and CJ's own published REST
+  error tables list only 400 and 401. An agent therefore cannot discover its
+  remaining budget from a CJ response — it has to count calls client-side
+  against the documented 25/minute and back off blind. That is the single
+  largest runtime-semantics gap in this provider's surface.
+limit_count: 6
+responseHeaders: []
+responseHeaders_note: >-
+  None published. CJ documents no rate-limit response headers on any API.
+exhaustionStatus: not published
+limits:
+- name: Link Search API
+  api: cj-affiliate-link-search-api
+  scope: per-account
+  window: 1 minute
+  limit: 25
+  unit: calls
+  restriction: Publishers only
+  source: https://production-docs-assets.p.cjpowered.com/REST%20APIs/Link%20Search.md
+- name: Advertiser Lookup API
+  api: cj-affiliate-advertiser-lookup-api
+  scope: per-account
+  window: 1 minute
+  limit: 25
+  unit: calls
+  restriction: Publishers only
+  source: https://production-docs-assets.p.cjpowered.com/REST%20APIs/Advertiser%20Lookup.md
+- name: Publisher Lookup API
+  api: cj-affiliate-publisher-lookup-api
+  scope: per-account
+  window: 1 minute
+  limit: 25
+  unit: calls
+  restriction: Advertisers only
+  source: https://production-docs-assets.p.cjpowered.com/REST%20APIs/Publisher%20Lookup.md
+- name: Automated Offer Feed (via Link Search)
+  api: cj-affiliate-link-search-api
+  scope: per-account
+  window: 1 minute
+  limit: 25
+  unit: calls
+  restriction: Publishers only
+  source: https://production-docs-assets.p.cjpowered.com/REST%20APIs/Automated%20Offer%20Feed.md
+- name: Commission Detail API (Legacy, deprecated)
+  api: cj-affiliate-commission-detail-legacy-api
+  scope: per-account
+  window: 1 minute
+  limit: 25
+  unit: calls
+  restriction: Advertisers and publishers
+  source: https://production-docs-assets.p.cjpowered.com/REST%20APIs/Commission%20Detail%20(Legacy).md
+- name: Tracking API batch size
+  api: cj-affiliate-tracking-api
+  scope: per-request
+  window: per request
+  limit: 10000
+  unit: orders
+  restriction: Advertisers only
+  exhaustionStatus: 504
+  note: >-
+    CJ asks advertisers to "limit submissions to a maximum of 10,000 orders at a
+    time" on createOrders, restateOrders and cancelOrders. A 504 is documented as
+    a generic error that "may be caused by excessive load on the CJ system" with
+    the stated remedy of resubmitting 10,000 records or fewer.
+  source: https://production-docs-assets.p.cjpowered.com/Advertiser%20API%20Tracking/API%20Overview.md
+pagination:
+- api: cj-affiliate-advertiser-lookup-api
+  params: [page-number, records-per-page]
+  default_page_size: 25
+  max_page_size: 100
+- api: cj-affiliate-link-search-api
+  params: [page-number, records-per-page]
+  default_page_size: 100
+- api: cj-affiliate-commission-detail-api
+  style: offset/limit on the GraphQL product queries; `payloadComplete` on commission responses
+  note: >-
+    The GraphQL Commission Detail queries return a `payloadComplete` boolean
+    telling the caller whether the response holds every matching record; the ads
+    GraphQL queries take `offset` and `limit`, and `products` additionally takes
+    a `page` cursor and a `disableTotalCount` flag.
+dateRangeLimits:
+- api: cj-affiliate-commission-detail-legacy-api
+  window: 1 day minimum, 31 days maximum
+  note: start-date is inclusive, end-date is exclusive.
 sources:
 - https://developers.cj.com/
-- https://developers.cj.com/docs/rest-apis/overview
-- https://developers.cj.com/graphql/reference/Commission%20Detail
-responseCodes:
-  throttled: 429
-limits:
-- name: REST Request Rate
-  scope: token
-  metric: requests
-  limit: not published (throttled with HTTP 429)
-  notes: CJ throttles the legacy REST APIs per personal access token / account; exact ceiling not published.
-- name: GraphQL Request Rate
-  scope: token
-  metric: requests
-  limit: not published
-  notes: Per-token throttling applies to commissions.api.cj.com and ads.api.cj.com; exact ceiling not published.
-- name: Records Per Page (REST)
-  scope: request
-  metric: records
-  limit: paginated via records-per-page / page-number
-  notes: REST responses are paged; iterate page-number to retrieve the full set.
-- name: Commission Payload Completeness
-  scope: request
-  metric: records
-  limit: signalled by payloadComplete
-  notes: publisherCommissions / advertiserCommissions return a payloadComplete boolean; page by posting date when false.
-policies:
-- name: Pagination
-  description: Page through REST results with records-per-page and page-number; page GraphQL results with limit / offset.
-- name: Backoff Strategy
-  description: On HTTP 429 responses, retry with exponential backoff and jitter.
-- name: Posting-Date Windowing
-  description: Constrain commission queries to bounded sincePostingDate / beforePostingDate windows and iterate when payloadComplete is false.
-maintainers:
-- FN: Kin Lane
-  email: kin@apievangelist.com
+- https://production-docs-assets.p.cjpowered.com/index.yaml

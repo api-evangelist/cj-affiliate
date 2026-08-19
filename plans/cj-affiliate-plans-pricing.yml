@@ -4,7 +4,7 @@ schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main
 provider: CJ Affiliate
 providerId: cj-affiliate
 created: '2026-07-05'
-modified: '2026-07-05'
+modified: '2026-08-13'
 reconciled: false
 tags:
 - Affiliate Marketing
@@ -12,22 +12,22 @@ tags:
 - Commission
 - GraphQL
 - Plans
-description: >-
-  CJ Affiliate is an affiliate marketing network, not a metered API product. The
-  business model is affiliate commissions: publishers join advertiser programs
-  and earn a share of the sales or leads they drive, and advertisers pay CJ
-  network fees on that performance. The developer APIs (GraphQL Commission
-  Detail and Product Search, plus the legacy REST APIs) are provided as a
-  benefit of holding a CJ account and are accessed with a free personal access
-  token - there is no separate per-call price list for the APIs themselves.
-  Access to specific data (an advertiser's product feed, commission records) is
-  governed by your account type and program relationships, not by an API tier.
-notes: >-
-  There is no public, reconciled per-request price for CJ's APIs. Publisher
-  membership in the network is free to join; advertiser-side network fees and
-  commission terms are negotiated per program and are out of scope for an API
-  price list. Rate limits, not dollar prices, are the primary constraint on API
+description: 'CJ Affiliate is an affiliate marketing network, not a metered API product. The business
+  model is affiliate commissions: publishers join advertiser programs and earn a share of the sales or
+  leads they drive, and advertisers pay CJ network fees on that performance. The developer APIs (GraphQL
+  Commission Detail and Product Search, plus the legacy REST APIs) are provided as a benefit of holding
+  a CJ account and are accessed with a free personal access token - there is no separate per-call price
+  list for the APIs themselves. Access to specific data (an advertiser''s product feed, commission records)
+  is governed by your account type and program relationships, not by an API tier.'
+notes: 'There is no public, reconciled per-request price for CJ''s APIs. Publisher membership in the network
+  is free to join; advertiser-side network fees and commission terms are negotiated per program and are
+  out of scope for an API price list. Rate limits, not dollar prices, are the primary constraint on API
   usage - see rate-limits/cj-affiliate-rate-limits.yml.
+
+  Re-checked 2026-08-13: https://www.cj.com/pricing returns HTTP 404 - CJ publishes no pricing page at
+  all. There is no API price list, no tiers and no metered plan; API access is a free entitlement of holding
+  a CJ account, constrained by the documented 25 calls-per-minute rate limit rather than by dollars. Advertiser
+  network fees and commission terms are negotiated per program and are not published.'
 sources:
 - https://www.cj.com/
 - https://developers.cj.com/
@@ -37,11 +37,9 @@ plans:
 - id: cj-publisher
   name: Publisher (Affiliate)
   type: free
-  description: >-
-    Free to join the network as a publisher. Once approved and joined to
-    advertiser programs, you can create a personal access token and call the
-    Commission Detail, Product Search, Link Search, and Advertiser Lookup APIs
-    for the advertisers you work with. Revenue comes from commissions on the
+  description: Free to join the network as a publisher. Once approved and joined to advertiser programs,
+    you can create a personal access token and call the Commission Detail, Product Search, Link Search,
+    and Advertiser Lookup APIs for the advertisers you work with. Revenue comes from commissions on the
     sales / leads you drive, not from the API.
   entries:
   - label: API Access
@@ -63,12 +61,10 @@ plans:
 - id: cj-advertiser
   name: Advertiser
   type: enterprise
-  description: >-
-    Advertisers run programs on CJ and pay network fees plus commissions on
-    performance. Advertiser accounts can call the Commission Detail
-    (advertiserCommissions), Publisher Lookup, and product-import / ads GraphQL
-    APIs with a personal access token. Network fees and commission structures
-    are negotiated per program.
+  description: Advertisers run programs on CJ and pay network fees plus commissions on performance. Advertiser
+    accounts can call the Commission Detail (advertiserCommissions), Publisher Lookup, and product-import
+    / ads GraphQL APIs with a personal access token. Network fees and commission structures are negotiated
+    per program.
   entries:
   - label: Program and API Access
     name: advertiser_program_access
@@ -88,3 +84,12 @@ plans:
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
+generated: '2026-08-13'
+method: searched
+source: https://www.cj.com/ + https://developers.cj.com/ + CJ documentation corpus at https://production-docs-assets.p.cjpowered.com/
+plan_count: 2
+api_pricing_published: false
+docs:
+- https://www.cj.com/
+- https://www.cj.com/join
+- https://developers.cj.com/account/personal-access-tokens

@@ -1,0 +1,58 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for CJ Affiliate Publisher Lookup API
+  version: '2026-08-13'
+extends: ./cj-affiliate-publisher-lookup-api-openapi.yml
+x-generated: '2026-08-13'
+x-method: generated
+x-source: openapi/cj-affiliate-publisher-lookup-api-openapi.yml + repo artifacts
+actions:
+- target: $.info
+  description: Record API Evangelist provenance and the CJ documentation this contract was transcribed
+    from.
+  update:
+    x-apievangelist:
+      enriched: '2026-08-13'
+      repository: https://github.com/api-evangelist/cj-affiliate
+      provenance: Transcribed from CJ Affiliate's own machine-readable documentation corpus at https://production-docs-assets.p.cjpowered.com/
+        on 2026-08-13. CJ publishes no OpenAPI.
+      artifacts:
+        conventions: conventions/cj-affiliate-conventions.yml
+        errors: errors/cj-affiliate-problem-types.yml
+        lifecycle: lifecycle/cj-affiliate-lifecycle.yml
+        rate_limits: rate-limits/cj-affiliate-rate-limits.yml
+        authentication: authentication/cj-affiliate-authentication.yml
+        data_model: data-model/cj-affiliate-data-model.yml
+        skills: skills/_index.yml
+- target: $.info
+  description: Attach the published rate limit. CJ documents 25 calls per minute per REST API and publishes
+    no rate-limit response header, so a client must self-throttle.
+  update:
+    x-rate-limit:
+      limit: 25
+      window: 1 minute
+      scope: per-account
+      response_headers: null
+      exhaustion_status: null
+      source: https://developers.cj.com/docs/rest-apis/
+- target: $.components.securitySchemes.personalAccessToken
+  description: Record that CJ token issuance is a manual portal step with no programmatic flow - the practical
+    blocker on unattended agent onboarding.
+  update:
+    x-token-issuance:
+      programmatic: false
+      oauth2: false
+      refresh: false
+      portal: https://developers.cj.com/account/personal-access-tokens
+      note: Long-lived PAT minted by a human. No token endpoint a client may call.
+- target: $.paths['/v2/joined-publisher-lookup'].get
+  description: Classify publisherLookup for agent execution.
+  update:
+    x-agentic-access:
+      action-class: connected
+      consequence: read
+      subject: optional
+      human-in-the-loop: false
+      token:
+        max-ttl: 3600
+      audit: none

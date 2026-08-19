@@ -1,0 +1,79 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "CJ Affiliate Advertiser Lookup API",
+    "version": "2026-08-13"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Advertiser Lookup",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Look up advertisers and their program details",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://advertiser-lookup.api.cj.com/v2/advertiser-lookup",
+            "params": [
+              {
+                "name": "requestor-cid",
+                "value": "",
+                "type": "query",
+                "description": "CID of the company you are making the request for. You must be a member of that company."
+              },
+              {
+                "name": "advertiser-ids",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated advertiser CIDs, or `joined`, or `notjoined`. An empty string currently behaves the same as `notjoined`."
+              },
+              {
+                "name": "advertiser-name",
+                "value": "",
+                "type": "query",
+                "description": "Advertiser program name, or program URL."
+              },
+              {
+                "name": "keywords",
+                "value": "",
+                "type": "query",
+                "description": "Keywords found in the advertiser's name, product name or product description. Supports `+` and `-`; default logic is OR."
+              },
+              {
+                "name": "page-number",
+                "value": "",
+                "type": "query",
+                "description": "Page of the result set to view."
+              },
+              {
+                "name": "records-per-page",
+                "value": "",
+                "type": "query",
+                "description": "Records per page. Defaults to 25, maximum 100."
+              },
+              {
+                "name": "mobile-tracking-certified",
+                "value": "",
+                "type": "query",
+                "description": "Limit to advertisers certified (or not certified) for mobile tracking."
+              }
+            ]
+          },
+          "docs": "Find advertisers in the CJ network by CID, program name or program URL, joined or not joined, with account status, EPC, categories, link types and default Program Term commission rates. Commission rates for Situations and Promotional Properties are NOT included — use the GraphQL Program Terms API for those. Publishers only. Documented call limit: 25 calls per minute."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

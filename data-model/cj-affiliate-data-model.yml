@@ -1,0 +1,248 @@
+generated: '2026-08-13'
+method: derived
+source: >-
+  graphql/cj-affiliate-commissions-schema.graphql,
+  graphql/cj-affiliate-ads-schema.graphql,
+  graphql/cj-affiliate-tracking-schema.graphql (all captured by live
+  introspection 2026-08-13), plus openapi/_original/cj-affiliate-openapi.yml and
+  CJ's own object reference prose.
+provider: CJ Affiliate
+providerId: cj-affiliate
+description: >-
+  CJ Affiliate's data model is an affiliate-network ledger. Two account types —
+  advertisers and publishers — are joined by Program Terms, promote each other
+  through Ads (links and product feeds), and settle through Commissions earned on
+  Orders. Almost every identifier in the platform is one of a small set of
+  network ids that recur across all three GraphQL APIs and the REST APIs alike:
+  CID (company id, an advertiser or a publisher), PID (promotional property /
+  website id), AID (ad id), Action Tracker id, Order id, Commission id and
+  Enterprise id.
+id_vocabulary:
+- id: CID
+  aka: [companyId, advertiserId, publisherId, requestor-cid, cid, enterpriseId]
+  describes: >-
+    A company account. The same id space covers advertisers and publishers; which
+    role it plays depends on which side of the relationship you are reading.
+    `requestor-cid` on the REST APIs and `companyId` on the GraphQL APIs both
+    name the account the call is made on behalf of. `enterpriseId` is the
+    Tracking API's name for the advertiser account.
+- id: PID
+  aka: [website-id, websiteId, promotionalPropertyId, pid]
+  describes: A publisher's individual promotional property / website.
+- id: AID
+  aka: [adId, aid, link-id, adIds]
+  describes: >-
+    An ad — a link, a banner, or a product feed. The same id space carries both
+    "a link a publisher can place" and "a feed of products", which is why
+    `adId` is the key on both Link Search results and every product query.
+- id: actionTrackerId
+  aka: [action-tracker-id, actionTrackerId]
+  describes: An advertiser-defined commissionable action (a sale, a lead, a bonus).
+- id: commissionId
+  aka: [commission-id, commissionIds, maxCommissionId, sinceCommissionId]
+  describes: >-
+    A single commission record. Monotonic enough to be used as a polling
+    watermark — the documented incremental pattern is to keep the highest one
+    seen and pass it back as `sinceCommissionId`.
+- id: orderId
+  describes: >-
+    An advertiser-assigned transaction id. Unique per Order ID + Action ID +
+    Enterprise ID, which is the natural idempotency key for the Tracking API.
+- id: originalActionId
+  describes: Correlates a correction record back to the original transaction.
+- id: itemListId
+  describes: >-
+    A group of items carrying its own commission rate within a Program Term.
+- id: cjEvent
+  describes: >-
+    The CJ click id minted at click time and carried on the destination URL,
+    correlating a consumer click to the eventual order.
+entities:
+- name: Company
+  aka: [Advertiser, Publisher]
+  key: CID
+  source: openapi (Advertiser, Publisher) + graphql arguments
+  fields_of_note: [account-status, relationship-status, network-rank, network-rating, seven-day-epc, three-month-epc, country, currency, language]
+  note: >-
+    Advertiser Lookup and Publisher Lookup are the two mirror views of the same
+    entity — one read by publishers, one read by advertisers, each gated so you
+    can only see the other side.
+- name: ProgramTerms
+  key: name + CID pair
+  fields_of_note: [name, date-accepted, date-expired, join-status]
+  note: >-
+    The contract between an advertiser and a publisher. Commission rates in the
+    Advertiser Lookup response reflect the ACTIVE program term (or the
+    advertiser's default term for a non-joined relationship) and deliberately
+    EXCLUDE Situations and Promotional Property rates — CJ directs callers to
+    the GraphQL Program Terms API for the complete rate picture.
+- name: PromotionalProperty
+  aka: [Website]
+  key: PID
+  fields_of_note: [name, pid, url, category]
+- name: Ad
+  aka: [Link]
+  key: AID
+  fields_of_note: [link-type, link-name, description, ad-content, destination, clickUrl, link-code-html, link-code-javascript, promotion-type, promotion-start-date, promotion-end-date, coupon-code, targeted-countries, allow-deep-linking, mobile-optimized, mobile-app-download, cross-device-only]
+- name: ProductFeed
+  key: adId
+  graphql_type: ProductFeed
+  fields_of_note: [adId, advertiserId, feedType, advertiserCountry]
+  note: >-
+    `shoppingProductFeeds` lists every feed in the network regardless of join
+    status, which makes it the cold-discovery entry point for publishers.
+- name: Product
+  graphql_types: [Shopping, TravelExperience, CreditCard]
+  key: id
+  note: >-
+    CJ models three product verticals as separate types with separate queries and
+    separate mutations rather than one polymorphic Product. Retail lives in
+    `Shopping`, travel in `TravelExperience`, and finance in `CreditCard` (which
+    carries a full credit-card term sheet — APRs, fees, grace periods, rewards).
+- name: ActionTracker
+  key: actionTrackerId
+  fields_of_note: [actionTrackerName, actionType, lockingMethod]
+- name: Commission
+  graphql_types: [PublisherCommission, AdvertiserCommission]
+  key: commissionId
+  fields_of_note: [actionStatus, actionType, postingDate, eventDate, lockingDate, orderId, saleAmount, commissionAmount, currency, validationStatus, correctionReason, original]
+  note: >-
+    The publisher and advertiser views are separate types with deliberately
+    different field sets — advertiser-only attributes (advCommissionAmountUsd,
+    ancillarySpend) and publisher-only attributes (sid, shopperId) do not cross.
+- name: Item
+  key: commissionItemId
+  note: Line-item detail on a commission, optionally grouped by itemListId.
+- name: Situation
+  key: id
+  note: A situational commissioning rule applied to a commission or an item.
+- name: Order
+  graphql_type: Order
+  key: 'orderId + actionTrackerId + enterpriseId'
+  fields_of_note: [submissionId, batchId, orderReceivedTime, eventTime, updateTime, amount, discount, currency, coupon, status, correctionReason, cjEvent, sid]
+  note: >-
+    The Tracking API's write-side representation of what becomes a Commission on
+    the read side.
+- name: VerticalParameters
+  note: >-
+    A large typed attribute bag whose meaningful fields depend on the advertiser
+    vertical (Retail, Finance, Travel, NetworkServices) — booking dates, APRs,
+    application status, ancillary spend, brand and campaign ids.
+relationships:
+- from: Company
+  to: ProgramTerms
+  type: has_many
+  via: cid
+- from: ProgramTerms
+  to: Company
+  type: belongs_to
+  via: 'advertiser CID + publisher CID'
+- from: Company
+  to: PromotionalProperty
+  type: has_many
+  via: pid
+  note: Publisher side.
+- from: Company
+  to: Ad
+  type: has_many
+  via: advertiserId
+  note: Advertiser side.
+- from: Company
+  to: ActionTracker
+  type: has_many
+  via: 'actionTrackerId (advertiser-defined)'
+- from: Ad
+  to: ProductFeed
+  type: has_one
+  via: adId
+  note: A product feed IS an ad in CJ's id space.
+- from: ProductFeed
+  to: Product
+  type: has_many
+  via: adId
+- from: Product
+  to: GoogleProductCategory
+  type: has_one
+  via: googleProductCategory
+- from: Product
+  to: Shipping
+  type: has_many
+  via: shipping
+- from: Product
+  to: Tax
+  type: has_many
+  via: tax
+- from: Product
+  to: LinkCode
+  type: has_one
+  via: linkCode
+  note: The placeable HTML for the product, mirroring link-code-html on Link Search.
+- from: Commission
+  to: Company
+  type: belongs_to
+  via: 'advertiserId + publisherId'
+- from: Commission
+  to: PromotionalProperty
+  type: belongs_to
+  via: websiteId
+- from: Commission
+  to: Ad
+  type: belongs_to
+  via: aid
+- from: Commission
+  to: ActionTracker
+  type: belongs_to
+  via: actionTrackerId
+- from: Commission
+  to: Item
+  type: has_many
+  via: items
+- from: Commission
+  to: Situation
+  type: has_many
+  via: situationDetails
+- from: Commission
+  to: Commission
+  type: belongs_to
+  via: originalActionId
+  note: Self-reference linking a correction record to its original transaction.
+- from: Item
+  to: Situation
+  type: has_many
+  via: situationDetails
+- from: Order
+  to: Commission
+  type: has_many
+  via: 'orderId (asynchronous - the Tracking API write becomes Commission Detail records after processing)'
+- from: Order
+  to: ActionTracker
+  type: belongs_to
+  via: actionTrackerId
+- from: Order
+  to: PromotionalProperty
+  type: belongs_to
+  via: promotionalPropertyId
+- from: Order
+  to: VerticalParameters
+  type: has_one
+  via: verticalParameters
+- from: Order
+  to: OrderItem
+  type: has_many
+  via: items
+  note: Capped at 100 items per order.
+lifecycle_states:
+  actionStatus: [NEW, LOCKED, CLOSED, EXTENDED]
+  validationStatus: [PENDING, ACCEPTED, DECLINED, AUTOMATED]
+  lockingMethod: [IMMEDIATE, FIXED_DATE, OPEN_ENDED, FIXED_DURATION]
+  orderStatus: [Pending, Accepted]
+  orderCancellationStatus: [Declined]
+  correctionReason:
+    commissions: [INVALID_CREDIT_CARD, RETURNED_MERCHANDISE, DUPLICATED_ORDER, CANT_SHIP_OR_SOLD_OUT, UNQUALIFIED_LEAD, QUALIFIED_LEAD, BAD_DEBT, BANKRUPTCY, COMPLIANCE, BOOKING_CANCELED, OTHER_REASON]
+    tracking: [BadDebt, Bankruptcy, BookingCanceled, CannotShipSoldOut, Compliance, DuplicateOrder, InvalidCreditCard, Other, ReturnedMerchandise, UnqualifiedLead]
+  note: >-
+    The correction-reason vocabularies on the write side (Tracking, PascalCase)
+    and the read side (Commission Detail, SCREAMING_SNAKE) are the same concepts
+    under different spellings, and they are NOT one-to-one — Commission Detail
+    additionally carries QUALIFIED_LEAD, which the Tracking API cannot send. Any
+    mapping between the two must be explicit.

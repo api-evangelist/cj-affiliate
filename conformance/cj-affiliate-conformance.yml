@@ -1,0 +1,159 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  CJ's documentation corpus at https://production-docs-assets.p.cjpowered.com/,
+  live GraphQL introspection of all three CJ GraphQL endpoints, live HTTP probes
+  of every documented CJ API host, and openapi/ + graphql/ in this repo — all
+  2026-08-13.
+provider: CJ Affiliate
+providerId: cj-affiliate
+description: >-
+  Cross-cutting standards conformance for CJ Affiliate. CJ conforms to GraphQL
+  and to HTTP basics, and to nothing else in the API-standards stack: no OpenAPI
+  is published by CJ, no OAuth 2.0 or OIDC, no RFC 9457 problem details on any
+  public API, no RFC 8594 deprecation signalling, no RFC 9116 security.txt, and
+  no standard rate-limit headers.
+standards:
+- id: graphql
+  name: GraphQL (June 2018 / October 2021 spec)
+  conforms: true
+  evidence: >-
+    Three live GraphQL endpoints — commissions.api.cj.com/query,
+    ads.api.cj.com/query and tracking.api.cj.com/graphql — each answered a full
+    __schema introspection query with HTTP 200 on 2026-08-13. Schemas captured
+    verbatim in graphql/. GraphiQL is served on tracking.api.cj.com and the
+    developer portal ships GraphiQL and GraphQL Voyager for the other two.
+- id: graphql-introspection
+  name: GraphQL introspection enabled in production
+  conforms: true
+  evidence: >-
+    Introspection is enabled and answers WITHOUT credentials on all three
+    endpoints. This is excellent for discoverability — it is why this repo holds
+    real schemas rather than modelled ones — and worth flagging as a deliberate
+    posture choice, since many production GraphQL APIs disable it.
+- id: openapi
+  name: OpenAPI
+  conforms: false
+  evidence: >-
+    CJ publishes no OpenAPI or Swagger document. Probes of /openapi.json,
+    /openapi.yaml, /swagger.json, /api-docs, /docs, /redoc and /v1/openapi.json
+    against developers.cj.com, api.cj.com, www.cj.com and every *.api.cj.com host
+    returned 404 or an HTML SPA shell. The OpenAPI documents in openapi/ are
+    API Evangelist artifacts transcribed from CJ's published documentation, not
+    CJ's own.
+- id: oauth2
+  name: OAuth 2.0
+  conforms: false
+  evidence: >-
+    CJ authenticates with long-lived Personal Access Tokens minted by a human in
+    the developer portal, sent as a Bearer credential. There is no authorization
+    endpoint, no token endpoint a client may call, no client credentials flow, no
+    refresh token and no scopes. /.well-known/oauth-authorization-server 404s on
+    every host including iam.cj.com.
+- id: oidc
+  name: OpenID Connect
+  conforms: false
+  evidence: /.well-known/openid-configuration returns 404 on every CJ host probed.
+- id: rfc6750
+  name: 'RFC 6750 — Bearer Token Usage'
+  conforms: partial
+  evidence: >-
+    CJ uses the `Authorization: Bearer <token>` form defined by RFC 6750, but
+    does not return the `WWW-Authenticate: Bearer` challenge header on 401, and
+    its 401 bodies are vendor XML or vendor JSON rather than the RFC's
+    error/error_description parameters.
+- id: rfc9457
+  name: 'RFC 9457 — Problem Details for HTTP APIs'
+  conforms: partial
+  evidence: >-
+    iam.cj.com, the personal-access-token service the developer portal calls,
+    returns application/problem+json
+    ({"type":"about:blank","title":"Not Found","status":404,"instance":"/api/token"}).
+    None of the public product APIs do — the classic REST family returns an XML
+    <cj-api><error-message> envelope and the click APIs return a vendor JSON
+    {destinationUrl, errorMessages[]} shape.
+- id: rfc8594
+  name: 'RFC 8594 — Sunset HTTP Header (and the Deprecation header)'
+  conforms: false
+  evidence: >-
+    CJ signals deprecation in documentation prose only. No Sunset or Deprecation
+    header is returned by any endpoint, including the REST Commission Detail API
+    that CJ's own docs say was to be removed on 2019-06-01.
+- id: rfc9116
+  name: 'RFC 9116 — security.txt'
+  conforms: false
+  evidence: >-
+    /.well-known/security.txt returns 404 on all twelve CJ hosts probed. See
+    well-known/cj-affiliate-well-known.yml.
+- id: rate-limit-headers
+  name: 'IETF RateLimit header fields (draft) / X-RateLimit-* convention'
+  conforms: false
+  evidence: >-
+    CJ documents a 25 calls-per-minute ceiling per REST API but publishes no
+    RateLimit-*, X-RateLimit-* or Retry-After header and no 429 status.
+- id: idempotency
+  name: Idempotent write semantics
+  conforms: true
+  evidence: >-
+    The Tracking API is idempotent by natural key rather than by header: CJ
+    defines a unique order as Order ID + Action ID + Enterprise ID, applies
+    duplicate-order logic on createOrders, and requires restatements to send the
+    complete new state of the order, which "will completely overwrite the current
+    state". There is no Idempotency-Key header. See
+    conventions/cj-affiliate-conventions.yml.
+- id: pagination
+  name: Documented pagination
+  conforms: true
+  evidence: >-
+    page-number / records-per-page with total-matched and records-returned on
+    the classic REST family; offset / limit (plus a `page` cursor on `products`)
+    on the ads GraphQL API; a sinceCommissionId watermark with a
+    `payloadComplete` flag on Commission Detail.
+- id: json-api
+  name: 'JSON:API'
+  conforms: false
+  evidence: No JSON:API media type or document structure anywhere in CJ's surface.
+- id: odata
+  name: OData
+  conforms: false
+  evidence: Not used.
+- id: scim
+  name: SCIM
+  conforms: false
+  evidence: CJ exposes no user or account provisioning API.
+- id: asyncapi
+  name: AsyncAPI
+  conforms: false
+  evidence: >-
+    CJ publishes no AsyncAPI document and no event-driven API. It also publishes
+    no webhooks — the integration pattern for both directions is polling
+    (Commission Detail with a sinceCommissionId watermark) or batch file
+    exchange over SFTP (the Data Imports family).
+- id: google-merchant-product-data
+  name: Google product data conventions
+  conforms: partial
+  evidence: >-
+    The ads GraphQL API models shopping products against Google's product
+    taxonomy — `googleProductCategoryIds` and `googleProductCategoryNames` are
+    first-class query arguments and `gtin` is a supported lookup — so CJ product
+    feeds interoperate with Google Merchant Center category and identifier
+    conventions.
+- id: tls
+  name: 'TLS 1.2+ on all API hosts'
+  conforms: true
+  evidence: >-
+    TLSv1.3 negotiated on www.cj.com, developers.cj.com and
+    commissions.api.cj.com; the Click Events API documentation states TLSv1.2 as
+    the security baseline. HSTS is present on www.cj.com (max-age 31536000) and
+    developers.cj.com (max-age 63072000) but absent on commissions.api.cj.com.
+    See security/cj-affiliate-domain-security.yml.
+compliance_programs:
+  published: false
+  note: >-
+    No trust center, and no named certification (SOC 2, ISO 27001, PCI DSS,
+    HIPAA, FedRAMP) is published on cj.com or developers.cj.com. CJ does document
+    consumer-privacy MECHANICS in its tracking documentation — a Consent Signal &
+    Loyalty Exemption page, and enforced rejection of PII in click-API request
+    bodies (HTTP 400 "included consumer Personally Identifiable Information") —
+    but that is product behaviour, not a published compliance attestation.
+    No `Compliance` pointer is emitted in apis.yml for this provider.

@@ -1,0 +1,119 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  CJ's documentation corpus at https://production-docs-assets.p.cjpowered.com/,
+  live GraphQL introspection of commissions.api.cj.com, ads.api.cj.com and
+  tracking.api.cj.com, and live DNS/HTTP probes of every documented API host,
+  all on 2026-08-13.
+provider: CJ Affiliate
+providerId: cj-affiliate
+description: >-
+  CJ Affiliate is mid-migration from a classic XML REST platform to GraphQL, and
+  the lifecycle evidence is unusually blunt about it. CJ's own REST overview
+  carries a deprecation banner telling integrators the Commission Detail REST API
+  "has been deprecated and will be removed on June 1, 2019" — a removal date now
+  more than seven years in the past, on an endpoint that still answers. The
+  platform ships no versioning policy page, no deprecation policy, no Sunset or
+  Deprecation headers, no changelog and no working status page.
+versioning:
+  policy_published: false
+  policy_url: null
+  scheme: path-segment on REST (/v2/, /v3/); unversioned on GraphQL
+  graphql_evolution: >-
+    Additive schema change plus field-level `@deprecated` markers. Live
+    introspection on 2026-08-13 found no deprecated fields on the commissions or
+    tracking schemas; the ads schema carries deprecations noted below.
+deprecation:
+  policy_published: false
+  policy_url: null
+  headers:
+    deprecation: false
+    sunset: false
+    rfc8594: false
+  signal: >-
+    Prose banners in the documentation (`deprecation-reason-box`) and GraphQL
+    `@deprecated` directives. Nothing machine-readable is served at runtime — a
+    client calling a deprecated CJ endpoint receives no header telling it so.
+  note: >-
+    The stated sunset date on the REST Commission Detail API has been in the past
+    since 2019 and the endpoint remains live, which makes CJ's published dates
+    unreliable as a planning input. Treat the banner as "will go away, date
+    unknown" rather than as a schedule.
+deprecated_surfaces:
+- id: commission-detail-rest-legacy
+  name: Commission Detail API (Legacy, REST)
+  endpoint: https://commission-detail.api.cj.com/v3/commissions
+  status: deprecated
+  announced_removal: '2019-06-01'
+  still_live: true
+  probe: 'GET https://commission-detail.api.cj.com/v3/commissions -> HTTP 401 (auth required) on 2026-08-13'
+  replacement: 'GraphQL Commission Detail API, POST https://commissions.api.cj.com/query'
+  source: https://production-docs-assets.p.cjpowered.com/REST%20APIs/Commission%20Detail%20(Legacy).md
+- id: click-events-advertiserCompanyId
+  name: 'Click Events API field `advertiserCompanyId`'
+  status: deprecated
+  announced_removal: null
+  replacement: '`companyId`'
+  source: https://production-docs-assets.p.cjpowered.com/Publisher%20Site%20Tracking/Click%20Events%20API.md
+retired_surfaces:
+- id: product-search-rest-legacy
+  name: Product Search API (Legacy, REST)
+  endpoint: https://product-search.api.cj.com/v2/product-search
+  status: retired
+  evidence:
+  - 'DNS: product-search.api.cj.com does not resolve (NXDOMAIN) as of 2026-08-13, while every other documented *.api.cj.com host resolves to webservices.prod.cj.com or a CJ-owned CDN.'
+  - 'Docs: the API is absent from CJ''s current documentation index (https://production-docs-assets.p.cjpowered.com/index.yaml), which lists Overview, Advertiser Lookup, Automated Offer Feed, Commission Detail (Legacy), Link Search, Publisher Lookup and Enumerations under "REST APIs".'
+  replacement: >-
+    The GraphQL ads API at https://ads.api.cj.com/query — `products`,
+    `shoppingProducts`, `travelExperienceProducts`, `financeProducts`,
+    `financeCreditCardProducts`, `shoppingProductFeeds`, `productFeeds`.
+  action_taken: >-
+    openapi/cj-affiliate-product-search-legacy-api-openapi.yml was REMOVED from
+    this repo on 2026-08-13. It described a host that no longer exists and its
+    parameters had been modelled rather than read from CJ documentation.
+sla:
+  published: false
+  url: null
+  note: No developer-facing SLA or uptime commitment is published on developers.cj.com or cj.com.
+status_page:
+  published: false
+  url: https://cj.statuspage.io/
+  probe: 'GET https://cj.statuspage.io/ -> HTTP 200 with title "Cj Status - Page Inactive"; the Statuspage API v2 returns "Your page is inactive."'
+  note: >-
+    A Statuspage tenant exists at cj.statuspage.io but has been DEACTIVATED, so
+    there is no operational status surface for CJ APIs. No StatusPage pointer is
+    emitted in apis.yml — an inactive page is not a status page.
+changelog:
+  published: false
+  url: null
+  note: >-
+    CJ publishes no dated API changelog. https://developers.cj.com/changelog
+    returns HTTP 200 only because the developer portal is a React SPA that
+    answers every path with the same shell; there is no changelog entry in the
+    portal's own documentation index. Product and network news is posted
+    editorially at https://junction.cj.com/ without version numbers or dates
+    tied to API changes.
+graphql_deprecations:
+  checked: '2026-08-13'
+  method: live __schema introspection
+  commissions: 0 deprecated fields
+  tracking: 0 deprecated fields
+  ads: >-
+    Deprecations present on the ads schema; see
+    graphql/cj-affiliate-ads-schema.graphql for the `@deprecated` markers as
+    served.
+support:
+  developer_contact: dx@cj.com
+  note: >-
+    CJ's ads schema names the "CJ Developer Experience Group (dx at cj.com)" as
+    the contact for the `*FromApplication` queries, which are restricted to CJ
+    registered applications.
+  support_url: https://www.cj.com/support
+migration_guidance:
+  from: Classic XML REST APIs on *.api.cj.com
+  to: GraphQL on commissions.api.cj.com, ads.api.cj.com and tracking.api.cj.com
+  published_guidance: >-
+    Partial. CJ's REST Overview points Commission Detail users at the GraphQL
+    Commission Detail API and its Link Search page points product-link users at
+    "the Product Search API", but no migration guide, mapping table or
+    deprecation timetable is published for the move.

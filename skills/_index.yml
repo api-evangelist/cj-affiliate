@@ -1,0 +1,46 @@
+generated: '2026-08-13'
+method: generated
+source: >-
+  openapi/ and graphql/ in this repo, grounded in real operationIds and real
+  GraphQL field names captured by live introspection on 2026-08-13.
+provider: CJ Affiliate
+providerId: cj-affiliate
+description: >-
+  Packaged Agent Skills for CJ Affiliate's marquee flows. CJ publishes no
+  skills, no AGENTS.md and no llms.txt of its own; these are generated from the
+  contracts in this repo. Every operationId and every GraphQL field named in
+  them exists in openapi/ or graphql/ — none is invented.
+skills:
+- name: cj-affiliate-find-links-to-promote
+  file: cj-affiliate-find-links-to-promote.md
+  side: publisher
+  consequence: read
+  apis: [cj-affiliate-link-search-api, cj-affiliate-advertiser-lookup-api]
+  operations: [linkSearch, advertiserLookup]
+- name: cj-affiliate-discover-products
+  file: cj-affiliate-discover-products.md
+  side: publisher
+  consequence: read
+  apis: [cj-affiliate-product-search-api]
+  operations: [shoppingProductFeeds, productFeeds, products, shoppingProducts, travelExperienceProducts, financeProducts, financeCreditCardProducts]
+- name: cj-affiliate-reconcile-commissions
+  file: cj-affiliate-reconcile-commissions.md
+  side: both
+  consequence: read
+  apis: [cj-affiliate-commission-detail-api]
+  operations: [publisherCommissions, advertiserCommissions]
+- name: cj-affiliate-submit-orders
+  file: cj-affiliate-submit-orders.md
+  side: advertiser
+  consequence: financial-write
+  human_in_the_loop: required
+  apis: [cj-affiliate-tracking-api]
+  operations: [createOrders, restateOrders, cancelOrders]
+not_covered:
+- reason: >-
+    The Click Events API and Publisher Tracking API register REAL consumer
+    clicks and affect attribution and reporting. They are not safe to exercise
+    from an agent skill, and CJ asks partners to arrange integration validation
+    with a CJ representative before implementing either. Documented in
+    openapi/ instead.
+  apis: [cj-affiliate-click-events-api, cj-affiliate-publisher-tracking-api]

@@ -1,20 +1,23 @@
 {
   "provider": "cj-affiliate",
   "sources": [
-    "cj-affiliate-advertiser-lookup-api-openapi.yml",
-    "cj-affiliate-link-search-api-openapi.yml",
-    "cj-affiliate-product-search-legacy-api-openapi.yml",
-    "cj-affiliate-publisher-lookup-api-openapi.yml"
+    "_original/cj-affiliate-openapi.yml"
   ],
   "outputs": [
-    "cj-affiliate-advertiser-lookup-api-openapi.yml",
     "cj-affiliate-link-search-api-openapi.yml",
-    "cj-affiliate-product-search-legacy-api-openapi.yml",
-    "cj-affiliate-publisher-lookup-api-openapi.yml"
+    "cj-affiliate-advertiser-lookup-api-openapi.yml",
+    "cj-affiliate-publisher-lookup-api-openapi.yml",
+    "cj-affiliate-commission-detail-legacy-api-openapi.yml",
+    "cj-affiliate-click-events-api-openapi.yml",
+    "cj-affiliate-publisher-tracking-api-openapi.yml"
   ],
-  "archived": [],
+  "archived": [
+    "cj-affiliate-product-search-legacy-api-openapi.yml"
+  ],
   "errors": [],
   "warnings": [],
-  "notes": [],
+  "notes": [
+    "Rebuilt 2026-08-13 from CJ's own machine-readable docs corpus at production-docs-assets.p.cjpowered.com. Product Search (Legacy) removed: its host product-search.api.cj.com does not resolve (NXDOMAIN) and the API is absent from CJ's current documentation index."
+  ],
   "skipped": []
 }

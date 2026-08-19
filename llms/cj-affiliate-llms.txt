@@ -1,0 +1,65 @@
+# CJ Affiliate
+
+> CJ Affiliate (formerly Commission Junction) is one of the largest affiliate marketing networks, connecting publishers with thousands of advertiser programs. Its developer platform is three GraphQL APIs plus a set of classic XML REST APIs, all authenticated with a Bearer personal access token minted by hand in the CJ developer portal.
+
+Generated 2026-08-13 by the API Evangelist enrichment pipeline. CJ publishes no llms.txt of its own — https://developers.cj.com/llms.txt returns HTTP 200 only because the developer portal is a React single-page app that answers every path with the same HTML shell.
+
+## What you need to know before calling anything
+
+- **Auth is one Bearer token for everything.** `Authorization: Bearer <personal-access-token>`. Tokens are created by a human at https://developers.cj.com/account/personal-access-tokens. There is no OAuth, no token endpoint, no client-credentials flow and no refresh. An agent cannot self-provision access to CJ.
+- **You must also name the account.** The token says who you are; a company id says which account the call is for — `requestor-cid` on REST, `companyId`/`publisherCompanyId` on GraphQL and the click APIs, `enterpriseId` on Tracking API mutations.
+- **Two generations, different conventions.** The classic REST APIs use kebab-case query parameters and return XML. The GraphQL APIs use camelCase arguments and return JSON.
+- **Rate limit: 25 calls per minute** on every classic REST API — published as a number, with no response header and no documented 429. Self-throttle; you get no runtime signal.
+- **Sides of the network are enforced.** Link Search and Advertiser Lookup are publishers-only. Publisher Lookup is advertisers-only. The Tracking API is advertisers-only.
+- **Empty request means zero results,** not "everything", on all three REST search APIs.
+
+## GraphQL APIs (the current surface)
+
+- [Commission Detail API](https://developers.cj.com/graphql/reference/Commission%20Detail): `POST https://commissions.api.cj.com/query`. Queries `publisherCommissions` and `advertiserCommissions` return near-real-time commission records filtered by posting / event / locking date, action status, action type, advertiser, ad, website, or a `sinceCommissionId` watermark. Responses carry `count` and `payloadComplete`.
+- [Product Search / Ads API](https://developers.cj.com/graphql/reference/Product%20Search): `POST https://ads.api.cj.com/query`. Ten queries (`products`, `shoppingProducts`, `travelExperienceProducts`, `financeProducts`, `financeCreditCardProducts`, `shoppingProductFeeds`, `productFeeds`, and three `*FromApplication` variants restricted to CJ registered applications), five mutations for managing product and credit-card catalogs, and five subscriptions for bulk whole-feed download.
+- [Advertiser Tracking API](https://developers.cj.com/docs/advertiser-api-tracking/api-overview): `POST https://tracking.api.cj.com/graphql`. Mutations `createOrders`, `restateOrders` and `cancelOrders` submit the full transaction lifecycle. Test Mode is a separate endpoint at `https://tracking.api.cj.com/graphqltest`.
+
+Introspection is open and unauthenticated on all three endpoints. Full SDL captured in this repo:
+
+- [graphql/cj-affiliate-commissions-schema.graphql](../graphql/cj-affiliate-commissions-schema.graphql)
+- [graphql/cj-affiliate-ads-schema.graphql](../graphql/cj-affiliate-ads-schema.graphql)
+- [graphql/cj-affiliate-tracking-schema.graphql](../graphql/cj-affiliate-tracking-schema.graphql)
+
+## REST APIs (classic, XML)
+
+- [Link Search](https://developers.cj.com/docs/rest-apis/link-search): `GET https://link-search.api.cj.com/v2/link-search`. Find placeable links by keyword, category, link type, promotion type, country, language, relationship status. Publishers only.
+- [Advertiser Lookup](https://developers.cj.com/docs/rest-apis/advertiser-lookup): `GET https://advertiser-lookup.api.cj.com/v2/advertiser-lookup`. Find advertisers and their program details. Publishers only. Note: commission rates returned here EXCLUDE Situations and Promotional Property rates — use the GraphQL Program Terms API for the full picture.
+- [Publisher Lookup](https://developers.cj.com/docs/rest-apis/publisher-lookup): `GET https://publisher-lookup.api.cj.com/v2/joined-publisher-lookup`. Advertisers only. Requires exactly one search criterion besides `requestor-cid`.
+- [Automated Offer Feed](https://developers.cj.com/docs/rest-apis/automated-offer-feed): credit-card content, links and images from financial advertisers, served through the Link Search endpoint.
+- [Commission Detail (Legacy)](https://developers.cj.com/docs/rest-apis/commission-detail): `GET https://commission-detail.api.cj.com/v3/commissions`. **Deprecated** — CJ's docs announced removal on 2019-06-01 and direct you to the GraphQL Commission Detail API. The host still answers.
+- **Product Search (Legacy)** is gone: `product-search.api.cj.com` no longer resolves in DNS and the API is absent from CJ's documentation index. Use the GraphQL product queries.
+
+## Click tracking APIs (JSON)
+
+- [Click Events API](https://developers.cj.com/docs/publisher-site-tracking/click-events-api): `POST https://clicks.api.cj.com/partner/event`. Server-to-server click registration for partners; returns the tracked destination URL.
+- [Publisher Tracking API](https://developers.cj.com/docs/publisher-site-tracking/publisher-tracking-api): `POST https://publishertracking.api.cj.com/clickdestination`. Server-to-server click registration for publishers; supports bounceless journeys.
+
+Both return `{ "destinationUrl": "...", "errorMessages": [] }`, cannot be called from a browser, reject unknown fields, and reject any field containing an email pattern with HTTP 400. On ANY error you are responsible for navigating the consumer to a traditional CJ tracking Click URL.
+
+## Idempotency and write safety
+
+CJ's Tracking API is idempotent by natural key, not by header. A unique order is **Order ID + Action ID + Enterprise ID**. Corrections are deterministic full-state replacement: a restatement "will completely overwrite the current state of the order", so anything you omit is dropped. Orders on an open-ended locking cycle must carry `status`. Locked or closed orders cannot be changed.
+
+Real-time validation errors come back on the call. **Processing errors do not** — they surface up to an hour later as the absence of the record from Commission Detail. Reconcile against `commissions.api.cj.com` rather than assuming a 200 means the order landed.
+
+## What CJ does not publish
+
+No OpenAPI. No OAuth or OIDC discovery. No security.txt or any other `/.well-known/` document on any host. No webhooks and no AsyncAPI. No MCP server. No A2A agent card. No first-party SDK in any package registry. No changelog, no versioning policy, no deprecation policy, no Sunset/Deprecation headers, no rate-limit headers, and no working status page (cj.statuspage.io exists but is deactivated).
+
+## This repo
+
+- [openapi/](../openapi/) — OpenAPI 3.1 documents transcribed from CJ's published documentation
+- [graphql/](../graphql/) — live introspected SDL for all three GraphQL endpoints
+- [asyncapi/](../asyncapi/) — the ads API's GraphQL subscription surface as AsyncAPI 3.0
+- [conventions/](../conventions/) — auth, idempotency, pagination, errors, versioning in one place
+- [errors/](../errors/) — CJ's full published error catalog with status codes
+- [lifecycle/](../lifecycle/) — deprecations, retirements and the missing policies
+- [rate-limits/](../rate-limits/) — the 25/minute ceilings and the batch limits
+- [sandbox/](../sandbox/) — Test Mode and what it does not validate
+- [data-model/](../data-model/) — the CID / PID / AID identifier vocabulary and the entity graph
+- [skills/](../skills/) — packaged agent skills for the marquee flows

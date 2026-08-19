@@ -1,0 +1,177 @@
+generated: '2026-08-13'
+method: derived
+source: >-
+  graphql/cj-affiliate-commissions-schema.graphql,
+  graphql/cj-affiliate-ads-schema.graphql,
+  graphql/cj-affiliate-tracking-schema.graphql and
+  openapi/_original/cj-affiliate-openapi.yml in this repo. Searched for a
+  first-party CJ MCP server first — none exists.
+provider: CJ Affiliate
+providerId: cj-affiliate
+status: candidate
+description: >-
+  CJ Affiliate ships NO Model Context Protocol server. Searches on 2026-08-13
+  found no CJ-published remote MCP endpoint, no npm or PyPI package under a CJ or
+  Conversant namespace, no mention of MCP anywhere in CJ's documentation corpus
+  (https://production-docs-assets.p.cjpowered.com/index.yaml and every page it
+  indexes), and no /.well-known/ discovery document on any CJ host. The tool list
+  below is a CANDIDATE derived from CJ's real, live GraphQL schemas and its
+  documented REST operations — it is what a CJ MCP server would expose, not
+  something that exists.
+deployment:
+  mode: none
+  endpoint: null
+  install: null
+  package: null
+  auth: api-key
+  verified: derived
+  note: >-
+    `auth: api-key` describes what such a server would need — a CJ Personal
+    Access Token as a Bearer credential — not an observed configuration. Note
+    that CJ token provisioning is a human step in the developer portal with no
+    programmatic issuance, so even a hypothetical remote CJ MCP server could not
+    onboard an agent unattended.
+discovery_probes:
+- url: https://developers.cj.com/.well-known/ai-plugin.json
+  status: 200
+  result: miss - React SPA shell, not a document
+- url: https://www.cj.com/.well-known/ai-plugin.json
+  status: 404
+  result: miss
+- url: https://commissions.api.cj.com/.well-known/oauth-protected-resource
+  status: 404
+  result: miss
+- url: https://ads.api.cj.com/.well-known/oauth-protected-resource
+  status: 404
+  result: miss
+- url: https://tracking.api.cj.com/.well-known/oauth-protected-resource
+  status: 200
+  result: miss - GraphiQL IDE HTML served as a catch-all for every unmatched path
+- url: https://developers.cj.com/llms.txt
+  status: 200
+  result: miss - React SPA shell, not a document
+candidate_tools:
+- name: search_advertisers
+  backing: 'REST GET https://advertiser-lookup.api.cj.com/v2/advertiser-lookup (operationId advertiserLookup)'
+  consequence: read
+  description: >-
+    Find advertisers in the CJ network by CID, program name, program URL or
+    keywords, joined or not joined, with account status, EPC, categories, link
+    types and default program-term commission rates.
+  required: [requestor-cid]
+- name: search_links
+  backing: 'REST GET https://link-search.api.cj.com/v2/link-search (operationId linkSearch)'
+  consequence: read
+  description: >-
+    Find placeable advertiser links across the network by keyword, category, link
+    type, promotion type, country, language and relationship status.
+  required: []
+  note: At least one filter must be supplied; an empty request returns zero results.
+- name: search_publishers
+  backing: 'REST GET https://publisher-lookup.api.cj.com/v2/joined-publisher-lookup (operationId publisherLookup)'
+  consequence: read
+  description: >-
+    Advertiser-side lookup of publishers joined to a program, with program terms,
+    websites, promotional methods and EPC.
+  required: [requestor-cid, 'exactly one of: url, cid, pid, country, publisher-name, special-incentive']
+- name: list_publisher_commissions
+  backing: 'GraphQL query publisherCommissions on https://commissions.api.cj.com/query'
+  consequence: read
+  description: >-
+    Near-real-time publisher commission records filtered by posting, event or
+    locking date, action status, action type, advertiser, ad, website or
+    commission-id watermark.
+- name: list_advertiser_commissions
+  backing: 'GraphQL query advertiserCommissions on https://commissions.api.cj.com/query'
+  consequence: read
+  description: Advertiser-side view of the same commission ledger.
+- name: search_products
+  backing: 'GraphQL query products on https://ads.api.cj.com/query'
+  consequence: read
+  description: >-
+    Search promotable products across advertiser feeds by keyword, price band,
+    currency, brand, Google product category, availability, serviceable area and
+    partner status.
+  required: [companyId]
+- name: search_shopping_products
+  backing: 'GraphQL query shoppingProducts on https://ads.api.cj.com/query'
+  consequence: read
+  description: Retail-vertical product search including GTIN lookup.
+  required: [companyId]
+- name: search_travel_products
+  backing: 'GraphQL query travelExperienceProducts on https://ads.api.cj.com/query'
+  consequence: read
+  required: [companyId]
+- name: search_finance_products
+  backing: 'GraphQL queries financeProducts and financeCreditCardProducts on https://ads.api.cj.com/query'
+  consequence: read
+  description: >-
+    Credit-card and finance product search, returning full term sheets (APRs,
+    fees, grace periods, rewards).
+  required: [companyId]
+- name: list_product_feeds
+  backing: 'GraphQL queries shoppingProductFeeds and productFeeds on https://ads.api.cj.com/query'
+  consequence: read
+  description: >-
+    List every advertiser product feed in the network regardless of join status —
+    the cold-discovery entry point for a publisher.
+  required: [companyId]
+- name: create_shopping_products
+  backing: 'GraphQL mutation createShoppingProducts on https://ads.api.cj.com/query'
+  consequence: write
+  human_in_the_loop: recommended
+- name: update_shopping_products
+  backing: 'GraphQL mutation updateShoppingProducts on https://ads.api.cj.com/query'
+  consequence: write
+  human_in_the_loop: recommended
+- name: delete_products
+  backing: 'GraphQL mutation deleteProducts on https://ads.api.cj.com/query'
+  consequence: destructive
+  human_in_the_loop: required
+- name: create_credit_card_products
+  backing: 'GraphQL mutation createCreditCardProducts on https://ads.api.cj.com/query'
+  consequence: write
+  human_in_the_loop: recommended
+- name: update_credit_card_products
+  backing: 'GraphQL mutation updateCreditCardProducts on https://ads.api.cj.com/query'
+  consequence: write
+  human_in_the_loop: recommended
+- name: create_orders
+  backing: 'GraphQL mutation createOrders on https://tracking.api.cj.com/graphql'
+  consequence: financial-write
+  human_in_the_loop: required
+  note: >-
+    Creates commissionable transactions. Idempotent on Order ID + Action ID +
+    Enterprise ID. A test endpoint exists at /graphqltest — see
+    sandbox/cj-affiliate-sandbox.yml.
+- name: restate_orders
+  backing: 'GraphQL mutation restateOrders on https://tracking.api.cj.com/graphql'
+  consequence: financial-write
+  human_in_the_loop: required
+  note: >-
+    Full-state replacement. Any attribute omitted from the restatement is
+    DROPPED, not preserved — the highest-risk operation on the platform for an
+    agent to call unattended.
+- name: cancel_orders
+  backing: 'GraphQL mutation cancelOrders on https://tracking.api.cj.com/graphql'
+  consequence: financial-write
+  human_in_the_loop: required
+- name: resolve_click_destination
+  backing: 'REST POST https://publishertracking.api.cj.com/clickdestination (operationId resolveClickDestination)'
+  consequence: write
+  note: >-
+    Registers a real consumer click. Not safe to call speculatively — it affects
+    attribution and reporting.
+- name: create_click_event
+  backing: 'REST POST https://clicks.api.cj.com/partner/event (operationId createClickEvent)'
+  consequence: write
+  note: Same caution as resolve_click_destination.
+notes:
+- >-
+  CJ's GraphQL introspection is open without credentials on all three endpoints,
+  so a future MCP server could generate accurate tool inputSchemas straight from
+  the live schema rather than from documentation.
+- >-
+  The read tools split cleanly from the write tools by ENDPOINT: everything on
+  commissions.api.cj.com is read-only, everything on tracking.api.cj.com moves
+  money, and ads.api.cj.com mixes both.

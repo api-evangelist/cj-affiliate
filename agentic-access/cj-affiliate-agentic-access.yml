@@ -1,17 +1,26 @@
-generated: '2026-07-15'
-method: generated
-source: openapi/cj-affiliate-openapi.yml
-description: Recommended x-agentic-access execution contracts, classified heuristically from
-  the OpenAPI. A governance starting point for exposing this API to AI agents — review and bind
-  audience per deployment. See research/curity/agentic-governance/.
+generated: '2026-08-13'
+method: derived
+source: openapi/_original/cj-affiliate-openapi.yml + graphql/cj-affiliate-*.graphql (live introspection
+  2026-08-13)
+description: 'Recommended x-agentic-access execution contracts for CJ Affiliate, classified from the real
+  operation set. A governance starting point for exposing this API to AI agents - review and bind audience
+  per deployment. Note the shape of the risk here: every write on this platform moves money or changes
+  attribution. The Tracking API mutations create and correct commissionable transactions, restateOrders
+  is full-state replacement that DROPS anything omitted, and both click APIs register real consumer clicks
+  that affect attribution and reporting. None of them is safe to call speculatively.'
 summary:
-  operations: 4
-  by_action_class:
-    connected: 4
+  operations: 24
+  rest_operations: 7
+  graphql_fields: 17
   by_consequence:
-    read: 4
-  human_in_the_loop_required: 0
-operations:
+    read: 14
+    write: 6
+    destructive: 1
+    financial-write: 3
+  human_in_the_loop_required: 10
+token_note: CJ issues one long-lived personal access token with no scopes and no programmatic issuance,
+  so least-privilege must be enforced by the agent gateway rather than by the credential.
+rest_operations:
 - path: /v2/link-search
   method: get
   operationId: linkSearch
@@ -19,6 +28,7 @@ operations:
     action-class: connected
     consequence: read
     subject: optional
+    human-in-the-loop: false
     token:
       max-ttl: 3600
     audit: none
@@ -29,6 +39,7 @@ operations:
     action-class: connected
     consequence: read
     subject: optional
+    human-in-the-loop: false
     token:
       max-ttl: 3600
     audit: none
@@ -39,16 +50,222 @@ operations:
     action-class: connected
     consequence: read
     subject: optional
+    human-in-the-loop: false
     token:
       max-ttl: 3600
     audit: none
-- path: /v2/product-search
+- path: /v3/commissions
   method: get
-  operationId: productSearchLegacy
+  operationId: commissionDetailLegacy
   x-agentic-access:
     action-class: connected
     consequence: read
     subject: optional
+    human-in-the-loop: false
     token:
       max-ttl: 3600
     audit: none
+- path: /v3/item-detail/{original-action-id}
+  method: get
+  operationId: commissionItemDetailLegacy
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    human-in-the-loop: false
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /partner/event
+  method: post
+  operationId: createClickEvent
+  x-agentic-access:
+    action-class: connected
+    consequence: write
+    subject: optional
+    human-in-the-loop: true
+    token:
+      max-ttl: 3600
+    audit: required
+- path: /clickdestination
+  method: post
+  operationId: resolveClickDestination
+  x-agentic-access:
+    action-class: connected
+    consequence: write
+    subject: optional
+    human-in-the-loop: true
+    token:
+      max-ttl: 3600
+    audit: required
+graphql_fields:
+- endpoint: commissions.api.cj.com/query
+  field: publisherCommissions
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: required
+    human-in-the-loop: false
+    token:
+      max-ttl: 3600
+    audit: none
+- endpoint: commissions.api.cj.com/query
+  field: advertiserCommissions
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: required
+    human-in-the-loop: false
+    token:
+      max-ttl: 3600
+    audit: none
+- endpoint: ads.api.cj.com/query
+  field: products
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: required
+    human-in-the-loop: false
+    token:
+      max-ttl: 3600
+    audit: none
+- endpoint: ads.api.cj.com/query
+  field: shoppingProducts
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: required
+    human-in-the-loop: false
+    token:
+      max-ttl: 3600
+    audit: none
+- endpoint: ads.api.cj.com/query
+  field: travelExperienceProducts
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: required
+    human-in-the-loop: false
+    token:
+      max-ttl: 3600
+    audit: none
+- endpoint: ads.api.cj.com/query
+  field: financeProducts
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: required
+    human-in-the-loop: false
+    token:
+      max-ttl: 3600
+    audit: none
+- endpoint: ads.api.cj.com/query
+  field: financeCreditCardProducts
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: required
+    human-in-the-loop: false
+    token:
+      max-ttl: 3600
+    audit: none
+- endpoint: ads.api.cj.com/query
+  field: shoppingProductFeeds
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: required
+    human-in-the-loop: false
+    token:
+      max-ttl: 3600
+    audit: none
+- endpoint: ads.api.cj.com/query
+  field: productFeeds
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: required
+    human-in-the-loop: false
+    token:
+      max-ttl: 3600
+    audit: none
+- endpoint: ads.api.cj.com/query
+  field: createShoppingProducts
+  x-agentic-access:
+    action-class: connected
+    consequence: write
+    subject: required
+    human-in-the-loop: true
+    token:
+      max-ttl: 3600
+    audit: required
+- endpoint: ads.api.cj.com/query
+  field: updateShoppingProducts
+  x-agentic-access:
+    action-class: connected
+    consequence: write
+    subject: required
+    human-in-the-loop: true
+    token:
+      max-ttl: 3600
+    audit: required
+- endpoint: ads.api.cj.com/query
+  field: deleteProducts
+  x-agentic-access:
+    action-class: connected
+    consequence: destructive
+    subject: required
+    human-in-the-loop: true
+    token:
+      max-ttl: 3600
+    audit: required
+- endpoint: ads.api.cj.com/query
+  field: createCreditCardProducts
+  x-agentic-access:
+    action-class: connected
+    consequence: write
+    subject: required
+    human-in-the-loop: true
+    token:
+      max-ttl: 3600
+    audit: required
+- endpoint: ads.api.cj.com/query
+  field: updateCreditCardProducts
+  x-agentic-access:
+    action-class: connected
+    consequence: write
+    subject: required
+    human-in-the-loop: true
+    token:
+      max-ttl: 3600
+    audit: required
+- endpoint: tracking.api.cj.com/graphql
+  field: createOrders
+  x-agentic-access:
+    action-class: connected
+    consequence: financial-write
+    subject: required
+    human-in-the-loop: true
+    token:
+      max-ttl: 3600
+    audit: required
+- endpoint: tracking.api.cj.com/graphql
+  field: restateOrders
+  x-agentic-access:
+    action-class: connected
+    consequence: financial-write
+    subject: required
+    human-in-the-loop: true
+    token:
+      max-ttl: 3600
+    audit: required
+- endpoint: tracking.api.cj.com/graphql
+  field: cancelOrders
+  x-agentic-access:
+    action-class: connected
+    consequence: financial-write
+    subject: required
+    human-in-the-loop: true
+    token:
+      max-ttl: 3600
+    audit: required

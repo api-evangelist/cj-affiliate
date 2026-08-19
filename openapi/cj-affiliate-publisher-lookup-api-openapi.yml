@@ -1,83 +1,224 @@
 openapi: 3.1.0
 info:
-  title: CJ Affiliate Legacy REST APIs Advertiser Lookup Publisher Lookup API
-  version: '2.0'
-  description: 'CJ Affiliate''s legacy REST APIs for finding links, advertisers, publishers, and products. CJ now steers new integrations to its GraphQL APIs (commissions.api.cj.com and ads.api.cj.com), but these REST endpoints remain documented. Each service is hosted on its own subdomain of api.cj.com and authenticates with a personal access token (Bearer).
+  title: CJ Affiliate Publisher Lookup API
+  version: '2026-08-13'
+  description: 'CJ Affiliate''s published REST APIs, transcribed from CJ''s own developer documentation.
+    Two families are covered:
 
 
-    GROUNDING: The Advertiser Lookup and Publisher Lookup endpoints, paths, and the requestor-cid + Bearer PAT auth model are grounded in CJ documentation (confirmed curl examples). The Link Search and Product Search (Legacy) base URLs follow the same "<service>.api.cj.com/v2/<service>" family pattern and are documented by CJ, but several individual query parameters and response fields below are MODELED from CJ knowledge-base articles. Verify exact parameter and field names against https://developers.cj.com/docs/rest-apis/ before relying on them.'
+    1. The classic XML lookup / search APIs on `*.api.cj.com` — Link Search, Advertiser Lookup, Publisher
+    Lookup and the deprecated Commission Detail (Legacy). Each is documented with a stated call limit
+    of 25 calls per minute and returns an `application/xml` `<cj-api>` document.
+
+
+    2. The JSON click-tracking APIs — the Click Events API (`clicks.api.cj.com`) for partners and the
+    Publisher Tracking API (`publishertracking.api.cj.com`) for publishers. Both accept a JSON body and
+    return `{ destinationUrl, errorMessages }`.
+
+
+    PROVENANCE: every path, parameter name, response field, status code and error message below was read
+    on 2026-08-13 from CJ''s machine-readable documentation corpus, which the CJ Developer Portal single-page
+    app loads from https://production-docs-assets.p.cjpowered.com/ (index at /index.yaml, one markdown
+    file per page). Nothing here is modeled. CJ''s modern surface is GraphQL — see graphql/ in this repo
+    for the three live schemas captured by introspection.'
   contact:
     name: API Evangelist
     email: kin@apievangelist.com
+    url: https://developers.cj.com/
+  x-source:
+  - https://production-docs-assets.p.cjpowered.com/REST%20APIs/Overview.md
+  - https://production-docs-assets.p.cjpowered.com/REST%20APIs/Link%20Search.md
+  - https://production-docs-assets.p.cjpowered.com/REST%20APIs/Advertiser%20Lookup.md
+  - https://production-docs-assets.p.cjpowered.com/REST%20APIs/Publisher%20Lookup.md
+  - https://production-docs-assets.p.cjpowered.com/REST%20APIs/Commission%20Detail%20(Legacy).md
+  - https://production-docs-assets.p.cjpowered.com/REST%20APIs/Automated%20Offer%20Feed.md
+  - https://production-docs-assets.p.cjpowered.com/Publisher%20Site%20Tracking/Click%20Events%20API.md
+  - https://production-docs-assets.p.cjpowered.com/Publisher%20Site%20Tracking/Publisher%20Tracking%20API.md
 servers:
-- url: https://link-search.api.cj.com
-  description: Link Search API
-- url: https://advertiser-lookup.api.cj.com
-  description: Advertiser Lookup API
 - url: https://publisher-lookup.api.cj.com
   description: Publisher Lookup API
-- url: https://product-search.api.cj.com
-  description: Product Search (Legacy) API
 security:
 - personalAccessToken: []
 tags:
 - name: Publisher Lookup
+  description: Advertiser-side lookup of publishers joined to a program.
 paths:
   /v2/joined-publisher-lookup:
     get:
       tags:
       - Publisher Lookup
       operationId: publisherLookup
-      summary: Find publishers in an advertiser program
-      description: Advertisers search publishers within their program by criteria such as country or relationship status, and view details about those publishers.
+      summary: Look up publishers joined to your program
+      description: 'Advertiser-side lookup of the publishers in a program — program terms and join status,
+        promotional methods, websites and PIDs, categories, EPC and network rating. Exactly one search
+        criterion must be supplied alongside requestor-cid. The request URI must be encoded per HTML 4
+        form content encoding rules. Advertisers only. Documented call limit: 25 calls per minute.'
       servers:
       - url: https://publisher-lookup.api.cj.com
       parameters:
       - name: requestor-cid
         in: query
         required: true
-        description: Your CJ company id (CID) making the request.
+        description: CID of the company you are making the request for. You must be a member of that company.
+        schema:
+          type: string
+      - name: date-accepted
+        in: query
+        description: Date the publisher accepted the program terms, YYYY-MM-DD.
+        schema:
+          type: string
+      - name: publisher-name
+        in: query
+        description: Joined publisher's name. Must be more than 3 characters.
         schema:
           type: string
       - name: country
         in: query
-        required: false
+        description: ISO 3166-1 alpha-2 country code of the publisher's location.
         schema:
           type: string
-      - name: publisher-ids
+      - name: pid
         in: query
-        required: false
+        description: The publisher's website ID (numeric, positive).
         schema:
           type: string
-      - name: records-per-page
+      - name: cid
         in: query
-        required: false
+        description: The publisher's company ID (numeric, positive).
         schema:
-          type: integer
-          default: 100
-      - name: page-number
+          type: string
+      - name: url
         in: query
-        required: false
+        description: The publisher's website URL.
         schema:
-          type: integer
-          default: 1
+          type: string
+      - name: special-incentive
+        in: query
+        description: Whether the publisher runs an incentive / special program. Only the value `yes` (case-insensitive)
+          is allowed.
+        schema:
+          type: string
+          enum:
+          - 'yes'
       responses:
         '200':
-          description: Matching publishers.
+          description: An XML `<cj-api><publishers>` document.
           content:
             application/xml:
               schema:
-                type: object
-            application/json:
+                $ref: '#/components/schemas/PublisherLookupResponse'
+        '400':
+          description: Publisher Lookup validation error. Documented messages include "Not Authorized"
+            (a publisher developer key was used where an advertiser key is required), "Invalid page-number
+            provided.", "Only positive value is allowed for page-number.", "At least one of the required
+            query parameters (url, cid, pid, country, publisher-name, special-incentive) is needed.",
+            "Only one of the required query parameters ... is allowed.", "Invalid Key provided.", "Search
+            criterion is required.", "Only ISO Code is allowed for country.", "Only numeric value is allowed
+            for cid.", "Only positive value is allowed for cid.", "Only numeric value is allowed for pid.",
+            "Only positive value is allowed for pid.", "Only 'yes' is allowed." and "Publisher Name has
+            to be greater than 3 characters."
+          content:
+            application/xml:
               schema:
-                type: object
+                $ref: '#/components/schemas/CjApiError'
         '401':
-          description: Missing or invalid personal access token.
-        '429':
-          description: Rate limit exceeded.
+          $ref: '#/components/responses/Unauthorized'
 components:
   securitySchemes:
     personalAccessToken:
       type: http
       scheme: bearer
-      description: 'Personal access token created in the CJ developer portal at https://developers.cj.com/account/personal-access-tokens and sent as ''Authorization: Bearer <token>''.'
+      description: 'A CJ Personal Access Token created at https://developers.cj.com/account/personal-access-tokens,
+        sent as `Authorization: Bearer <token>`. CJ''s REST APIs also accept a legacy Developer Key in
+        the same Authorization header.'
+  responses:
+    Unauthorized:
+      description: 'HTTP 401 for all CJ REST APIs. Documented cases: no message at all (incorrect resource
+        URL); "You must specify a developer key." (no developer key specified); "Not Authenticated: xxxxxx"
+        (invalid developer key, echoing the key used). A request with no Authorization header returns
+        `<cj-api><error-message>You must provide an Authorization header.</error-message></cj-api>`.'
+      content:
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/CjApiError'
+  schemas:
+    CjApiError:
+      type: object
+      description: The `<cj-api>` XML envelope carrying an error message.
+      properties:
+        error-message:
+          type: string
+      xml:
+        name: cj-api
+    Publisher:
+      type: object
+      properties:
+        cid:
+          type: string
+        country:
+          type: string
+        currency:
+          type: string
+          description: The functional currency used by the publisher.
+        join-date:
+          type: string
+        network-rating:
+          type: string
+          description: 0-5 rating relative to other publishers by commission volume.
+        publisher-name:
+          type: string
+        seven-day-epc:
+          type: string
+        three-month-epc:
+          type: string
+        program-terms:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              date-accepted:
+                type: string
+              date-expired:
+                type: string
+              join-status:
+                type: string
+                description: active, expired or cancelled.
+        promotional-methods:
+          type: array
+          items:
+            type: string
+            description: search, email, software or content.
+        websites:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              pid:
+                type: string
+              url:
+                type: string
+              category:
+                type: string
+    PublisherLookupResponse:
+      type: object
+      description: The `<cj-api><publishers>` document.
+      properties:
+        publishers:
+          type: object
+          properties:
+            total-matched:
+              type: integer
+            records-returned:
+              type: integer
+            page-number:
+              type: integer
+            publisher:
+              type: array
+              items:
+                $ref: '#/components/schemas/Publisher'
+      xml:
+        name: cj-api

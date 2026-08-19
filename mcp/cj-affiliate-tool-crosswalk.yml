@@ -1,0 +1,213 @@
+generated: '2026-08-13'
+method: derived
+source: >-
+  mcp/cj-affiliate-mcp.yml (candidate tools),
+  graphql/cj-affiliate-*.graphql (live introspection, 2026-08-13) and
+  openapi/_original/cj-affiliate-openapi.yml.
+provider: CJ Affiliate
+providerId: cj-affiliate
+description: >-
+  Binding between CJ's candidate MCP tool surface, its GraphQL fields and its
+  REST operations. CJ's two API generations barely overlap: the GraphQL surface
+  is where products, commissions and order writes live, and the REST surface is
+  where link, advertiser and publisher DISCOVERY lives. Only ONE capability
+  exists in both generations — commission retrieval — and CJ has deprecated the
+  REST half of it. Everything else is available in exactly one place, which means
+  a client cannot choose a transport; the capability chooses it for them.
+surfaces:
+  openapi:
+    path: openapi/_original/cj-affiliate-openapi.yml
+    operations: 7
+    gated: false
+    note: >-
+      Transcribed by API Evangelist from CJ's published documentation. CJ
+      publishes no OpenAPI of its own.
+  graphql:
+  - endpoint: https://commissions.api.cj.com/query
+    schema: graphql/cj-affiliate-commissions-schema.graphql
+    gated: false
+    note: Introspection open and unauthenticated; DATA requires a Bearer PAT.
+    queries: 2
+    mutations: 0
+  - endpoint: https://ads.api.cj.com/query
+    schema: graphql/cj-affiliate-ads-schema.graphql
+    gated: false
+    queries: 10
+    mutations: 5
+    subscriptions: 5
+  - endpoint: https://tracking.api.cj.com/graphql
+    schema: graphql/cj-affiliate-tracking-schema.graphql
+    gated: false
+    queries: 1
+    mutations: 3
+  mcp:
+    url: null
+    gated: n/a
+    note: No MCP server exists. Tools below are candidates.
+coverage:
+  candidate_tools: 19
+  bound_to_rest: 5
+  bound_to_graphql: 14
+  bound_to_both: 0
+  rest_operations_total: 7
+  rest_operations_unbound: 2
+  graphql_fields_total: 26
+  graphql_fields_unbound: 12
+crosswalk:
+- tool: search_advertisers
+  category: discovery
+  rest: [advertiserLookup]
+  graphql: []
+  binding: rest-only
+  confidence: high
+  note: >-
+    No GraphQL equivalent. Advertiser discovery exists only on the classic REST
+    API, which is also the API CJ tells you does NOT carry full program-term
+    rates.
+- tool: search_links
+  category: discovery
+  rest: [linkSearch]
+  graphql: []
+  binding: rest-only
+  confidence: high
+- tool: search_publishers
+  category: discovery
+  rest: [publisherLookup]
+  graphql: []
+  binding: rest-only
+  confidence: high
+- tool: list_publisher_commissions
+  category: reporting
+  rest: [commissionDetailLegacy]
+  graphql: [publisherCommissions]
+  binding: graphql-primary
+  confidence: high
+  note: >-
+    The only capability present in both generations. The REST operation is
+    deprecated (CJ published a 2019-06-01 removal date) — bind to GraphQL.
+    Both expose the same incremental watermark: `sinceCommissionId` on GraphQL,
+    `commission-id` on REST.
+- tool: list_advertiser_commissions
+  category: reporting
+  rest: [commissionDetailLegacy]
+  graphql: [advertiserCommissions]
+  binding: graphql-primary
+  confidence: high
+- tool: search_products
+  category: catalog
+  rest: []
+  graphql: [products]
+  binding: graphql-only
+  confidence: high
+- tool: search_shopping_products
+  category: catalog
+  rest: []
+  graphql: [shoppingProducts]
+  binding: graphql-only
+  confidence: high
+- tool: search_travel_products
+  category: catalog
+  rest: []
+  graphql: [travelExperienceProducts]
+  binding: graphql-only
+  confidence: high
+- tool: search_finance_products
+  category: catalog
+  rest: []
+  graphql: [financeProducts, financeCreditCardProducts]
+  binding: graphql-only
+  confidence: high
+- tool: list_product_feeds
+  category: catalog
+  rest: []
+  graphql: [shoppingProductFeeds, productFeeds]
+  binding: graphql-only
+  confidence: high
+- tool: create_shopping_products
+  category: catalog-write
+  rest: []
+  graphql: [createShoppingProducts]
+  binding: graphql-only
+  confidence: high
+- tool: update_shopping_products
+  category: catalog-write
+  rest: []
+  graphql: [updateShoppingProducts]
+  binding: graphql-only
+  confidence: high
+- tool: delete_products
+  category: catalog-write
+  rest: []
+  graphql: [deleteProducts]
+  binding: graphql-only
+  confidence: high
+- tool: create_credit_card_products
+  category: catalog-write
+  rest: []
+  graphql: [createCreditCardProducts]
+  binding: graphql-only
+  confidence: high
+- tool: update_credit_card_products
+  category: catalog-write
+  rest: []
+  graphql: [updateCreditCardProducts]
+  binding: graphql-only
+  confidence: high
+- tool: create_orders
+  category: transaction-write
+  rest: []
+  graphql: [createOrders]
+  binding: graphql-only
+  confidence: high
+- tool: restate_orders
+  category: transaction-write
+  rest: []
+  graphql: [restateOrders]
+  binding: graphql-only
+  confidence: high
+- tool: cancel_orders
+  category: transaction-write
+  rest: []
+  graphql: [cancelOrders]
+  binding: graphql-only
+  confidence: high
+- tool: resolve_click_destination
+  category: tracking
+  rest: [resolveClickDestination]
+  graphql: []
+  binding: rest-only
+  confidence: high
+- tool: create_click_event
+  category: tracking
+  rest: [createClickEvent]
+  graphql: []
+  binding: rest-only
+  confidence: high
+mcp_only: []
+mcp_only_note: No MCP server exists, so there are no MCP-native composites to record.
+rest_only:
+- operation: commissionItemDetailLegacy
+  reason: >-
+    Deprecated REST item-detail resource. Its data is available as the `items`
+    field on the GraphQL commission types, so no separate tool is warranted.
+- operation: commissionDetailLegacy
+  reason: >-
+    Deprecated; superseded by publisherCommissions / advertiserCommissions.
+graphql_only:
+- field: getBuildNumber
+  endpoint: tracking.api.cj.com
+  reason: Platform build introspection; not a business capability.
+- fields: [productsFromApplication, shoppingProductsFromApplication, travelExperienceProductsFromApplication, checksumFromApplication, productFeedsFromApplication]
+  endpoint: ads.api.cj.com
+  reason: >-
+    Restricted to CJ registered applications; CJ's own schema descriptions
+    direct callers to the CJ Developer Experience Group (dx at cj.com) to
+    request access. Not generally callable, so excluded from the candidate tool
+    list.
+- fields: [shoppingProductCatalog, travelExperienceProductCatalog, financeProductCatalog]
+  endpoint: ads.api.cj.com
+  type: subscription
+  reason: >-
+    GraphQL subscriptions for bulk whole-feed download. Streaming does not map
+    to a request/response MCP tool; captured instead in
+    asyncapi/cj-affiliate-ads-asyncapi.yml.

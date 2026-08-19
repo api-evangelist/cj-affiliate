@@ -1,0 +1,194 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  CJ's documentation corpus at https://production-docs-assets.p.cjpowered.com/
+  (index.yaml + REST APIs/*, Advertiser API Tracking/*, Publisher Site Tracking/*),
+  cross-checked against openapi/ and graphql/ in this repo.
+provider: CJ Affiliate
+providerId: cj-affiliate
+description: >-
+  Cross-cutting runtime semantics for calling CJ Affiliate. CJ runs two
+  generations of API side by side with materially different conventions: the
+  classic XML REST family on `*.api.cj.com` (kebab-case query parameters, XML
+  `<cj-api>` envelopes, page/size pagination) and the modern GraphQL family
+  (camelCase arguments, JSON, offset/limit or cursor pagination, GraphQL error
+  arrays). A single Bearer personal access token spans both.
+authentication:
+  style: bearer-token
+  header: 'Authorization: Bearer <personal-access-token>'
+  token_type: >-
+    Long-lived Personal Access Token minted by a human in the CJ developer
+    portal at https://developers.cj.com/account/personal-access-tokens. CJ's REST
+    APIs also still accept the older Developer Key in the same header.
+  oauth2: false
+  note: >-
+    There is no client-credentials flow, no token endpoint an agent can call and
+    no refresh mechanism documented. Provisioning is a human step in the portal,
+    which is the practical blocker on unattended agent onboarding.
+  account_scoping: >-
+    Most APIs additionally require the caller to name the account the request is
+    for: `requestor-cid` on the REST lookups, `companyId` / `publisherCompanyId`
+    on the GraphQL and click APIs, `enterpriseId` on Tracking API mutations. The
+    token establishes WHO you are; the CID establishes WHICH of your companies
+    the call is against. A token is only authorized for companies you are a
+    member of.
+  see: authentication/cj-affiliate-authentication.yml
+idempotency:
+  supported: true
+  mechanism: natural-key deterministic upsert
+  header: null
+  key_field: 'orderId + actionTrackerId + enterpriseId'
+  scope: CJ Tracking API (createOrders / restateOrders / cancelOrders)
+  retention: not published
+  description: >-
+    CJ's Tracking API is idempotent by DESIGN rather than by header. CJ defines a
+    unique order as "a unique combination of an Order ID + Action ID + Enterprise
+    ID" and applies duplicate-order logic against that natural key on
+    createOrders. Corrections are deterministic rather than incremental: CJ
+    states plainly that a restatement must send "the new state of the order,
+    instead of providing us with order changes", and that the restatement "will
+    completely overwrite the current state of the order and update the order to
+    contain only the information provided". That is full-state replacement — the
+    same safety property an Idempotency-Key buys, achieved through the payload
+    contract instead of a header.
+  caller_obligations:
+  - A restatement must carry every attribute you want the order to end up with; anything omitted is dropped, not preserved.
+  - Orders on an open-ended locking cycle MUST carry the `status` field on restateOrders and cancelOrders, or the request fails during processing (not at receipt).
+  - Locked or closed orders cannot be restated or cancelled.
+  - A restatement cannot make a commissionable order non-commissionable, and cannot change which publisher earns the commission.
+  observability: >-
+    Every successful restatement appears in Commission Detail as TWO new records
+    with distinct commission IDs — a zero record that fully reverses the order,
+    then a record carrying the new state. Retry safety is therefore auditable
+    after the fact through commissions.api.cj.com.
+  source: https://production-docs-assets.p.cjpowered.com/Advertiser%20API%20Tracking/API%20Overview.md
+pagination:
+- surface: Classic REST (Link Search, Advertiser Lookup, Commission Detail Legacy)
+  style: page-number
+  request_params: [page-number, records-per-page]
+  response_fields: [total-matched, records-returned, page-number]
+  defaults:
+    advertiser-lookup: 25 records per page, maximum 100
+    link-search: 100 records per page
+    page: 1
+- surface: GraphQL ads API (products, shoppingProducts, financeProducts, productFeeds …)
+  style: offset-limit
+  request_params: [offset, limit]
+  extras: >-
+    `products` also accepts a `page` cursor string and a `disableTotalCount`
+    boolean for skipping the expensive total count.
+- surface: GraphQL Commission Detail
+  style: incremental watermark
+  request_params: [sinceCommissionId, sincePostingDate, beforePostingDate, sinceEventDate, beforeEventDate, sinceLockingDate, beforeLockingDate]
+  response_fields: [count, payloadComplete]
+  note: >-
+    The documented polling pattern is a watermark, not a page cursor: keep the
+    highest commission id you have seen and pass it back as `sinceCommissionId`.
+    `payloadComplete` tells you whether the response held everything that
+    matched. The legacy REST API exposed the identical pattern as the
+    `commission-id` query parameter.
+filtering:
+  keyword_boolean: >-
+    Link Search and Advertiser Lookup accept simple boolean operators inside the
+    `keywords` value: default logic is OR, `+term` requires the term, `-term`
+    excludes it. `"+kitchen -sink"` means kitchen AND NOT sink.
+  case_sensitivity: All REST parameter names and values are case-insensitive.
+  empty_request: >-
+    An empty request returns ZERO results on Link Search, Advertiser Lookup and
+    Publisher Lookup. These APIs do not treat "no filter" as "everything".
+  encoding: >-
+    CJ warns that language-provided URI encoders often get this wrong: a space
+    must encode to `+` and a literal `+` must encode to `%2B` (RFC 1738 form
+    encoding). The Publisher Lookup URI specifically must follow HTML 4 form
+    content encoding rules.
+  mutual_exclusion: >-
+    Publisher Lookup accepts EXACTLY ONE search criterion alongside
+    requestor-cid; supplying two returns 400 "Only one of the required query
+    parameters ... is allowed."
+content_types:
+  request: 'application/json (GraphQL + click APIs); query string only (classic REST)'
+  response: 'application/xml for the classic REST family (a <cj-api> root element); application/json for GraphQL, Click Events and Publisher Tracking'
+  note: >-
+    The classic REST family returns XML and offers no JSON representation and no
+    content negotiation. Any agent consuming Link Search, Advertiser Lookup,
+    Publisher Lookup or the legacy Commission Detail needs an XML parser.
+error_envelope:
+  classic_rest:
+    shape: '<cj-api><error-message>...</error-message></cj-api>'
+    format: xml
+    codes: [400, 401]
+  click_apis:
+    shape: '{ "destinationUrl": "", "errorMessages": ["..."], "statusCode": 4xx }'
+    format: json
+    note: >-
+      Errors are returned in a NON-EMPTY `errorMessages` array with an empty
+      `destinationUrl`, alongside the HTTP status. The caller's documented
+      obligation on ANY error is to fall back to a traditional CJ tracking Click
+      URL rather than dropping the consumer.
+  graphql:
+    shape: standard GraphQL `errors[]` array
+    ordering: >-
+      CJ processes and surfaces errors in a fixed precedence — authentication,
+      then schema validation, then authorization, then field-level validation —
+      and stops at the first failing stage. You will not see schema errors until
+      authentication passes.
+  rfc9457:
+    observed: partial
+    note: >-
+      iam.cj.com (the personal-access-token service behind the developer portal)
+      returns `application/problem+json` per RFC 9457, e.g.
+      `{"type":"about:blank","title":"Not Found","status":404,"instance":"/api/token"}`.
+      None of the public product APIs do — this is an internal-service
+      convention, not a platform-wide one.
+  see: errors/cj-affiliate-problem-types.yml
+rate_limit_signaling:
+  documented_limit: 25 calls per minute per classic REST API
+  response_headers: []
+  exhaustion_status: not published
+  note: >-
+    CJ publishes the ceiling but no runtime signal — no RateLimit-*,
+    X-RateLimit-* or Retry-After header, and no documented 429. Callers must
+    self-throttle. See rate-limits/cj-affiliate-rate-limits.yml.
+versioning:
+  style: path-segment on REST, unversioned on GraphQL
+  rest: '`/v2/` on the lookup and search APIs, `/v3/` on the legacy Commission Detail API.'
+  graphql: >-
+    No version in the path. `POST /query` on commissions.api.cj.com and
+    ads.api.cj.com, `POST /graphql` on tracking.api.cj.com. Evolution is by
+    additive schema change and GraphQL `@deprecated` field markers.
+  deprecation_signal: >-
+    Prose banners in the docs, not headers. CJ ships no Deprecation or Sunset
+    header (RFC 8594) on any API. See lifecycle/cj-affiliate-lifecycle.yml.
+request_id_tracing:
+  supported: partial
+  note: >-
+    No correlation-id request header is documented on any API. The Tracking API
+    returns CJ-minted `submissionId` and `batchId` values on every order
+    response, which are the closest thing to a trace handle CJ offers, and the
+    click APIs mint a `cjevent` id embedded in the returned destination URL. The
+    GraphQL Tracking API exposes a `getBuildNumber` query — the only build /
+    deploy introspection point on the platform.
+metadata_and_custom_fields:
+  supported: true
+  note: >-
+    The Tracking API accepts arbitrary `customParameters` as name/value pairs on
+    an order, plus a large typed `verticalParameters` block whose fields differ
+    by advertiser vertical (Retail, Finance, Travel, NetworkServices).
+test_mode:
+  supported: true
+  note: >-
+    A separate hosted endpoint rather than a test key prefix. See
+    sandbox/cj-affiliate-sandbox.yml.
+pii_handling:
+  note: >-
+    Both click APIs actively REJECT personally identifiable information: a body
+    field containing an email pattern is rejected with HTTP 400 "XXxXX included
+    consumer Personally Identifiable Information". `userIdentifier` is
+    specified as a persistent FIRST-PARTY NON-PII identifier. This is an
+    enforced contract, not a guideline.
+cross_links:
+  errors: errors/cj-affiliate-problem-types.yml
+  lifecycle: lifecycle/cj-affiliate-lifecycle.yml
+  authentication: authentication/cj-affiliate-authentication.yml
+  rate_limits: rate-limits/cj-affiliate-rate-limits.yml
+  sandbox: sandbox/cj-affiliate-sandbox.yml

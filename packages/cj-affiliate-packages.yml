@@ -1,0 +1,90 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  npm registry search + registry.npmjs.org metadata, rubygems.org/api/v1,
+  repo.packagist.org/p2, pypi.org/pypi, api.github.com/search/repositories, and
+  CJ's own documentation corpus at https://production-docs-assets.p.cjpowered.com/
+provider: CJ Affiliate
+providerId: cj-affiliate
+summary:
+  official_count: 0
+  community_count: 4
+  note: >-
+    CJ Affiliate publishes NO first-party client SDK in any package registry.
+    Searches of npm, PyPI, RubyGems, Packagist, Maven Central, NuGet, crates.io
+    and pkg.go.dev on 2026-08-13 returned no package published by CJ or
+    Conversant. CJ's developer portal documents raw HTTP (curl) usage against
+    the REST APIs and raw POST bodies against the GraphQL endpoints; the only
+    first-party distributed code is platform-side (the Universal Tag / Publisher
+    Tag JavaScript and the Shopify, PrestaShop and Google Tag Manager
+    integrations) — those are catalogued in
+    components/cj-affiliate-components.yml, not here.
+    Every entry below is COMMUNITY-maintained, and every one of them predates
+    CJ's current GraphQL surface: the newest actively-versioned wrapper of the
+    classic REST APIs was last published in 2018, and the one 2025 package
+    targets the legacy REST family that CJ has deprecated.
+packages:
+- name: commission_junction
+  registry: rubygems
+  url: https://rubygems.org/gems/commission_junction
+  language: ruby
+  official: false
+  version: 2.0.0
+  published: '2018-02-12'
+  downloads: 145527
+  description: Ruby wrapper for the Commission Junction web services APIs (REST).
+  repository: https://github.com/aevernon/commission_junction
+  note: >-
+    The most-downloaded CJ client library in any registry, and unmaintained for
+    over eight years. It wraps the classic XML REST APIs only — it has no
+    knowledge of commissions.api.cj.com, ads.api.cj.com or tracking.api.cj.com.
+- name: commission-junction
+  registry: npm
+  url: https://www.npmjs.com/package/commission-junction
+  language: javascript
+  official: false
+  version: 0.0.13
+  published: '2017-02-07'
+  description: Commission Junction API helper methods for Node / JavaScript.
+  repository: https://github.com/denodell/commission-junction
+  note: Community package, last published 2017. Pre-GraphQL.
+- name: cj-node-lookup
+  registry: npm
+  url: https://www.npmjs.com/package/cj-node-lookup
+  language: javascript
+  official: false
+  version: 0.0.8
+  published: '2016-08-29'
+  description: CJ Affiliate node lookup helper.
+  repository: https://github.com/Haargeeel/cj-node-lookup
+  note: Community package, last published 2016. Pre-GraphQL.
+- name: luizsilva-dev/cj-sdk-php
+  registry: packagist
+  url: https://packagist.org/packages/luizsilva-dev/cj-sdk-php
+  language: php
+  official: false
+  version: 1.0.0
+  published: '2025-11-15'
+  description: >-
+    PHP SDK for CJ Affiliate covering Product Search, Advertiser Lookup,
+    Commission Tracking and Link Search.
+  repository: https://github.com/luizsilva-dev/cj-sdk-php
+  note: >-
+    The only CJ client library published in the last five years, and still
+    community-maintained rather than first-party.
+absent_registries:
+- registry: pypi
+  checked: '2026-08-13'
+  result: no CJ / Commission Junction client package published
+- registry: maven-central
+  checked: '2026-08-13'
+  result: no first-party package
+- registry: nuget
+  checked: '2026-08-13'
+  result: no first-party package
+- registry: crates.io
+  checked: '2026-08-13'
+  result: no first-party package
+- registry: pkg.go.dev
+  checked: '2026-08-13'
+  result: no first-party package

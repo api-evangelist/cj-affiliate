@@ -1,0 +1,151 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "CJ Affiliate Link Search API",
+    "version": "2026-08-13"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Link Search",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Search advertiser links",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://link-search.api.cj.com/v2/link-search",
+            "params": [
+              {
+                "name": "website-id",
+                "value": "",
+                "type": "query",
+                "description": "Your Website ID / Property ID (PID). Enables the system to generate the appropriate link code in the response. Must match the Website PID used to register for the developer key."
+              },
+              {
+                "name": "advertiser-ids",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated advertiser CIDs, or `joined`, or `notjoined`. An empty string currently behaves the same as `notjoined`."
+              },
+              {
+                "name": "keywords",
+                "value": "",
+                "type": "query",
+                "description": "Restricts results by keywords found in the link's advertiser name, link name, description and advertiser-tagged search keywords. Supports simple boolean operators `+` and `-`; default logic is OR."
+              },
+              {
+                "name": "category",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated advertiser SUB-category. Top-level/parent categories are not searchable. See the enumerations page."
+              },
+              {
+                "name": "link-type",
+                "value": "",
+                "type": "query",
+                "description": "Limits results to a specific link type. Product links are not available here — use the Product Search API. See the enumerations page."
+              },
+              {
+                "name": "promotion-type",
+                "value": "",
+                "type": "query",
+                "description": "Promotion type. Required if using promotion-start-date or promotion-end-date."
+              },
+              {
+                "name": "promotion-start-date",
+                "value": "",
+                "type": "query",
+                "description": "Promotion start date in MM/DD/YYYY format. Blank returns any start date."
+              },
+              {
+                "name": "promotion-end-date",
+                "value": "",
+                "type": "query",
+                "description": "Promotion end date in MM/DD/YYYY format, or the literal value `ongoing` for a promotion with no end date. Blank returns any end date."
+              },
+              {
+                "name": "page-number",
+                "value": "",
+                "type": "query",
+                "description": "Page of the result set to view. Defaults to 1."
+              },
+              {
+                "name": "records-per-page",
+                "value": "",
+                "type": "query",
+                "description": "Number of records per page. Defaults to 100 for this API."
+              },
+              {
+                "name": "language",
+                "value": "",
+                "type": "query",
+                "description": "Language the link was set at, using an accepted language code."
+              },
+              {
+                "name": "allow-deep-linking",
+                "value": "",
+                "type": "query",
+                "description": "Limit to links whose destination URL can be modified."
+              },
+              {
+                "name": "event-name",
+                "value": "",
+                "type": "query",
+                "description": "The event or occurrence the link relates to. One event at a time."
+              },
+              {
+                "name": "link-Id",
+                "value": "",
+                "type": "query",
+                "description": "The AdId / Link ID of an individual link. One at a time. Only active links are returned; invalid, deleted or archived links return 0 results."
+              },
+              {
+                "name": "last-updated",
+                "value": "",
+                "type": "query",
+                "description": "Return links updated since this date, inclusive. MM/DD/YYYY format."
+              },
+              {
+                "name": "cross-device-only",
+                "value": "",
+                "type": "query",
+                "description": "Limit to links supporting cross-device tracking."
+              },
+              {
+                "name": "mobile-app-download",
+                "value": "",
+                "type": "query",
+                "description": "Limit to links that direct the user to an App Store download."
+              },
+              {
+                "name": "mobile-optimized",
+                "value": "",
+                "type": "query",
+                "description": "Limit to links the advertiser flagged as mobile-optimized."
+              },
+              {
+                "name": "targeted-country",
+                "value": "",
+                "type": "query",
+                "description": "Two-letter country code, one at a time. Appears as `targeted-countries` in the response."
+              }
+            ]
+          },
+          "docs": "Find links across all advertisers in one call, filtered by keywords, category, link type, promotion type, relationship status, language, target country and more. All parameter names and values are case-insensitive. You must supply at least one optional parameter — an empty request returns zero results. Publishers only. Documented call limit: 25 calls per minute. The same endpoint serves the Automated Offer Feed for financial advertisers."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

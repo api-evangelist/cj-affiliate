@@ -1,0 +1,374 @@
+{
+  "item": [
+    {
+      "id": "b427a351-f253-4118-a658-ee6401172ec5",
+      "name": "Click Events",
+      "description": {
+        "content": "Server-side click registration returning a tracked destination URL.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "28911091-d660-4501-b9c4-7c3275e3f09e",
+          "name": "Register a consumer click and receive a tracked destination URL",
+          "request": {
+            "name": "Register a consumer click and receive a tracked destination URL",
+            "description": {
+              "content": "Server-to-server click registration for CJ partners. Returns the final landing page URL carrying the `cjevent` tracking parameter; the partner is responsible for navigating the consumer to it, and for falling back to a traditional CJ tracking Click URL on any error. Cannot be called from a browser. CJ asks partners to contact their CJ representative for integration validation before implementing.",
+              "type": "text/plain"
+            },
+            "url": {
+              "protocol": "https",
+              "path": [
+                "partner",
+                "event"
+              ],
+              "host": [
+                "clicks",
+                "api",
+                "cj",
+                "com"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"companyId\": \"<string>\",\n  \"adId\": \"<string>\",\n  \"promotionalPropertyId\": \"<string>\",\n  \"destinationUrl\": \"<string>\",\n  \"advertiserCompanyId\": \"<string>\",\n  \"clickParameters\": {\n    \"productCategory\": \"<string>\",\n    \"sid\": \"<string>\",\n    \"propertyName\": \"<string>\",\n    \"trafficSource\": \"<string>\"\n  },\n  \"userIpAddress\": \"<string>\",\n  \"userIdentifier\": \"<string>\",\n  \"userAgent\": \"<string>\",\n  \"referringUrl\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "ac8bf94b-7293-4c84-9f65-337a1b38e91b",
+              "name": "Destination URL resolved.",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "partner",
+                    "event"
+                  ],
+                  "host": [
+                    "clicks",
+                    "api",
+                    "cj",
+                    "com"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"companyId\": \"<string>\",\n  \"adId\": \"<string>\",\n  \"promotionalPropertyId\": \"<string>\",\n  \"destinationUrl\": \"<string>\",\n  \"advertiserCompanyId\": \"<string>\",\n  \"clickParameters\": {\n    \"productCategory\": \"<string>\",\n    \"sid\": \"<string>\",\n    \"propertyName\": \"<string>\",\n    \"trafficSource\": \"<string>\"\n  },\n  \"userIpAddress\": \"<string>\",\n  \"userIdentifier\": \"<string>\",\n  \"userAgent\": \"<string>\",\n  \"referringUrl\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"destinationUrl\": \"string\",\n  \"errorMessages\": [\n    \"string\",\n    \"string\"\n  ],\n  \"statusCode\": 6911\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1b90c4d0-fbff-4613-9be4-4e5fea1519e8",
+              "name": "Schema or field-level validation error. Documented messages: \"Please specify valid JSON\", \"Please include required field: XXxXX\", \"Extra Unknown Field Detected: XXxXX\", \"XXxXX included consumer Personally Identifiable Information\".",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "partner",
+                    "event"
+                  ],
+                  "host": [
+                    "clicks",
+                    "api",
+                    "cj",
+                    "com"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"companyId\": \"<string>\",\n  \"adId\": \"<string>\",\n  \"promotionalPropertyId\": \"<string>\",\n  \"destinationUrl\": \"<string>\",\n  \"advertiserCompanyId\": \"<string>\",\n  \"clickParameters\": {\n    \"productCategory\": \"<string>\",\n    \"sid\": \"<string>\",\n    \"propertyName\": \"<string>\",\n    \"trafficSource\": \"<string>\"\n  },\n  \"userIpAddress\": \"<string>\",\n  \"userIdentifier\": \"<string>\",\n  \"userAgent\": \"<string>\",\n  \"referringUrl\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"destinationUrl\": \"string\",\n  \"errorMessages\": [\n    \"string\",\n    \"string\"\n  ],\n  \"statusCode\": 6911\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b188285a-1226-4e61-8865-346c4349f653",
+              "name": "Authentication failed — the personal access token provided is not valid.",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "partner",
+                    "event"
+                  ],
+                  "host": [
+                    "clicks",
+                    "api",
+                    "cj",
+                    "com"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"companyId\": \"<string>\",\n  \"adId\": \"<string>\",\n  \"promotionalPropertyId\": \"<string>\",\n  \"destinationUrl\": \"<string>\",\n  \"advertiserCompanyId\": \"<string>\",\n  \"clickParameters\": {\n    \"productCategory\": \"<string>\",\n    \"sid\": \"<string>\",\n    \"propertyName\": \"<string>\",\n    \"trafficSource\": \"<string>\"\n  },\n  \"userIpAddress\": \"<string>\",\n  \"userIdentifier\": \"<string>\",\n  \"userAgent\": \"<string>\",\n  \"referringUrl\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"destinationUrl\": \"string\",\n  \"errorMessages\": [\n    \"string\",\n    \"string\"\n  ],\n  \"statusCode\": 6911\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "69bf088f-9224-4e36-9c09-24d2ae1d422b",
+              "name": "Authorization failed — you are not authorized to make this call.",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "partner",
+                    "event"
+                  ],
+                  "host": [
+                    "clicks",
+                    "api",
+                    "cj",
+                    "com"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"companyId\": \"<string>\",\n  \"adId\": \"<string>\",\n  \"promotionalPropertyId\": \"<string>\",\n  \"destinationUrl\": \"<string>\",\n  \"advertiserCompanyId\": \"<string>\",\n  \"clickParameters\": {\n    \"productCategory\": \"<string>\",\n    \"sid\": \"<string>\",\n    \"propertyName\": \"<string>\",\n    \"trafficSource\": \"<string>\"\n  },\n  \"userIpAddress\": \"<string>\",\n  \"userIdentifier\": \"<string>\",\n  \"userAgent\": \"<string>\",\n  \"referringUrl\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"destinationUrl\": \"string\",\n  \"errorMessages\": [\n    \"string\",\n    \"string\"\n  ],\n  \"statusCode\": 6911\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "eda9d39f-a323-4de5-9ee9-c2182ae9f4d4",
+              "name": "Internal Server Error. Contact CJ Support for assistance.",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "partner",
+                    "event"
+                  ],
+                  "host": [
+                    "clicks",
+                    "api",
+                    "cj",
+                    "com"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"companyId\": \"<string>\",\n  \"adId\": \"<string>\",\n  \"promotionalPropertyId\": \"<string>\",\n  \"destinationUrl\": \"<string>\",\n  \"advertiserCompanyId\": \"<string>\",\n  \"clickParameters\": {\n    \"productCategory\": \"<string>\",\n    \"sid\": \"<string>\",\n    \"propertyName\": \"<string>\",\n    \"trafficSource\": \"<string>\"\n  },\n  \"userIpAddress\": \"<string>\",\n  \"userIdentifier\": \"<string>\",\n  \"userAgent\": \"<string>\",\n  \"referringUrl\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"destinationUrl\": \"string\",\n  \"errorMessages\": [\n    \"string\",\n    \"string\"\n  ],\n  \"statusCode\": 6911\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://clicks.api.cj.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "4913325d-fd4d-49d8-aa8b-9e7b10e26b8a",
+    "name": "CJ Affiliate Click Events API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "CJ Affiliate's published REST APIs, transcribed from CJ's own developer documentation. Two families are covered:\n\n1. The classic XML lookup / search APIs on `*.api.cj.com` — Link Search, Advertiser Lookup, Publisher Lookup and the deprecated Commission Detail (Legacy). Each is documented with a stated call limit of 25 calls per minute and returns an `application/xml` `<cj-api>` document.\n\n2. The JSON click-tracking APIs — the Click Events API (`clicks.api.cj.com`) for partners and the Publisher Tracking API (`publishertracking.api.cj.com`) for publishers. Both accept a JSON body and return `{ destinationUrl, errorMessages }`.\n\nPROVENANCE: every path, parameter name, response field, status code and error message below was read on 2026-08-13 from CJ's machine-readable documentation corpus, which the CJ Developer Portal single-page app loads from https://production-docs-assets.p.cjpowered.com/ (index at /index.yaml, one markdown file per page). Nothing here is modeled. CJ's modern surface is GraphQL — see graphql/ in this repo for the three live schemas captured by introspection.\n\nContact Support:\n Name: API Evangelist\n Email: kin@apievangelist.com",
+      "type": "text/plain"
+    }
+  }
+}

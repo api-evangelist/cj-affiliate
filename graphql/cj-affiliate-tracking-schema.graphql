@@ -1,0 +1,706 @@
+# generated: '2026-08-13'
+# method: probed
+# source: https://tracking.api.cj.com/graphql (live GraphQL introspection, unauthenticated, HTTP 200)
+#
+# CJ Advertiser Tracking API
+# Endpoint : POST https://tracking.api.cj.com/graphql
+# Docs     : https://developers.cj.com/docs/advertiser-api-tracking/api-overview
+# Auth     : Authorization: Bearer <personal-access-token>
+#            (https://developers.cj.com/account/personal-access-tokens)
+#
+# This SDL was rendered from a full __schema introspection response returned by
+# CJ's own endpoint on 2026-08-13. Nothing here is modeled or inferred.
+# Introspection is open on this endpoint without credentials; the DATA behind it
+# is not - queries require a Bearer personal access token.
+
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+enum CorrectionReason {
+  BadDebt
+  Bankruptcy
+  BookingCanceled
+  CannotShipSoldOut
+  Compliance
+  DuplicateOrder
+  InvalidCreditCard
+  Other
+  ReturnedMerchandise
+  UnqualifiedLead
+}
+
+enum OrderCancellationStatus {
+  Declined
+}
+
+enum OrderStatus {
+  Pending
+  Accepted
+}
+
+enum VerticalType {
+  Retail
+  Finance
+  Travel
+  NetworkServices
+}
+
+input BypassChannelInput {
+  name: String!
+  timestamp: Instant!
+}
+
+input CustomIdsInput {
+  universalTagCjUser: String
+  userId: String
+  emailHash: String
+}
+
+input NameValuePairInput {
+  name: String!
+  value: String!
+}
+
+input OrderCancelRequest {
+  enterpriseId: ID!
+  actionTrackerId: NonNegativeInt!
+  orderId: String!
+  updateTime: Instant!
+  correctionReason: CorrectionReason
+  status: OrderCancellationStatus
+}
+
+input OrderCreateRequest {
+  enterpriseId: ID!
+  actionTrackerId: NonNegativeInt!
+  orderId: String!
+  adId: NonNegativeInt
+  promotionalPropertyId: NonNegativeInt
+  sid: String
+  eventTime: Instant
+  cjEvent: ID
+  amount: NonNegativeDecimalNumber
+  discount: NonNegativeDecimalNumber
+  verticalParameters: VerticalParametersInput
+  customParameters: [NameValuePairInput!]
+  items: [OrderItemInput!]
+  coupon: String
+  currency: String
+  bypassChannel: BypassChannelInput
+  ids: CustomIdsInput
+}
+
+input OrderItemInput {
+  unitPrice: NonNegativeDecimalNumber!
+  quantity: NonNegativeInt!
+  sku: String!
+  discount: NonNegativeDecimalNumber
+}
+
+input OrderRestateRequest {
+  enterpriseId: ID!
+  actionTrackerId: NonNegativeInt!
+  orderId: String!
+  updateTime: Instant!
+  cjEvent: ID
+  amount: NonNegativeDecimalNumber
+  discount: NonNegativeDecimalNumber
+  verticalParameters: VerticalParametersInput
+  customParameters: [NameValuePairInput!]
+  items: [OrderItemInput!]
+  coupon: String
+  currency: String
+  bypassChannel: BypassChannelInput
+  status: OrderStatus
+  correctionReason: CorrectionReason
+}
+
+input VerticalParametersInput {
+  advertiserVertical: VerticalType
+  """The ancillary spend amount for the transaction (Advertiser-only attribute)"""
+  ancillarySpend: String
+  """Annual fee associated with this product"""
+  annualFee: String
+  """Identifies the status of the application at the time the transaction is sent to CJ"""
+  applicationStatus: String
+  """APR at time of application approval"""
+  apr: String
+  """APR for transfers"""
+  aprTransfer: String
+  """APR transfer period in months"""
+  aprTransferTime: String
+  """The date booking was made; YYYY-MM-DD"""
+  bookingDate: String
+  """The status of the booking; i.e. confirmed, pending, etc."""
+  bookingStatus: String
+  """Value of booking after taxes"""
+  bookingValuePostTax: String
+  """Value of booking before taxes"""
+  bookingValuePreTax: String
+  """Brand of item(s) purchased"""
+  brand: String
+  """Identifier of the brand of the item booked"""
+  brandId: String
+  """Identifies the business unit the customer purchased through"""
+  businessUnit: String
+  """Marketing Campaign ID; advertiser-specific"""
+  campaignId: String
+  """Marketing Campaign name; advertiser-specific"""
+  campaignName: String
+  """Name of the card category"""
+  cardCategory: String
+  """Were other car option items chosen, i.e. "insurance""""
+  carOptions: String
+  """Cash advance fee associated with this product"""
+  cashAdvanceFee: String
+  """Category of item. example: if a customer applies for a Personal Cash-back Credit card; service_type=cc&item_type=personal&category=cashback"""
+  category: String
+  """Location city name, i.e. for a hotel or event"""
+  city: String
+  """Class rating of item booked/purchased"""
+  class: String
+  """Confirmation number for provider (i.e. a flight confirmation number from the airline)"""
+  confirmationNumber: String
+  """Contract length, in months"""
+  contractLength: String
+  """Describe contract, advertiser-specific"""
+  contractType: String
+  """Country where the transaction occurred"""
+  countryCode: String
+  """Amount discounted from coupon used"""
+  couponDiscount: String
+  """Indicates the coupon type"""
+  couponType: String
+  """Amount of credit extended"""
+  creditLine: String
+  """Quality of customer's credit; 300-579=Very Poor, 580-669=Fair, 670-739=Good,740-799=Very Good, 800-850=Exceptional"""
+  creditQuality: String
+  """Whether the customer received a credit report, purchased it, got a free report, or started a trial for a reporting service"""
+  creditReport: String
+  """Type of cruise (Alaskan, Caribbean, etc.)"""
+  cruiseType: String
+  """Country the customer purchasing is in, per ISO 3166-1 alpha 2 country code, eg. US, UK, AU, FR"""
+  customerCountry: String
+  """Advertiser-specific customer segment definition"""
+  customerSegment: String
+  """Defines if a customer is new or existing"""
+  customerStatus: String
+  """Customer type: i.e. company, individual consumer, business, leisure"""
+  customerType: String
+  """The service destination city name, eg. New York"""
+  destinationCity: String
+  """The service destination id, typically an advertiser-defined code representing a destination city or destination state/province, e.g. 728660"""
+  destinationId: String
+  """Method of delivery"""
+  delivery: String
+  """Product or card description"""
+  description: String
+  """The service destination country code, per ISO 3166-1 alpha 2 country code, eg. US, UK, AU, FR"""
+  destinationCountry: String
+  """The service destination state/province code, per ISO 3166 standards"""
+  destinationState: String
+  """Does the customer reside in the US: yes/no"""
+  domestic: String
+  """IATA code for dropoff location if it's at an aiport"""
+  dropoffIata: String
+  """Unique car rental agency ID for dropoff location"""
+  dropoffId: String
+  """Duration of days, i.e. can be used for number of nights for a hotel stay; length of a trial"""
+  duration: String
+  """Check-out date/time, departure date/time, etc."""
+  endDateTime: String
+  """Type of flight fare; i.e. gotta get away"""
+  flightFareType: String
+  """Were other flight items chosen; i.e. wifi"""
+  flightOptions: String
+  """Type of flight; i.e. direct, layover, overnight"""
+  flightType: String
+  """Were flyer miles earned from this flight"""
+  flyerMiles: String
+  """Amount of account funding"""
+  fundedAmount: String
+  """Currency for the account's initial funding"""
+  fundedCurrency: String
+  """Entertainment category or genre (books, movies, streaming, music, etc.); transaction-level only"""
+  genre: String
+  """Number of guests"""
+  guests: String
+  """Code for each city in a flight schedule; comma-separated lists; commas must be URL-encoded"""
+  iata: String
+  """The intro APR for purchases; if the intro APR is not different than overall APR, use the "APR" parameter"""
+  introductoryApr: String
+  """Introductory APR period in months"""
+  introductoryAprTime: String
+  """Id for item/s purchased. If multiple items, it will be a comma-separated lists."""
+  itemId: String
+  """Name of the item purchased"""
+  itemName: String
+  """Type of item. example: if a customer applies for a Personal Cash-back Credit card; service_type=cc&item_type=personal&category=cashback"""
+  itemType: String
+  """Booking itinerary id"""
+  itineraryId: String
+  """General demographic (like new mover v. student v. Small biz) that an indicate how and why a card will be used"""
+  lifestage: String
+  """Can be used to identify the store or location the customer will visit or has visited; advertiser-specific ID or name"""
+  location: String
+  """Indicates the level of the customer's loyalty status"""
+  loyaltyEarned: String
+  """Indicates whether this order resulted in the consumer joining the loyalty program"""
+  loyaltyFirstTimeSignup: String
+  """Indicates if loyalty points were used"""
+  loyaltyLevel: String
+  """Indicates is loyalty points were earned"""
+  loyaltyRedeemed: String
+  """Customers status of membership"""
+  loyaltyStatus: String
+  """Advertiser-only attribute."""
+  margin: String
+  """The profit margin for the transaction (Advertiser-only attribute)"""
+  marketingChannel: String
+  """Value of the minimum cash balance requirement for the account"""
+  minimumBalance: String
+  """Minimum deposit amount"""
+  minimumDeposit: String
+  """Minimum stay duration required, in days"""
+  minimumStayDuration: String
+  """Yes or no - yes means there was a "no cancellation allowed" policy on the transaction"""
+  noCancellation: String
+  orderSubtotal: String
+  """The service origin city name, eg. New York"""
+  originCity: String
+  """The service origin country code, per ISO 3166-1 alpha 2 country code, eg. US, UK, AU, FR"""
+  originCountry: String
+  """The service origin state/province code, per ISO 3166 standards"""
+  originState: String
+  """Amount paid at booking after taxes"""
+  paidAtBookingPostTax: String
+  """Amount paid at booking before taxes"""
+  paidAtBookingPreTax: String
+  """Method of payment used, i.e. credit card, mastercard, paypal, wire transfer, etc."""
+  paymentMethod: String
+  """Model of payment used; advertiser-specific"""
+  paymentModel: String
+  """IATA code for pickup location if it's at an aiport"""
+  pickupIata: String
+  """Unique car rental agency ID for pickup location"""
+  pickupId: String
+  """Device platform customer is using (i.e. mobile, tablet, etc.)"""
+  platformId: String
+  """The point of sale of the customer"""
+  pointOfSale: String
+  """Departure port city i.e. for cruises"""
+  port: String
+  """Indicates if the purchase was made in advance of the item being available for sale"""
+  preorder: String
+  """Did the customer prepay on their transaction: yes or no"""
+  prepaid: String
+  """Indicates if the applicant was pre-qualified for the card"""
+  prequalify: String
+  """Promotion applied (i.e. "summer sale")"""
+  promotion: String
+  """The numeric value associated with the promotion (i.e. if the promotion is $500 cash back, you would pass "promotion=dollars&promotion_amt=500")"""
+  promotionAmount: String
+  """Threshold needed in order to get the discount"""
+  promotionConditionThreshold: String
+  """Types of promotional conditions"""
+  promotionConditionType: String
+  """Promotion end time. ISO 8601 standard yyyy-mm-ddThh24:mm:ss.sssZ"""
+  promotionEnds: String
+  """Promotion start time. ISO 8601 standard yyyy-mm-ddThh24:mm:ss.sssZ"""
+  promotionStarts: String
+  """Indicates the promotion type"""
+  promotionType: String
+  """Quantity for a given sku, simple actions only; if using and item-based action, use QTYx"""
+  quantity: String
+  """Star rating of item booked/purchased"""
+  rating: String
+  """Number of rooms booked"""
+  rooms: String
+  """Room type booked i.e. for hotel or cruise"""
+  roomType: String
+  """This parameter indicates the type of financial service the customer signed up for or purchased"""
+  serviceType: String
+  """Name of the cruise ship"""
+  shipName: String
+  """Check-in date/time, arrival date/time, etc."""
+  startDateTime: String
+  """Identifies the state/province code the store or location is in, per ISO 3166-2 country subdivision standards (e.g. Alaska would be "or_state=US-AK", Bangkok would be "or_state=TH-10")"""
+  state: String
+  """Cost of Subscription fee featured when signing up for free trial"""
+  subscriptionFee: String
+  """Product duration; e.g. "indefinite" or 1 month/3 months/6 months"""
+  subscriptionLength: String
+  """Amount of the tax"""
+  taxAmount: String
+  """Type of the tax"""
+  taxType: String
+  """The transfer fee amount (i.e. for a credit card)"""
+  transferFee: String
+  """Type of travel being booked, i.e. air, car, activities, cruise, events, hotel, package, restaurants, travel guides, vacation rental, other."""
+  travelType: String
+  """Type of trip booked/purchased; i.e. one-way, round-trip, multi-city, round-trip + hotel"""
+  tripType: String
+  """Indicates if someone converted from a trial to a subscription"""
+  upsell: String
+  """Shopify Order ID"""
+  shopifyOrderId: String
+}
+
+type ActionTracker {
+  id: NonNegativeInt!
+}
+
+type Ad {
+  id: NonNegativeInt!
+}
+
+type Advertiser {
+  enterpriseId: ID!
+}
+
+type BypassChannel {
+  name: String!
+  timestamp: Instant!
+}
+
+type CustomIds {
+  universalTagCjUser: String
+  userId: String
+  emailHash: String
+}
+
+type Mutation {
+  createOrders(newOrders: [OrderCreateRequest!]!): OrderResponse!
+  restateOrders(restatedOrders: [OrderRestateRequest!]!): OrderResponse!
+  cancelOrders(cancelledOrders: [OrderCancelRequest!]!): OrderCancellationResponse!
+}
+
+type NameValuePair {
+  name: String!
+  value: String!
+}
+
+"""
+A record of an order (transaction aka view), potentially including items purchased and
+client-supplied vertical attributes.
+"""
+type Order {
+  """cj defined submission id"""
+  submissionId: ID!
+  batchId: ID!
+  orderReceivedTime: Instant!
+  advertiser: Advertiser!
+  actionTracker: ActionTracker!
+  """client defined order identifier"""
+  orderId: String!
+  eventTime: Instant
+  updateTime: Instant
+  ad: Ad
+  promotionalProperty: PromotionalProperty
+  sid: String
+  """cj defined correlating event id (aka cj click id)"""
+  cjEvent: ID
+  amount: NonNegativeDecimalNumber
+  discount: NonNegativeDecimalNumber
+  verticalParameters: VerticalParameters
+  customParameters: [NameValuePair]!
+  items: [OrderItem]!
+  coupon: String
+  currency: String
+  bypassChannel: BypassChannel
+  status: OrderStatus
+  correctionReason: CorrectionReason
+  ids: CustomIds
+}
+
+type OrderCancellation {
+  submissionId: ID!
+  batchId: ID!
+  advertiser: Advertiser!
+  actionTracker: ActionTracker!
+  orderId: String!
+  updateTime: Instant!
+  status: OrderCancellationStatus
+  correctionReason: CorrectionReason
+}
+
+type OrderCancellationResponse {
+  orders: [OrderCancellation!]
+  errors: [RequestError!]
+}
+
+type OrderItem {
+  unitPrice: NonNegativeDecimalNumber!
+  quantity: NonNegativeInt!
+  sku: String!
+  discount: NonNegativeDecimalNumber
+}
+
+type OrderResponse {
+  orders: [Order!]
+  errors: [RequestError!]
+}
+
+type PromotionalProperty {
+  id: NonNegativeInt!
+}
+
+type Query {
+  getBuildNumber: String
+}
+
+type RequestError {
+  message: String!
+  fields: [String!]
+}
+
+type VerticalParameters {
+  advertiserVertical: VerticalType
+  """The ancillary spend amount for the transaction (Advertiser-only attribute)"""
+  ancillarySpend: String
+  """Annual fee associated with this product"""
+  annualFee: String
+  """Identifies the status of the application at the time the transaction is sent to CJ"""
+  applicationStatus: String
+  """APR at time of application approval"""
+  apr: String
+  """APR for transfers"""
+  aprTransfer: String
+  """APR transfer period in months"""
+  aprTransferTime: String
+  """The date booking was made; YYYY-MM-DD"""
+  bookingDate: String
+  """The status of the booking; i.e. confirmed, pending, etc."""
+  bookingStatus: String
+  """Value of booking after taxes"""
+  bookingValuePostTax: String
+  """Value of booking before taxes"""
+  bookingValuePreTax: String
+  """Brand of item(s) purchased"""
+  brand: String
+  """Identifier of the brand of the item booked"""
+  brandId: String
+  """Identifies the business unit the customer purchased through"""
+  businessUnit: String
+  """Marketing Campaign ID; advertiser-specific"""
+  campaignId: String
+  """Marketing Campaign name; advertiser-specific"""
+  campaignName: String
+  """Name of the card category"""
+  cardCategory: String
+  """Were other car option items chosen, i.e. "insurance""""
+  carOptions: String
+  """Cash advance fee associated with this product"""
+  cashAdvanceFee: String
+  """Category of item. example: if a customer applies for a Personal Cash-back Credit card; service_type=cc&item_type=personal&category=cashback"""
+  category: String
+  """Location city name, i.e. for a hotel or event"""
+  city: String
+  """Class rating of item booked/purchased"""
+  class: String
+  """Confirmation number for provider (i.e. a flight confirmation number from the airline)"""
+  confirmationNumber: String
+  """Contract length, in months"""
+  contractLength: String
+  """Describe contract, advertiser-specific"""
+  contractType: String
+  """Country where the transaction occurred"""
+  countryCode: String
+  """Amount discounted from coupon used"""
+  couponDiscount: String
+  """Indicates the coupon type"""
+  couponType: String
+  """Amount of credit extended"""
+  creditLine: String
+  """Quality of customer's credit; 300-579=Very Poor, 580-669=Fair, 670-739=Good,740-799=Very Good, 800-850=Exceptional"""
+  creditQuality: String
+  """Whether the customer received a credit report, purchased it, got a free report, or started a trial for a reporting service"""
+  creditReport: String
+  """Type of cruise (Alaskan, Caribbean, etc.)"""
+  cruiseType: String
+  """Country the customer purchasing is in, per ISO 3166-1 alpha 2 country code, eg. US, UK, AU, FR"""
+  customerCountry: String
+  """Advertiser-specific customer segment definition"""
+  customerSegment: String
+  """Defines if a customer is new or existing"""
+  customerStatus: String
+  """Customer type: i.e. company, individual consumer, business, leisure"""
+  customerType: String
+  """The service destination city name, eg. New York"""
+  destinationCity: String
+  """The service destination id, typically an advertiser-defined code representing a destination city or destination state/province, e.g. 728660"""
+  destinationId: String
+  """Method of delivery"""
+  delivery: String
+  """Product or card description"""
+  description: String
+  """The service destination country code, per ISO 3166-1 alpha 2 country code, eg. US, UK, AU, FR"""
+  destinationCountry: String
+  """The service destination state/province code, per ISO 3166 standards"""
+  destinationState: String
+  """Does the customer reside in the US: yes/no"""
+  domestic: String
+  """IATA code for dropoff location if it's at an aiport"""
+  dropoffIata: String
+  """Unique car rental agency ID for dropoff location"""
+  dropoffId: String
+  """Duration of days, i.e. can be used for number of nights for a hotel stay; length of a trial"""
+  duration: String
+  """Check-out date/time, departure date/time, etc."""
+  endDateTime: String
+  """Type of flight fare; i.e. gotta get away"""
+  flightFareType: String
+  """Were other flight items chosen; i.e. wifi"""
+  flightOptions: String
+  """Type of flight; i.e. direct, layover, overnight"""
+  flightType: String
+  """Were flyer miles earned from this flight"""
+  flyerMiles: String
+  """Amount of account funding"""
+  fundedAmount: String
+  """Currency for the account's initial funding"""
+  fundedCurrency: String
+  """Entertainment category or genre (books, movies, streaming, music, etc.); transaction-level only"""
+  genre: String
+  """Number of guests"""
+  guests: String
+  """Code for each city in a flight schedule; comma-separated lists; commas must be URL-encoded"""
+  iata: String
+  """The intro APR for purchases; if the intro APR is not different than overall APR, use the "APR" parameter"""
+  introductoryApr: String
+  """Introductory APR period in months"""
+  introductoryAprTime: String
+  """Id for item/s purchased. If multiple items, it will be a comma-separated lists."""
+  itemId: String
+  """Name of the item purchased"""
+  itemName: String
+  """Type of item. example: if a customer applies for a Personal Cash-back Credit card; service_type=cc&item_type=personal&category=cashback"""
+  itemType: String
+  """Booking itinerary id"""
+  itineraryId: String
+  """General demographic (like new mover v. student v. Small biz) that an indicate how and why a card will be used"""
+  lifestage: String
+  """Can be used to identify the store or location the customer will visit or has visited; advertiser-specific ID or name"""
+  location: String
+  """Indicates the level of the customer's loyalty status"""
+  loyaltyEarned: String
+  """Indicates whether this order resulted in the consumer joining the loyalty program"""
+  loyaltyFirstTimeSignup: String
+  """Indicates if loyalty points were used"""
+  loyaltyLevel: String
+  """Indicates is loyalty points were earned"""
+  loyaltyRedeemed: String
+  """Customers status of membership"""
+  loyaltyStatus: String
+  """Advertiser-only attribute."""
+  margin: String
+  """The profit margin for the transaction (Advertiser-only attribute)"""
+  marketingChannel: String
+  """Value of the minimum cash balance requirement for the account"""
+  minimumBalance: String
+  """Minimum deposit amount"""
+  minimumDeposit: String
+  """Minimum stay duration required, in days"""
+  minimumStayDuration: String
+  """Yes or no - yes means there was a "no cancellation allowed" policy on the transaction"""
+  noCancellation: String
+  orderSubtotal: String
+  """The service origin city name, eg. New York"""
+  originCity: String
+  """The service origin country code, per ISO 3166-1 alpha 2 country code, eg. US, UK, AU, FR"""
+  originCountry: String
+  """The service origin state/province code, per ISO 3166 standards"""
+  originState: String
+  """Amount paid at booking after taxes"""
+  paidAtBookingPostTax: String
+  """Amount paid at booking before taxes"""
+  paidAtBookingPreTax: String
+  """Method of payment used, i.e. credit card, mastercard, paypal, wire transfer, etc."""
+  paymentMethod: String
+  """Model of payment used; advertiser-specific"""
+  paymentModel: String
+  """IATA code for pickup location if it's at an aiport"""
+  pickupIata: String
+  """Unique car rental agency ID for pickup location"""
+  pickupId: String
+  """Device platform customer is using (i.e. mobile, tablet, etc.)"""
+  platformId: String
+  """The point of sale of the customer"""
+  pointOfSale: String
+  """Departure port city i.e. for cruises"""
+  port: String
+  """Indicates if the purchase was made in advance of the item being available for sale"""
+  preorder: String
+  """Did the customer prepay on their transaction: yes or no"""
+  prepaid: String
+  """Indicates if the applicant was pre-qualified for the card"""
+  prequalify: String
+  """Promotion applied (i.e. "summer sale")"""
+  promotion: String
+  """The numeric value associated with the promotion (i.e. if the promotion is $500 cash back, you would pass "promotion=dollars&promotion_amt=500")"""
+  promotionAmount: String
+  """Threshold needed in order to get the discount"""
+  promotionConditionThreshold: String
+  """Types of promotional conditions"""
+  promotionConditionType: String
+  """Promotion end time. ISO 8601 standard yyyy-mm-ddThh24:mm:ss.sssZ"""
+  promotionEnds: String
+  """Promotion start time. ISO 8601 standard yyyy-mm-ddThh24:mm:ss.sssZ"""
+  promotionStarts: String
+  """Indicates the promotion type"""
+  promotionType: String
+  """Quantity for a given sku, simple actions only; if using and item-based action, use QTYx"""
+  quantity: String
+  """Star rating of item booked/purchased"""
+  rating: String
+  """Number of rooms booked"""
+  rooms: String
+  """Room type booked i.e. for hotel or cruise"""
+  roomType: String
+  """This parameter indicates the type of financial service the customer signed up for or purchased"""
+  serviceType: String
+  """Name of the cruise ship"""
+  shipName: String
+  """Check-in date/time, arrival date/time, etc."""
+  startDateTime: String
+  """Identifies the state/province code the store or location is in, per ISO 3166-2 country subdivision standards (e.g. Alaska would be "or_state=US-AK", Bangkok would be "or_state=TH-10")"""
+  state: String
+  """Cost of Subscription fee featured when signing up for free trial"""
+  subscriptionFee: String
+  """Product duration; e.g. "indefinite" or 1 month/3 months/6 months"""
+  subscriptionLength: String
+  """Amount of the tax"""
+  taxAmount: String
+  """Type of the tax"""
+  taxType: String
+  """The transfer fee amount (i.e. for a credit card)"""
+  transferFee: String
+  """Type of travel being booked, i.e. air, car, activities, cruise, events, hotel, package, restaurants, travel guides, vacation rental, other."""
+  travelType: String
+  """Type of trip booked/purchased; i.e. one-way, round-trip, multi-city, round-trip + hotel"""
+  tripType: String
+  """Indicates if someone converted from a trial to a subscription"""
+  upsell: String
+  """Shopify Order Id"""
+  shopifyOrderId: String
+}
+
+"""
+A Datetime in UTC ISO 8601 format with Z as the zone designator for the zero UTC offset, rendered in JSON as a string.
+
+As an example, `1970-03-27T12:13:14-05:00` or `1970-03-27T12:18:14Z` or `1970-03-27`
+"""
+scalar Instant
+
+"""
+A numerical value, rendered in JSON as a string.
+
+The string value will always match the regex pattern `[0-9]+(\.[0-9]+)?`.
+"""
+scalar NonNegativeDecimalNumber
+
+"""An Int scalar that must be greater than or equal to zero"""
+scalar NonNegativeInt
+

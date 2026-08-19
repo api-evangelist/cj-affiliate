@@ -1,0 +1,446 @@
+{
+  "item": [
+    {
+      "id": "009d9c6e-b4b1-4484-9d25-d20d7b3a4db4",
+      "name": "Link Search",
+      "description": {
+        "content": "Publisher link discovery across the CJ network.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "a2821a55-8470-44d7-9e93-72756b28edc9",
+          "name": "Search advertiser links",
+          "request": {
+            "name": "Search advertiser links",
+            "description": {
+              "content": "Find links across all advertisers in one call, filtered by keywords, category, link type, promotion type, relationship status, language, target country and more. All parameter names and values are case-insensitive. You must supply at least one optional parameter — an empty request returns zero results. Publishers only. Documented call limit: 25 calls per minute. The same endpoint serves the Automated Offer Feed for financial advertisers.",
+              "type": "text/plain"
+            },
+            "url": {
+              "protocol": "https",
+              "path": [
+                "v2",
+                "link-search"
+              ],
+              "host": [
+                "link-search",
+                "api",
+                "cj",
+                "com"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "website-id",
+                  "value": "<string>",
+                  "description": "Your Website ID / Property ID (PID). Enables the system to generate the appropriate link code in the response. Must match the Website PID used to register for the developer key."
+                },
+                {
+                  "disabled": false,
+                  "key": "advertiser-ids",
+                  "value": "<string>",
+                  "description": "Comma-separated advertiser CIDs, or `joined`, or `notjoined`. An empty string currently behaves the same as `notjoined`."
+                },
+                {
+                  "disabled": false,
+                  "key": "keywords",
+                  "value": "<string>",
+                  "description": "Restricts results by keywords found in the link's advertiser name, link name, description and advertiser-tagged search keywords. Supports simple boolean operators `+` and `-`; default logic is OR."
+                },
+                {
+                  "disabled": false,
+                  "key": "category",
+                  "value": "<string>",
+                  "description": "Comma-separated advertiser SUB-category. Top-level/parent categories are not searchable. See the enumerations page."
+                },
+                {
+                  "disabled": false,
+                  "key": "link-type",
+                  "value": "<string>",
+                  "description": "Limits results to a specific link type. Product links are not available here — use the Product Search API. See the enumerations page."
+                },
+                {
+                  "disabled": false,
+                  "key": "promotion-type",
+                  "value": "<string>",
+                  "description": "Promotion type. Required if using promotion-start-date or promotion-end-date."
+                },
+                {
+                  "disabled": false,
+                  "key": "promotion-start-date",
+                  "value": "<string>",
+                  "description": "Promotion start date in MM/DD/YYYY format. Blank returns any start date."
+                },
+                {
+                  "disabled": false,
+                  "key": "promotion-end-date",
+                  "value": "<string>",
+                  "description": "Promotion end date in MM/DD/YYYY format, or the literal value `ongoing` for a promotion with no end date. Blank returns any end date."
+                },
+                {
+                  "disabled": false,
+                  "key": "page-number",
+                  "value": "<integer>",
+                  "description": "Page of the result set to view. Defaults to 1."
+                },
+                {
+                  "disabled": false,
+                  "key": "records-per-page",
+                  "value": "<integer>",
+                  "description": "Number of records per page. Defaults to 100 for this API."
+                },
+                {
+                  "disabled": false,
+                  "key": "language",
+                  "value": "<string>",
+                  "description": "Language the link was set at, using an accepted language code."
+                },
+                {
+                  "disabled": false,
+                  "key": "allow-deep-linking",
+                  "value": "<string>",
+                  "description": "Limit to links whose destination URL can be modified."
+                },
+                {
+                  "disabled": false,
+                  "key": "event-name",
+                  "value": "<string>",
+                  "description": "The event or occurrence the link relates to. One event at a time."
+                },
+                {
+                  "disabled": false,
+                  "key": "link-Id",
+                  "value": "<string>",
+                  "description": "The AdId / Link ID of an individual link. One at a time. Only active links are returned; invalid, deleted or archived links return 0 results."
+                },
+                {
+                  "disabled": false,
+                  "key": "last-updated",
+                  "value": "<string>",
+                  "description": "Return links updated since this date, inclusive. MM/DD/YYYY format."
+                },
+                {
+                  "disabled": false,
+                  "key": "cross-device-only",
+                  "value": "<string>",
+                  "description": "Limit to links supporting cross-device tracking."
+                },
+                {
+                  "disabled": false,
+                  "key": "mobile-app-download",
+                  "value": "<string>",
+                  "description": "Limit to links that direct the user to an App Store download."
+                },
+                {
+                  "disabled": false,
+                  "key": "mobile-optimized",
+                  "value": "<string>",
+                  "description": "Limit to links the advertiser flagged as mobile-optimized."
+                },
+                {
+                  "disabled": false,
+                  "key": "targeted-country",
+                  "value": "<string>",
+                  "description": "Two-letter country code, one at a time. Appears as `targeted-countries` in the response."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/xml"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "f4166e98-d8ab-4874-be5e-6bfde05422bf",
+              "name": "An XML `<cj-api><links>` document.",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "v2",
+                    "link-search"
+                  ],
+                  "host": [
+                    "link-search",
+                    "api",
+                    "cj",
+                    "com"
+                  ],
+                  "query": [
+                    {
+                      "key": "website-id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "advertiser-ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "keywords",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "category",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "link-type",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "promotion-type",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "promotion-start-date",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "promotion-end-date",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "page-number",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "records-per-page",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "language",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "allow-deep-linking",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "event-name",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "link-Id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "last-updated",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "cross-device-only",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "mobile-app-download",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "mobile-optimized",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "targeted-country",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/xml"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/xml"
+                }
+              ],
+              "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<cj-api>\n  <links>\n    <total-matched>(integer)</total-matched>\n    <records-returned>(integer)</records-returned>\n    <page-number>(integer)</page-number>\n    <link>\n      <ad-content>(string)</ad-content>\n      <advertiser-id>(string)</advertiser-id>\n      <advertiser-name>(string)</advertiser-name>\n      <allow-deep-linking>(string)</allow-deep-linking>\n      <category>(string)</category>\n      <click-commission>(string)</click-commission>\n      <clickUrl>(string)</clickUrl>\n      <creative-height>(string)</creative-height>\n      <creative-width>(string)</creative-width>\n      <coupon-code>(string)</coupon-code>\n      <cross-device-only>(string)</cross-device-only>\n      <description>(string)</description>\n      <destination>(string)</destination>\n      <event-name>(string)</event-name>\n      <language>(string)</language>\n      <last-updated>(string)</last-updated>\n      <lead-commission>(string)</lead-commission>\n      <link-code-html>(string)</link-code-html>\n      <link-code-javascript>(string)</link-code-javascript>\n      <link-id>(string)</link-id>\n      <link-name>(string)</link-name>\n      <link-type>(string)</link-type>\n      <mobile-app-download>(string)</mobile-app-download>\n      <mobile-optimized>(string)</mobile-optimized>\n      <performance-incentive>(string)</performance-incentive>\n      <promotion-end-date>(string)</promotion-end-date>\n      <promotion-start-date>(string)</promotion-start-date>\n      <promotion-type>(string)</promotion-type>\n      <relationship-status>(string)</relationship-status>\n      <sale-commission>(string)</sale-commission>\n      <seven-day-epc>(string)</seven-day-epc>\n      <targeted-countries>(string)</targeted-countries>\n      <three-month-epc>(string)</three-month-epc>\n    </link>\n    <link>\n      <ad-content>(string)</ad-content>\n      <advertiser-id>(string)</advertiser-id>\n      <advertiser-name>(string)</advertiser-name>\n      <allow-deep-linking>(string)</allow-deep-linking>\n      <category>(string)</category>\n      <click-commission>(string)</click-commission>\n      <clickUrl>(string)</clickUrl>\n      <creative-height>(string)</creative-height>\n      <creative-width>(string)</creative-width>\n      <coupon-code>(string)</coupon-code>\n      <cross-device-only>(string)</cross-device-only>\n      <description>(string)</description>\n      <destination>(string)</destination>\n      <event-name>(string)</event-name>\n      <language>(string)</language>\n      <last-updated>(string)</last-updated>\n      <lead-commission>(string)</lead-commission>\n      <link-code-html>(string)</link-code-html>\n      <link-code-javascript>(string)</link-code-javascript>\n      <link-id>(string)</link-id>\n      <link-name>(string)</link-name>\n      <link-type>(string)</link-type>\n      <mobile-app-download>(string)</mobile-app-download>\n      <mobile-optimized>(string)</mobile-optimized>\n      <performance-incentive>(string)</performance-incentive>\n      <promotion-end-date>(string)</promotion-end-date>\n      <promotion-start-date>(string)</promotion-start-date>\n      <promotion-type>(string)</promotion-type>\n      <relationship-status>(string)</relationship-status>\n      <sale-commission>(string)</sale-commission>\n      <seven-day-epc>(string)</seven-day-epc>\n      <targeted-countries>(string)</targeted-countries>\n      <three-month-epc>(string)</three-month-epc>\n    </link>\n  </links>\n</cj-api>",
+              "cookie": [],
+              "_postman_previewlanguage": "xml"
+            },
+            {
+              "id": "51df8489-bb2b-4cb7-8e94-5ece513e2c05",
+              "name": "HTTP 401 for all CJ REST APIs. Documented cases: no message at all (incorrect resource URL); \"You must specify a developer key.\" (no developer key specified); \"Not Authenticated: xxxxxx\" (invalid developer key, echoing the key used). A request with no Authorization header returns `<cj-api><error-message>You must provide an Authorization header.</error-message></cj-api>`.",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "v2",
+                    "link-search"
+                  ],
+                  "host": [
+                    "link-search",
+                    "api",
+                    "cj",
+                    "com"
+                  ],
+                  "query": [
+                    {
+                      "key": "website-id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "advertiser-ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "keywords",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "category",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "link-type",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "promotion-type",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "promotion-start-date",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "promotion-end-date",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "page-number",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "records-per-page",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "language",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "allow-deep-linking",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "event-name",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "link-Id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "last-updated",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "cross-device-only",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "mobile-app-download",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "mobile-optimized",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "targeted-country",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/xml"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/xml"
+                }
+              ],
+              "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<cj-api>\n  <error-message>(string)</error-message>\n</cj-api>",
+              "cookie": [],
+              "_postman_previewlanguage": "xml"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://link-search.api.cj.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "12c6d055-9bb9-4526-9297-ff7cfaf7ea94",
+    "name": "CJ Affiliate Link Search API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "CJ Affiliate's published REST APIs, transcribed from CJ's own developer documentation. Two families are covered:\n\n1. The classic XML lookup / search APIs on `*.api.cj.com` — Link Search, Advertiser Lookup, Publisher Lookup and the deprecated Commission Detail (Legacy). Each is documented with a stated call limit of 25 calls per minute and returns an `application/xml` `<cj-api>` document.\n\n2. The JSON click-tracking APIs — the Click Events API (`clicks.api.cj.com`) for partners and the Publisher Tracking API (`publishertracking.api.cj.com`) for publishers. Both accept a JSON body and return `{ destinationUrl, errorMessages }`.\n\nPROVENANCE: every path, parameter name, response field, status code and error message below was read on 2026-08-13 from CJ's machine-readable documentation corpus, which the CJ Developer Portal single-page app loads from https://production-docs-assets.p.cjpowered.com/ (index at /index.yaml, one markdown file per page). Nothing here is modeled. CJ's modern surface is GraphQL — see graphql/ in this repo for the three live schemas captured by introspection.\n\nContact Support:\n Name: API Evangelist\n Email: kin@apievangelist.com",
+      "type": "text/plain"
+    }
+  }
+}

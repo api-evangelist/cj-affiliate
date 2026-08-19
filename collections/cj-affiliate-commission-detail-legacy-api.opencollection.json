@@ -1,0 +1,116 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "CJ Affiliate Commission Detail (Legacy) API",
+    "version": "2026-08-13"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Commission Detail (Legacy)",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve near-real-time commission records (deprecated)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://commission-detail.api.cj.com/v3/commissions",
+            "params": [
+              {
+                "name": "requestor-cid",
+                "value": "",
+                "type": "query",
+                "description": "CID of the company you are making the request for."
+              },
+              {
+                "name": "date-type",
+                "value": "",
+                "type": "query",
+                "description": "Whether the date range applies to the event date or the posting date."
+              },
+              {
+                "name": "start-date",
+                "value": "",
+                "type": "query",
+                "description": "First date in the query, inclusive. Required if end-date is used."
+              },
+              {
+                "name": "end-date",
+                "value": "",
+                "type": "query",
+                "description": "Last date in the query, exclusive. Required if start-date is used."
+              },
+              {
+                "name": "cids",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated CIDs of joined advertisers or publishers."
+              },
+              {
+                "name": "action-types",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated action types: bonus, click, impression, sale, lead, advanced sale, advanced lead, performance incentive."
+              },
+              {
+                "name": "aids",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated Ad IDs."
+              },
+              {
+                "name": "action-status",
+                "value": "",
+                "type": "query",
+                "description": "Action status filter."
+              },
+              {
+                "name": "commission-id",
+                "value": "",
+                "type": "query",
+                "description": "Return everything newer than this Commission ID. The documented incremental-polling pattern: send the most recent Commission ID you received and CJ returns all new data since then."
+              },
+              {
+                "name": "website-ids",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated website IDs."
+              }
+            ]
+          },
+          "docs": "DEPRECATED. CJ's documentation states this API \"has been deprecated and will be removed on June 1, 2019\" and directs integrators to the GraphQL Commission Detail API at https://commissions.api.cj.com/query. The host still answers (HTTP 401 without a token) as of 2026-08-13. Documented call limit: 25 times per minute. Date ranges are 1 day minimum, 31 days maximum; start-date is inclusive and end-date is exclusive."
+        },
+        {
+          "info": {
+            "name": "Retrieve item-level detail for a commission (deprecated)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://commission-detail.api.cj.com/v3/item-detail/:original-action-id",
+            "params": [
+              {
+                "name": "original-action-id",
+                "value": "",
+                "type": "path",
+                "description": "The identification number used to correlate the original transaction and its corrections."
+              }
+            ]
+          },
+          "docs": "DEPRECATED alongside the commissions resource. Returns item-detail records correlated to an original action id."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

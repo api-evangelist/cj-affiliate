@@ -1,0 +1,96 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  CJ's documentation corpus at https://production-docs-assets.p.cjpowered.com/ —
+  the "Advertiser Site Tracking", "Publisher Site Tracking" and
+  "Plugins & Templates" sections of https://production-docs-assets.p.cjpowered.com/index.yaml
+provider: CJ Affiliate
+providerId: cj-affiliate
+description: >-
+  CJ ships no UI widget library and no embeddable dashboard. What it does
+  distribute client-side is TRACKING: a pair of JavaScript tags (one for
+  advertisers, one for publishers) plus packaged installers for three commerce
+  and tag-management platforms. These are the first-party code CJ actually
+  publishes for a customer to drop into a page — distinct from the SDKs it does
+  not publish (see packages/cj-affiliate-packages.yml).
+families:
+- name: Advertiser Site Tracking
+  kind: javascript-tag
+  description: >-
+    Client-side tags an advertiser places on its own site to record CJ-attributed
+    transactions and consent state.
+  components:
+  - name: Universal Tag
+    docs: https://developers.cj.com/docs/advertiser-site-tracking/universal-tag-integration
+    description: >-
+      CJ's primary advertiser tag. Fires the conversion event and carries order,
+      item and vertical parameters.
+  - name: CJ Leads Integration
+    docs: https://developers.cj.com/docs/advertiser-site-tracking/cj-leads-integration
+    description: Lead-event variant of the advertiser tag.
+  - name: HTTP Response Cookie
+    docs: https://developers.cj.com/docs/advertiser-site-tracking/http-response-cookie
+    description: >-
+      Server-set first-party cookie approach, an alternative to purely
+      client-side attribution under browser cookie restrictions.
+  - name: Vertical Parameters
+    docs: https://developers.cj.com/docs/advertiser-site-tracking/vertical-parameters
+    description: >-
+      The typed attribute set an advertiser passes on the tag, varying by
+      vertical (Retail, Finance, Travel, Network Services). The same vocabulary
+      appears as `verticalParameters` on the GraphQL Tracking API.
+  - name: Consent Signal & Loyalty Exemption
+    docs: https://developers.cj.com/docs/advertiser-site-tracking/consent-signal-loyalty-exemption
+    description: >-
+      How consent state is signalled to CJ from the page, and the loyalty
+      exemption path.
+- name: Publisher Site Tracking
+  kind: javascript-tag
+  description: >-
+    Client-side tags a publisher places on its own property, with server-side
+    equivalents in the Publisher Tracking and Click Events APIs.
+  components:
+  - name: Publisher Tag
+    docs: https://developers.cj.com/docs/publisher-site-tracking/publisher-tag-overview
+    description: >-
+      The browser-based counterpart to the Publisher Tracking API. CJ names it
+      explicitly as the solution to use when a server-side call is not possible,
+      because neither the Publisher Tracking API nor the Click Events API may be
+      called from a browser.
+    variants: [On-Click Tracking, On-Load Tracking]
+  - name: Google Ads Certified Click Tracker
+    docs: https://developers.cj.com/docs/publisher-site-tracking/google-ads-certified-click-tracker
+    description: Certified click-tracking integration for Google Ads traffic.
+- name: Plugins & Templates
+  kind: platform-plugin
+  description: >-
+    Packaged installers that put CJ tracking into a hosted commerce or
+    tag-management platform without hand-editing a template.
+  components:
+  - name: Shopify Plugin
+    platform: Shopify
+    docs: https://developers.cj.com/docs/plugins-templates/shopify-plugin-installation
+    lifecycle_docs: https://developers.cj.com/docs/plugins-templates/shopify-plugin-update
+    description: >-
+      CJ's Shopify app. Documented with both an installation and a separate
+      update procedure, which is the only versioned client-side artifact CJ
+      documents a lifecycle for.
+  - name: PrestaShop Plugin
+    platform: PrestaShop
+    docs: https://developers.cj.com/docs/plugins-templates/prestashop-plugin-installation
+  - name: Google Tag Manager template
+    platform: Google Tag Manager
+    docs: https://developers.cj.com/docs/plugins-templates/google-tag-manager
+    description: >-
+      GTM template for deploying CJ tracking through a tag manager rather than
+      directly in page source.
+loaders: []
+loaders_note: >-
+  CJ does not publish a versioned CDN loader URL, an npm-distributed tag package,
+  or a pinned script src in its documentation index. Tag snippets are generated
+  per account inside the CJ Account Manager, so there is no public artifact whose
+  version a consumer could pin or audit.
+not_offered:
+- Embeddable dashboards or reporting widgets
+- Hosted checkout / payment elements
+- A design system or web-component library

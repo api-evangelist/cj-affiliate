@@ -1,0 +1,278 @@
+{
+  "item": [
+    {
+      "id": "44f7f6e3-d727-4a8a-bb8b-b9b8b555ee4b",
+      "name": "Advertiser Lookup",
+      "description": {
+        "content": "Publisher-side advertiser and program discovery.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "452b375c-5abb-4021-b429-4f89f2e19129",
+          "name": "Look up advertisers and their program details",
+          "request": {
+            "name": "Look up advertisers and their program details",
+            "description": {
+              "content": "Find advertisers in the CJ network by CID, program name or program URL, joined or not joined, with account status, EPC, categories, link types and default Program Term commission rates. Commission rates for Situations and Promotional Properties are NOT included — use the GraphQL Program Terms API for those. Publishers only. Documented call limit: 25 calls per minute.",
+              "type": "text/plain"
+            },
+            "url": {
+              "protocol": "https",
+              "path": [
+                "v2",
+                "advertiser-lookup"
+              ],
+              "host": [
+                "advertiser-lookup",
+                "api",
+                "cj",
+                "com"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "requestor-cid",
+                  "value": "<string>",
+                  "description": "(Required) CID of the company you are making the request for. You must be a member of that company."
+                },
+                {
+                  "disabled": false,
+                  "key": "advertiser-ids",
+                  "value": "<string>",
+                  "description": "Comma-separated advertiser CIDs, or `joined`, or `notjoined`. An empty string currently behaves the same as `notjoined`."
+                },
+                {
+                  "disabled": false,
+                  "key": "advertiser-name",
+                  "value": "<string>",
+                  "description": "Advertiser program name, or program URL."
+                },
+                {
+                  "disabled": false,
+                  "key": "keywords",
+                  "value": "<string>",
+                  "description": "Keywords found in the advertiser's name, product name or product description. Supports `+` and `-`; default logic is OR."
+                },
+                {
+                  "disabled": false,
+                  "key": "page-number",
+                  "value": "<integer>",
+                  "description": "Page of the result set to view."
+                },
+                {
+                  "disabled": false,
+                  "key": "records-per-page",
+                  "value": "25",
+                  "description": "Records per page. Defaults to 25, maximum 100."
+                },
+                {
+                  "disabled": false,
+                  "key": "mobile-tracking-certified",
+                  "value": "<string>",
+                  "description": "Limit to advertisers certified (or not certified) for mobile tracking."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/xml"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "e27765e3-40a0-4d82-a38b-8f91419a3a1c",
+              "name": "An XML `<cj-api><advertisers>` document.",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "v2",
+                    "advertiser-lookup"
+                  ],
+                  "host": [
+                    "advertiser-lookup",
+                    "api",
+                    "cj",
+                    "com"
+                  ],
+                  "query": [
+                    {
+                      "key": "requestor-cid",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "advertiser-ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "advertiser-name",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "keywords",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "page-number",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "records-per-page",
+                      "value": "25"
+                    },
+                    {
+                      "key": "mobile-tracking-certified",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/xml"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/xml"
+                }
+              ],
+              "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<cj-api>\n  <advertisers>\n    <total-matched>(integer)</total-matched>\n    <records-returned>(integer)</records-returned>\n    <page-number>(integer)</page-number>\n    <advertiser>\n      <advertiser-id>(string)</advertiser-id>\n      <account-status>(string)</account-status>\n      <seven-day-epc>(string)</seven-day-epc>\n      <three-month-epc>(string)</three-month-epc>\n      <language>(string)</language>\n      <advertiser-name>(string)</advertiser-name>\n      <program-url>(string)</program-url>\n      <relationship-status>(string)</relationship-status>\n      <mobile-supported>(string)</mobile-supported>\n      <mobile-tracking-certified>(string)</mobile-tracking-certified>\n      <cookieless-tracking-enabled>(string)</cookieless-tracking-enabled>\n      <network-rank>(string)</network-rank>\n      <performance-incentives>(string)</performance-incentives>\n      <primary-category>\n        <parent>(string)</parent>\n        <child>(string)</child>\n      </primary-category>\n      <actions>\n        <name>(string)</name>\n        <type>(string)</type>\n        <id>(string)</id>\n        <commission>\n        </commission>\n      </actions>\n      <actions>\n        <name>(string)</name>\n        <type>(string)</type>\n        <id>(string)</id>\n        <commission>\n        </commission>\n      </actions>\n      <link-types>(string)</link-types>\n      <link-types>(string)</link-types>\n    </advertiser>\n    <advertiser>\n      <advertiser-id>(string)</advertiser-id>\n      <account-status>(string)</account-status>\n      <seven-day-epc>(string)</seven-day-epc>\n      <three-month-epc>(string)</three-month-epc>\n      <language>(string)</language>\n      <advertiser-name>(string)</advertiser-name>\n      <program-url>(string)</program-url>\n      <relationship-status>(string)</relationship-status>\n      <mobile-supported>(string)</mobile-supported>\n      <mobile-tracking-certified>(string)</mobile-tracking-certified>\n      <cookieless-tracking-enabled>(string)</cookieless-tracking-enabled>\n      <network-rank>(string)</network-rank>\n      <performance-incentives>(string)</performance-incentives>\n      <primary-category>\n        <parent>(string)</parent>\n        <child>(string)</child>\n      </primary-category>\n      <actions>\n        <name>(string)</name>\n        <type>(string)</type>\n        <id>(string)</id>\n        <commission>\n        </commission>\n      </actions>\n      <actions>\n        <name>(string)</name>\n        <type>(string)</type>\n        <id>(string)</id>\n        <commission>\n        </commission>\n      </actions>\n      <link-types>(string)</link-types>\n      <link-types>(string)</link-types>\n    </advertiser>\n  </advertisers>\n</cj-api>",
+              "cookie": [],
+              "_postman_previewlanguage": "xml"
+            },
+            {
+              "id": "1feb9bcd-0461-4d35-9cb8-b45dc06c8844",
+              "name": "HTTP 401 for all CJ REST APIs. Documented cases: no message at all (incorrect resource URL); \"You must specify a developer key.\" (no developer key specified); \"Not Authenticated: xxxxxx\" (invalid developer key, echoing the key used). A request with no Authorization header returns `<cj-api><error-message>You must provide an Authorization header.</error-message></cj-api>`.",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "v2",
+                    "advertiser-lookup"
+                  ],
+                  "host": [
+                    "advertiser-lookup",
+                    "api",
+                    "cj",
+                    "com"
+                  ],
+                  "query": [
+                    {
+                      "key": "requestor-cid",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "advertiser-ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "advertiser-name",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "keywords",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "page-number",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "records-per-page",
+                      "value": "25"
+                    },
+                    {
+                      "key": "mobile-tracking-certified",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/xml"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/xml"
+                }
+              ],
+              "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<cj-api>\n  <error-message>(string)</error-message>\n</cj-api>",
+              "cookie": [],
+              "_postman_previewlanguage": "xml"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://advertiser-lookup.api.cj.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "ef334bf9-1783-4c50-8884-053724e5e1ef",
+    "name": "CJ Affiliate Advertiser Lookup API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "CJ Affiliate's published REST APIs, transcribed from CJ's own developer documentation. Two families are covered:\n\n1. The classic XML lookup / search APIs on `*.api.cj.com` — Link Search, Advertiser Lookup, Publisher Lookup and the deprecated Commission Detail (Legacy). Each is documented with a stated call limit of 25 calls per minute and returns an `application/xml` `<cj-api>` document.\n\n2. The JSON click-tracking APIs — the Click Events API (`clicks.api.cj.com`) for partners and the Publisher Tracking API (`publishertracking.api.cj.com`) for publishers. Both accept a JSON body and return `{ destinationUrl, errorMessages }`.\n\nPROVENANCE: every path, parameter name, response field, status code and error message below was read on 2026-08-13 from CJ's machine-readable documentation corpus, which the CJ Developer Portal single-page app loads from https://production-docs-assets.p.cjpowered.com/ (index at /index.yaml, one markdown file per page). Nothing here is modeled. CJ's modern surface is GraphQL — see graphql/ in this repo for the three live schemas captured by introspection.\n\nContact Support:\n Name: API Evangelist\n Email: kin@apievangelist.com",
+      "type": "text/plain"
+    }
+  }
+}

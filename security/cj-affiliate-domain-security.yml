@@ -1,4 +1,4 @@
-generated: '2026-07-11'
+generated: '2026-08-13'
 method: probed
 source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
 hosts:
@@ -23,12 +23,12 @@ domains:
 - domain: cj.com
   dnssec: false
   caa:
-  - 0 issue "globalsign.com"
+  - 0 issuewild "digicert.com"
+  - 0 issue "awstrust.com"
   - 0 issue "amazon.com"
-  - 0 issue "amazonaws.com"
-  - 0 issue "letsencrypt.org"
   - 0 issue "amazontrust.com"
   - 0 issuewild "amazon.com"
+  - 0 issue "digicert.com"
   spf: true
   dmarc: true
   dmarc_policy: quarantine

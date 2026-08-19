@@ -1,0 +1,2797 @@
+# generated: '2026-08-13'
+# method: probed
+# source: https://ads.api.cj.com/query (live GraphQL introspection, unauthenticated, HTTP 200)
+#
+# CJ Product Search / Ads API
+# Endpoint : POST https://ads.api.cj.com/query
+# Docs     : https://developers.cj.com/graphql/reference/Product%20Search
+# Auth     : Authorization: Bearer <personal-access-token>
+#            (https://developers.cj.com/account/personal-access-tokens)
+#
+# This SDL was rendered from a full __schema introspection response returned by
+# CJ's own endpoint on 2026-08-13. Nothing here is modeled or inferred.
+# Introspection is open on this endpoint without credentials; the DATA behind it
+# is not - queries require a Bearer personal access token.
+
+schema {
+  query: Query
+  mutation: Mutation
+  subscription: Subscription
+}
+
+enum Availability {
+  """Product is available"""
+  IN_STOCK
+  """Product is out of stock"""
+  OUT_OF_STOCK
+  """Product is available for pre-order"""
+  PREORDER
+  """Product is on back order"""
+  BACKORDER
+}
+
+enum FeedType {
+  """The Shopping feed type product belongs to."""
+  SHOPPING
+  """The Travel feed type product belongs to."""
+  TRAVEL
+  """The Finance feed type product belongs to."""
+  FINANCE
+  """All the feeds product belongs to."""
+  ALL
+}
+
+enum PartnerStatus {
+  """Restricts results to advertisers you have an active relationship with. If you include `partnerIds` and this argument, the results will only include products from partners that you have an active relationship with."""
+  JOINED
+  """Restricts results to advertisers you have an active relationship with. If you include `partnerIds` and this argument, the results will only include products from partners that you do not have an active relationship with."""
+  NOT_JOINED
+}
+
+enum SortBy {
+  """Products are sorted by lastUpdated"""
+  LAST_UPDATED
+  """Product are sorted by price"""
+  PRICE
+}
+
+enum SortOrder {
+  """Products are sorted in descending order"""
+  DESC
+  """Product are sorted in ascending"""
+  ASC
+}
+
+"""Annual Percentage Rate"""
+input APRInput {
+  """APR Description"""
+  aprDescription: String
+  """APR Value"""
+  aprValue: String!
+  """APR Type"""
+  aprType: String!
+}
+
+"""A decimal amount and the associated currency for a money field, e.g. price"""
+input AmountWithCurrencyInput {
+  """The amount"""
+  amount: DecimalNumber!
+  """The ISO 4217 code for the associated currency"""
+  currency: String
+}
+
+"""Certification Input"""
+input CertificationInput {
+  """Authority issuing the certification"""
+  certificationAuthority: String!
+  """Name of the certification"""
+  certificationName: String!
+  """Code of the certification"""
+  certificationCode: String
+  """Value of the certification"""
+  certificationValue: String
+}
+
+"""An advertisable credit card product"""
+input CreateCreditCardProductRequest {
+  """Unique product identifier assigned by the advertiser"""
+  id: ID!
+  """The name of the card, verbatim including registration/trademarks. Please make sure all symbols are HTML encoded. The CJ search engine uses data in this field to locate words and phrases publishers enter in the search box to locate products."""
+  title: String!
+  """Main Product image URL"""
+  imageLink: String!
+  """Description of the card/ product."""
+  description: String!
+  """The URL of the page at which a shopper can buy the product."""
+  destinationUrl: String!
+  """Excellent, Good, etc"""
+  creditRating: String!
+  """MasterCard/Visa/American Express/Discover. Please make sure all symbols are HTML encoded."""
+  processingNetwork: String!
+  """How marketing member copy should be displayed. Please make sure all bullets are HTML encoded"""
+  marketingCopy: String!
+  """List of available support applications"""
+  availableApplications: String!
+  """How non-introductory purchase APR should be displayed"""
+  nonIntroPurchAPR: APRInput!
+  """How non-introductory transfer APR should be displayed"""
+  nonIntroTransAPR: APRInput!
+  """Balance transfer fee value"""
+  balanceTransFee: FeeInput!
+  """Coupons, Sweepstakes, Hot Product, Sale/Discount., Free  Shipping, seasonal Link, hot Product"""
+  promotionType: String
+  """Consumer, Business etc"""
+  usageType: String
+  """CoBrand, Lending, Mileage, Rewards etc"""
+  cardType: String
+  """How minimum deposit should be displayed"""
+  minimumDeposit: String
+  """Relevant card categories"""
+  categories: String
+  """How mobile copy should be displayed. Please make sure all bullets are HTML encoded"""
+  mobileCopy: String
+  """How additional copy should be displayed. Please make sure all bullets are HTML encoded"""
+  additionalCopy: String
+  """How custom promotion should be displayed"""
+  customPromotion: String
+  """Numeric value of rewards. If relevant, number should be paired with the appropriate symbol. ($,%, etc."""
+  rewardsBonus: String
+  """Reward Bonus terms, must be verbatim."""
+  rewardsBonusTerms: String
+  """List of non-approved categories"""
+  prohibitedCategories: String
+  """List of recommended or approved site types"""
+  recommendedSiteType: String
+  """URL for terms and additional details."""
+  detailsRatesFeesUrl: String
+  """The name of the card/offer, verbatim including registration/trademarks. Please make sure all symbols are HTML encoded."""
+  cardName: String
+  """This field gives the information on the Penalty APR details related to the product."""
+  penaltyAPR: APRInput
+  """This field gives the information on the Cash Advance APR details related to the product."""
+  cashAdvanceAPR: APRInput
+  """This field gives the information on the Regular APR details related to the product."""
+  regularAPR: APRInput
+  """This field gives the information on the Introductory purchase APR details related to the product."""
+  introPurchAPR: APRInput
+  """This field gives the information on the Introductory transfer APR details related to the product."""
+  introTransferAPR: APRInput
+  """How cash advance fee should be displayed"""
+  cashAdvanceFee: FeeInput
+  """Late payment fee value"""
+  latePaymentFee: FeeInput
+  """Return payment fee value"""
+  returnPaymentFee: FeeInput
+  """Over limit fee value"""
+  overLimitFee: FeeInput
+  """Foreign transaction fee value"""
+  foreignTransFee: FeeInput
+  """Annual member fee value"""
+  annualMemFee: FeeInput
+  """Introductory annual member fee value"""
+  introAnnualMemFee: FeeInput
+  """How purchase grace period should be displayed"""
+  purchGracePeriod: PeriodInput
+  """How introductory annual member fee  period should be displayed"""
+  introAnnualMemFeePeriod: PeriodInput
+  """How introductory purchase APR period should be displayed"""
+  introPurchAPRPeriod: PeriodInput
+  """How introductory transfer APR period should be displayed"""
+  introTransAPRPeriod: PeriodInput
+  """How transfer grace period should be displayed"""
+  transferGracePeriod: PeriodInput
+  """How cash grace period should be displayed"""
+  cashGracePeriod: PeriodInput
+  """This field is to give leverage for the advertiser to provide any custom fields."""
+  customField1: CustomFieldInput
+  """This field is to give leverage for the advertiser to provide any custom fields."""
+  customField2: CustomFieldInput
+  """This field is to give leverage for the advertiser to provide any custom fields."""
+  customField3: CustomFieldInput
+  """This field is to give leverage for the advertiser to provide any custom fields."""
+  customField4: CustomFieldInput
+  """This field is to give leverage for the advertiser to provide any custom fields."""
+  customField5: CustomFieldInput
+  """This field specifies the Rewards offered on the card"""
+  rewards1: RewardInput
+  """This field specifies the Rewards offered on the card"""
+  rewards2: RewardInput
+  """This field specifies the Rewards offered on the card"""
+  rewards3: RewardInput
+  """This field specifies the Rewards offered on the card"""
+  rewards4: RewardInput
+  """Use this field to specify publisher group name"""
+  publisherGroupName: String
+  """The name associated with the advertiser's item list"""
+  itemListName: String
+}
+
+"""An advertisable Shopping product"""
+input CreateShoppingProductRequest {
+  """Unique product identifier"""
+  id: ID!
+  """Up to 24 additional image URLs, separated with commas"""
+  additionalImageLink: [String!]
+  """Product's brand"""
+  brand: String
+  """Certification"""
+  certification: CertificationInput
+  """Detailed product description"""
+  description: String!
+  """Name of product"""
+  title: String!
+  """The Google-defined category for the product"""
+  googleProductCategory: GoogleProductCategoryInput
+  """Standard pricing"""
+  price: AmountWithCurrencyInput!
+  """Discounted or sale price"""
+  salePrice: AmountWithCurrencyInput
+  """End date when the product’s sale price applies, if applicable"""
+  salePriceEffectiveDateEnd: String
+  """Start date when the product’s sale price applies, if applicable"""
+  salePriceEffectiveDateStart: String
+  """Shipping cost"""
+  shipping: ShippingInput
+  """
+  The weight of your product to calculate shipping costs
+  Integer + unit. Supported units: in, cm
+  """
+  shippingWeight: String
+  """
+  The dimensions of your product to calculate shipping costs
+  Integer + unit. Supported units: in, cm
+  """
+  shippingLength: String
+  """
+  The dimensions of your product to calculate shipping costs
+  Integer + unit. Supported units: in, cm
+  """
+  shippingWidth: String
+  """
+  The dimensions of your product to calculate shipping costs
+  Integer + unit. Supported units: in, cm
+  """
+  shippingHeight: String
+  """
+  Product's availability
+  Values: IN_STOCK, OUT_OF_STOCK, PREORDER
+  """
+  availability: String!
+  """The date a preordered item becomes available"""
+  availabilityDate: String
+  """The date that your product stops being available"""
+  expirationDate: String
+  """
+  The measure and dimension of your product as it is sold
+  Numeric value + unit, eg. 1.5kg, 30sqft
+  """
+  unitPricingMeasure: String
+  """
+  The product’s base measure for pricing (e.g. 100ml means the price is calculated based on a 100ml units). Optional when you submit unit_pricing_measure.
+  Integer + unit
+  """
+  unitPricingBaseMeasure: String
+  """Details of an installment payment plan (BZ only)"""
+  installment: InstallmentInput
+  """Main image URL"""
+  imageLink: String
+  """Landing page URL"""
+  link: String!
+  """Mobile-optimized landing page when you have a different URL for mobile and desktop traffic"""
+  mobileLink: String
+  """Advertiser custom product feed field"""
+  customLabel0: String
+  """Advertiser custom product feed field"""
+  customLabel1: String
+  """Advertiser custom product feed field"""
+  customLabel2: String
+  """Advertiser custom product feed field"""
+  customLabel3: String
+  """Advertiser custom product feed field"""
+  customLabel4: String
+  """Product’s parent-level ID. (Required for apparel products and only used if you have a set of products that come in different versions, for example apparel in different sizes and colors)"""
+  itemGroupId: ID
+  """The number and type of loyalty points a customer receives when buying a product (JP only)"""
+  loyaltyPoints: LoyaltyPointsInput
+  """Product category that you define for your product"""
+  productType: [String!]
+  """Your products Global Trade Item Number (GTIN)"""
+  gtin: String
+  """Product's manufacturer part number"""
+  mpn: String
+  """
+  Will be displayed if the new product doesn’t have a:
+  GTIN and brand or
+  MPN and brand
+  Values: yes, no, blank (default to yes)
+  """
+  identifierExists: String
+  """
+  Product’s condition
+  Values: new, refurbished, used
+  """
+  condition: String!
+  """Indicates if a product includes sexually suggestive content"""
+  adult: String
+  """The number of identical products sold together as a multipack"""
+  multipack: Int
+  """Indicates a product is a custom group of different products featuring one main product (e.g., a product sold in a bundle with related accessories)"""
+  isBundle: String
+  """
+  Your products energy label (EU & CH only)
+  Values: G,F,E,D,C,B,A,A+,A++,A+++
+  """
+  energyEfficiencyClass: String
+  """
+  Your products energy label (EU & CH only)
+  Values: G,F,E,D,C,B,A,A+,A++,A+++
+  """
+  energyEfficiencyClassMin: String
+  """
+  Your products energy label (EU & CH only)
+  Values: G,F,E,D,C,B,A,A+,A++,A+++
+  """
+  energyEfficiencyClassMax: String
+  """
+  Product’s targeted demographic (apparel products only)
+  Values: newborn, infant, toddler, kids, adult
+  """
+  ageGroup: String
+  """Product’s color(s) (apparel products only)"""
+  color: String
+  """
+  Product’s targeted gender (apparel products only)
+  Values: male, female, unisex
+  """
+  gender: String
+  """Product’s fabric or material"""
+  material: String
+  """Shortest number of days between when an order is placed for a product and when the product ships"""
+  minimumHandlingTime: String
+  """Longest number of days between when an order is placed for a product and when the product ships"""
+  maximumHandlingTime: String
+  """Product’s pattern or graphic print (apparel products only)"""
+  pattern: String
+  """Products size (apparel products only)"""
+  size: String
+  """
+  Apparel product's cut
+  Values: regular, petite, plus, big and tall, maternity
+  """
+  sizeType: String
+  """
+  The country of the size system your product is sized in
+  values: US, UK, EU, DE, FR, JP, CN, IT, BR, MEX, AU
+  """
+  sizeSystem: String
+  """Product sales tax details"""
+  tax: TaxInput
+  """The name associated with the advertiser's item list"""
+  itemListName: String
+  """Product's productDetail"""
+  productDetail: ProductDetailInput
+  """Product's productHighlight"""
+  productHighlight: [String!]
+  """Product's adsRedirect"""
+  adsRedirect: String
+  """Product's shoppingAdsExcludedCountry"""
+  shoppingAdsExcludedCountry: String
+  """Product's shipsFromCountry"""
+  shipsFromCountry: String
+  """Product's transitTimeLabel"""
+  transitTimeLabel: String
+  """Product's costOfGoodsSold"""
+  costOfGoodsSold: AmountWithCurrencyInput
+  """Product's costOfGoodsSold"""
+  subscriptionCost: SubscriptionCostInput
+  """
+  The dimensions of your product to calculate shipping costs
+  Integer + unit. Supported units: in, cm
+  """
+  productLength: String
+  """
+  The dimensions of your product to calculate shipping costs
+  Integer + unit. Supported units: in, cm
+  """
+  productWidth: String
+  """
+  The dimensions of your product to calculate shipping costs
+  Integer + unit. Supported units: in, cm
+  """
+  productHeight: String
+  """
+  The weight of your product to calculate shipping costs
+  Integer + unit. Supported units: in, cm
+  """
+  productWeight: String
+}
+
+"""Custom Field"""
+input CustomFieldInput {
+  """This field is to give leverage for the advertiser to provide any custom fields."""
+  customFieldName: String!
+  """Type of the custom field."""
+  customFieldType: String!
+  """Value of the custom field."""
+  customFieldValue: String!
+}
+
+"""FEE"""
+input FeeInput {
+  """Fee Description"""
+  feeDescription: String
+  """Fee Value Percent"""
+  feeValuePercent: String
+  """Fee Value Amount"""
+  feeValueAmount: FinanceAmountWithCurrencyInput
+}
+
+"""A string amount and the associated currency for money input fields of finance, e.g. fee"""
+input FinanceAmountWithCurrencyInput {
+  """The amount"""
+  amount: String!
+  """The ISO 4217 code for the associated currency"""
+  currency: String
+}
+
+"""Google Product Category Input"""
+input GoogleProductCategoryInput {
+  """Google product category name"""
+  name: String
+  """Google product category id"""
+  id: Int
+}
+
+"""Installment"""
+input InstallmentInput {
+  """Months"""
+  months: Int
+  """Amount"""
+  amount: AmountWithCurrencyInput
+}
+
+"""Loyalty points"""
+input LoyaltyPointsInput {
+  """Name"""
+  name: String
+  """Points"""
+  points: Int
+  """Ratio"""
+  ratio: DecimalNumber
+}
+
+"""Period"""
+input PeriodInput {
+  """Description of the period value"""
+  periodDescription: String!
+  """duration of the period"""
+  periodValue: String!
+  """Type of the duration which is either day/month/year"""
+  periodType: String!
+}
+
+"""ProductDetail field"""
+input ProductDetailInput {
+  """Whether the ProductDetail sectionName"""
+  sectionName: String
+  """Whether the ProductDetail attributeName"""
+  attributeName: String!
+  """Whether the ProductDetail attributeValue"""
+  attributeValue: String!
+}
+
+"""Reward Input Field"""
+input RewardInput {
+  """Reward rate must be verbatim."""
+  rewardRate: String
+  """Reward type must be verbatim."""
+  rewardType: String
+  """Terms on which the reward can be redeemed."""
+  rewardTerms: String
+}
+
+"""A decimal amount and the associated currency for a money field for shipping, e.g. price"""
+input ShippingAmountWithCurrencyInput {
+  """The amount"""
+  amount: DecimalNumber
+  """The ISO 4217 code for the associated currency"""
+  currency: String
+}
+
+"""The shipping information for an advertisable product"""
+input ShippingInput {
+  """Fixed shipping cost, including VAT if required"""
+  price: ShippingAmountWithCurrencyInput!
+  """Shipping service class or shipping speed"""
+  service: String
+  """Shipping location group name"""
+  locationGroupName: String
+  """Shipping region delivery area"""
+  region: String
+  """Shipping postal code"""
+  postalCode: String
+  """Shipping location identifier"""
+  locationId: ID
+  """Shipping country code (2 digit code)"""
+  country: String
+  """Shortest number of days between when an order is placed for a product and when the product ships"""
+  minimumHandlingTime: String
+  """Longest number of days between when an order is placed for a product and when the product ships"""
+  maximumHandlingTime: String
+  """minimum number of days between when a product is handed off to a shipping carrier and when it's delivered to the customer"""
+  minimumTransitTime: String
+  """maximum number of days between when a product is handed off to a shipping carrier and when it's delivered to the customer"""
+  maximumTransitTime: String
+}
+
+"""SubscriptionCost field"""
+input SubscriptionCostInput {
+  """Whether the SubscriptionCostInput sectionName"""
+  period: String!
+  """Whether the SubscriptionCostInput attributeName"""
+  periodLength: Int!
+  """Whether the SubscriptionCostInput attributeValue"""
+  amount: AmountWithCurrencyInput!
+}
+
+"""Tax field"""
+input TaxInput {
+  """The product's tax rate as a percent"""
+  rate: DecimalNumber
+  """The two letter country code of the country the product can be delivered to"""
+  countryCode: String
+  """The region in which the tax rate applies"""
+  region: String
+  """The postal code in which the tax rate applies"""
+  postalCode: String
+  """The location id in which the tax rate applies"""
+  locationId: ID
+  """The location name in which the tax rate applies"""
+  locationGroupName: String
+  """Whether the advertiser charges a tax on the shipping cost"""
+  taxShip: String
+}
+
+"""An advertisable update credit card product"""
+input UpdateCreditCardProductRequest {
+  """Unique product identifier assigned by the advertiser"""
+  id: ID!
+  """The name of the card, verbatim including registration/trademarks. Please make sure all symbols are HTML encoded. The CJ search engine uses data in this field to locate words and phrases publishers enter in the search box to locate products."""
+  title: String
+  """Main Product image URL"""
+  imageLink: String
+  """Description of the card/ product."""
+  description: String
+  """The URL of the page at which a shopper can buy the product."""
+  destinationUrl: String
+  """Excellent, Good, etc"""
+  creditRating: String
+  """MasterCard/Visa/American Express/Discover. Please make sure all symbols are HTML encoded."""
+  processingNetwork: String
+  """How marketing member copy should be displayed. Please make sure all bullets are HTML encoded"""
+  marketingCopy: String
+  """List of available support applications"""
+  availableApplications: String
+  """How non-introductory purchase APR should be displayed"""
+  nonIntroPurchAPR: APRInput
+  """How non-introductory transfer APR should be displayed"""
+  nonIntroTransAPR: APRInput
+  """Balance transfer fee value"""
+  balanceTransFee: FeeInput
+  """Coupons, Sweepstakes, Hot Product, Sale/Discount., Free  Shipping, seasonal Link, hot Product"""
+  promotionType: String
+  """Consumer, Business etc"""
+  usageType: String
+  """CoBrand, Lending, Mileage, Rewards etc"""
+  cardType: String
+  """How minimum deposit should be displayed"""
+  minimumDeposit: String
+  """Relevant card categories"""
+  categories: String
+  """How mobile copy should be displayed. Please make sure all bullets are HTML encoded"""
+  mobileCopy: String
+  """How additional copy should be displayed. Please make sure all bullets are HTML encoded"""
+  additionalCopy: String
+  """How custom promotion should be displayed"""
+  customPromotion: String
+  """Numeric value of rewards. If relevant, number should be paired with the appropriate symbol. ($,%, etc."""
+  rewardsBonus: String
+  """Reward Bonus terms, must be verbatim."""
+  rewardsBonusTerms: String
+  """List of non-approved categories"""
+  prohibitedCategories: String
+  """List of recommended or approved site types"""
+  recommendedSiteType: String
+  """URL for terms and additional details."""
+  detailsRatesFeesUrl: String
+  """The name of the card/offer, verbatim including registration/trademarks. Please make sure all symbols are HTML encoded."""
+  cardName: String
+  """This field gives the information on the Penalty APR details related to the product."""
+  penaltyAPR: APRInput
+  """This field gives the information on the Cash Advance APR details related to the product."""
+  cashAdvanceAPR: APRInput
+  """This field gives the information on the Regular APR details related to the product."""
+  regularAPR: APRInput
+  """This field gives the information on the Introductory purchase APR details related to the product."""
+  introPurchAPR: APRInput
+  """This field gives the information on the Introductory transfer APR details related to the product."""
+  introTransferAPR: APRInput
+  """How cash advance fee should be displayed"""
+  cashAdvanceFee: FeeInput
+  """Late payment fee value"""
+  latePaymentFee: FeeInput
+  """Return payment fee value"""
+  returnPaymentFee: FeeInput
+  """Over limit fee value"""
+  overLimitFee: FeeInput
+  """Foreign transaction fee value"""
+  foreignTransFee: FeeInput
+  """Annual member fee value"""
+  annualMemFee: FeeInput
+  """Introductory annual member fee value"""
+  introAnnualMemFee: FeeInput
+  """How purchase grace period should be displayed"""
+  purchGracePeriod: PeriodInput
+  """How introductory annual member fee  period should be displayed"""
+  introAnnualMemFeePeriod: PeriodInput
+  """How introductory purchase APR period should be displayed"""
+  introPurchAPRPeriod: PeriodInput
+  """How introductory transfer APR period should be displayed"""
+  introTransAPRPeriod: PeriodInput
+  """How transfer grace period should be displayed"""
+  transferGracePeriod: PeriodInput
+  """How cash grace period should be displayed"""
+  cashGracePeriod: PeriodInput
+  """This field is to give leverage for the advertiser to provide any custom fields."""
+  customField1: CustomFieldInput
+  """This field is to give leverage for the advertiser to provide any custom fields."""
+  customField2: CustomFieldInput
+  """This field is to give leverage for the advertiser to provide any custom fields."""
+  customField3: CustomFieldInput
+  """This field is to give leverage for the advertiser to provide any custom fields."""
+  customField4: CustomFieldInput
+  """This field is to give leverage for the advertiser to provide any custom fields."""
+  customField5: CustomFieldInput
+  """This field specifies the Rewards offered on the card"""
+  rewards1: RewardInput
+  """This field specifies the Rewards offered on the card"""
+  rewards2: RewardInput
+  """This field specifies the Rewards offered on the card"""
+  rewards3: RewardInput
+  """This field specifies the Rewards offered on the card"""
+  rewards4: RewardInput
+  """Use this field to specify publisher group name"""
+  publisherGroupName: String
+  """The name associated with the advertiser's item list"""
+  itemListName: String
+}
+
+"""An advertisable Shopping product update"""
+input UpdateShoppingProductRequest {
+  """Unique product identifier"""
+  id: ID!
+  """Up to 24 additional image URLs, separated with commas"""
+  additionalImageLink: [String!]
+  """Product's brand"""
+  brand: String
+  """Certification"""
+  certification: CertificationInput
+  """Detailed product description"""
+  description: String
+  """Name of product"""
+  title: String
+  """The Google-defined category for the product"""
+  googleProductCategory: GoogleProductCategoryInput
+  """Standard pricing"""
+  price: AmountWithCurrencyInput
+  """Discounted or sale price"""
+  salePrice: AmountWithCurrencyInput
+  """End date when the product’s sale price applies, if applicable"""
+  salePriceEffectiveDateEnd: String
+  """Start date when the product’s sale price applies, if applicable"""
+  salePriceEffectiveDateStart: String
+  """Shipping cost"""
+  shipping: ShippingInput
+  """
+  The weight of your product to calculate shipping costs
+  Integer + unit. Supported units: in, cm
+  """
+  shippingWeight: String
+  """
+  The dimensions of your product to calculate shipping costs
+  Integer + unit. Supported units: in, cm
+  """
+  shippingLength: String
+  """
+  The dimensions of your product to calculate shipping costs
+  Integer + unit. Supported units: in, cm
+  """
+  shippingWidth: String
+  """
+  The dimensions of your product to calculate shipping costs
+  Integer + unit. Supported units: in, cm
+  """
+  shippingHeight: String
+  """
+  Product's availability
+  Values: IN_STOCK, OUT_OF_STOCK, PREORDER
+  """
+  availability: String
+  """The date a preordered item becomes available"""
+  availabilityDate: String
+  """The date that your product stops being available"""
+  expirationDate: String
+  """
+  The measure and dimension of your product as it is sold
+  Numeric value + unit, eg. 1.5kg, 30sqft
+  """
+  unitPricingMeasure: String
+  """
+  The product’s base measure for pricing (e.g. 100ml means the price is calculated based on a 100ml units). Optional when you submit unit_pricing_measure.
+  Integer + unit
+  """
+  unitPricingBaseMeasure: String
+  """Details of an installment payment plan (BZ only)"""
+  installment: InstallmentInput
+  """Main image URL"""
+  imageLink: String
+  """Landing page URL"""
+  link: String
+  """Mobile-optimized landing page when you have a different URL for mobile and desktop traffic"""
+  mobileLink: String
+  """Advertiser custom product feed field"""
+  customLabel0: String
+  """Advertiser custom product feed field"""
+  customLabel1: String
+  """Advertiser custom product feed field"""
+  customLabel2: String
+  """Advertiser custom product feed field"""
+  customLabel3: String
+  """Advertiser custom product feed field"""
+  customLabel4: String
+  """Product’s parent-level ID. (Required for apparel products and only used if you have a set of products that come in different versions, for example apparel in different sizes and colors)"""
+  itemGroupId: ID
+  """The number and type of loyalty points a customer receives when buying a product (JP only)"""
+  loyaltyPoints: LoyaltyPointsInput
+  """Product category that you define for your product"""
+  productType: [String!]
+  """Your products Global Trade Item Number (GTIN)"""
+  gtin: String
+  """Product's manufacturer part number"""
+  mpn: String
+  """
+  Will be displayed if the new product doesn’t have a:
+  GTIN and brand or
+  MPN and brand
+  Values: yes, no, blank (default to yes)
+  """
+  identifierExists: String
+  """
+  Product’s condition
+  Values: new, refurbished, used
+  """
+  condition: String
+  """Indicates if a product includes sexually suggestive content"""
+  adult: String
+  """The number of identical products sold together as a multipack"""
+  multipack: Int
+  """Indicates a product is a custom group of different products featuring one main product (e.g., a product sold in a bundle with related accessories)"""
+  isBundle: String
+  """
+  Your products energy label (EU & CH only)
+  Values: G,F,E,D,C,B,A,A+,A++,A+++
+  """
+  energyEfficiencyClass: String
+  """
+  Your products energy label (EU & CH only)
+  Values: G,F,E,D,C,B,A,A+,A++,A+++
+  """
+  energyEfficiencyClassMin: String
+  """
+  Your products energy label (EU & CH only)
+  Values: G,F,E,D,C,B,A,A+,A++,A+++
+  """
+  energyEfficiencyClassMax: String
+  """
+  Product’s targeted demographic (apparel products only)
+  Values: newborn, infant, toddler, kids, adult
+  """
+  ageGroup: String
+  """Product’s color(s) (apparel products only)"""
+  color: String
+  """
+  Product’s targeted gender (apparel products only)
+  Values: male, female, unisex
+  """
+  gender: String
+  """Product’s fabric or material"""
+  material: String
+  """Shortest number of days between when an order is placed for a product and when the product ships"""
+  minimumHandlingTime: String
+  """Longest number of days between when an order is placed for a product and when the product ships"""
+  maximumHandlingTime: String
+  """Product’s pattern or graphic print (apparel products only)"""
+  pattern: String
+  """Products size (apparel products only)"""
+  size: String
+  """
+  Apparel product's cut
+  Values: regular, petite, plus, big and tall, maternity
+  """
+  sizeType: String
+  """
+  The country of the size system your product is sized in
+  values: US, UK, EU, DE, FR, JP, CN, IT, BR, MEX, AU
+  """
+  sizeSystem: String
+  """Product sales tax details"""
+  tax: TaxInput
+  """The name associated with the advertiser's item list"""
+  itemListName: String
+  """Product's productDetail"""
+  productDetail: ProductDetailInput
+  """Product's productHighlight"""
+  productHighlight: [String!]
+  """Product's adsRedirect"""
+  adsRedirect: String
+  """Product's shoppingAdsExcludedCountry"""
+  shoppingAdsExcludedCountry: String
+  """Product's shipsFromCountry"""
+  shipsFromCountry: String
+  """Product's transitTimeLabel"""
+  transitTimeLabel: String
+  """Product's costOfGoodsSold"""
+  costOfGoodsSold: AmountWithCurrencyInput
+  """Product's costOfGoodsSold"""
+  subscriptionCost: SubscriptionCostInput
+  """
+  The dimensions of your product to calculate shipping costs
+  Integer + unit. Supported units: in, cm
+  """
+  productLength: String
+  """
+  The dimensions of your product to calculate shipping costs
+  Integer + unit. Supported units: in, cm
+  """
+  productWidth: String
+  """
+  The dimensions of your product to calculate shipping costs
+  Integer + unit. Supported units: in, cm
+  """
+  productHeight: String
+  """
+  The weight of your product to calculate shipping costs
+  Integer + unit. Supported units: in, cm
+  """
+  productWeight: String
+}
+
+"""An advertisable financeProduct"""
+interface FinanceProduct {
+  """Unique product identifier assigned by the advertiser"""
+  id: ID!
+  """Advertisers link id"""
+  adId: ID!
+  """Advertisers account id (CID)"""
+  advertiserId: ID!
+  """Advertisers Name"""
+  advertiserName: String!
+  """Name of product"""
+  title: String!
+  """Detailed product description"""
+  description: String!
+  """Main image URL"""
+  imageLink: String!
+  """The URL of the page at which a shopper can buy the product."""
+  destinationUrl: String!
+  """Whether the product has been deleted by the advertiser"""
+  isDeleted: Boolean!
+  """Coupons, Sweepstakes, Hot Product, Sale/Discount., Free  Shipping, seasonal Link, hot Product"""
+  promotionType: String
+  """The type of the feed the product belongs to (i.e. shopping, travel)"""
+  sourceFeedType: String
+  """The link code for the product"""
+  linkCode(pid: ID!, shopperId: ID): LinkCode
+  """Last updated date of product"""
+  lastUpdated: Instant!
+  """Restrict search results based on the item list ID"""
+  itemListId: ID
+  """The name associated with the advertiser's item list"""
+  itemListName: String
+  """Advertisers publisher group name by Id"""
+  publisherGroupName: String
+}
+
+"""An advertisable product"""
+interface Product {
+  """Up to 24 additional image URLs, separated with commas"""
+  additionalImageLink: [String!]
+  """Advertisers link id"""
+  adId: ID!
+  """Country that the advertiser is in"""
+  advertiserCountry: String
+  """Advertisers account id (CID)"""
+  advertiserId: ID!
+  """Advertisers Name"""
+  advertiserName: String!
+  """Product's brand"""
+  brand: String
+  """Product feed catalog id"""
+  catalogId: ID
+  """Product feed catalog name"""
+  catalogName: String
+  """Advertiser custom product feed field"""
+  customLabel0: String
+  """Advertiser custom product feed field"""
+  customLabel1: String
+  """Advertiser custom product feed field"""
+  customLabel2: String
+  """Advertiser custom product feed field"""
+  customLabel3: String
+  """Advertiser custom product feed field"""
+  customLabel4: String
+  """Detailed product description"""
+  description: String!
+  """Unique product identifier"""
+  id: ID!
+  """Main image URL"""
+  imageLink: String
+  """Whether the product has been deleted by the advertiser"""
+  isDeleted: Boolean!
+  """Whether the advertiser is joined to publisher"""
+  joinedStatus: Boolean!
+  """Id associated with an advertiser's item list"""
+  itemListId: ID
+  """The name associated with the advertiser's item list"""
+  itemListName: String
+  """Last updated date of product"""
+  lastUpdated: Instant!
+  """Created date of product"""
+  createdAt: Instant
+  """Landing page URL"""
+  link: String
+  """The link code for the product"""
+  linkCode(pid: ID!, shopperId: ID): LinkCode
+  """Mobile-optimized landing page when you have a different URL for mobile and desktop traffic"""
+  mobileLink: String
+  """Standard pricing"""
+  price: AmountWithCurrency!
+  """Effective price calculated from sale price or price"""
+  effectiveDerivedPrice: AmountWithCurrency
+  """Product's discount percentage"""
+  discountPercentage: Float
+  """Discounted or sale price"""
+  salePrice: AmountWithCurrency
+  """End date when the product’s sale price applies, if applicable"""
+  salePriceEffectiveDateEnd: Instant
+  """Start date when the product’s sale price applies, if applicable"""
+  salePriceEffectiveDateStart: Instant
+  """Servicable areas of the product (2 digit country code)"""
+  serviceableAreas: String
+  """Shipping cost"""
+  shipping: Shipping
+  """The type of the feed the product belongs to (i.e. shopping, travel)"""
+  sourceFeedType: String
+  """The primary country where the product is available for sale, or to be shipped to"""
+  targetCountry: String
+  """Name of product"""
+  title: String
+}
+
+"""Annual Percentage Rate"""
+type APR {
+  """APR Description"""
+  aprDescription: String
+  """APR Value"""
+  aprValue: String!
+  """APR Type"""
+  aprType: String!
+}
+
+"""The additional fee information for a Travel Experience advertisable"""
+type AdditionalFee {
+  """Details about any additional fees"""
+  amount: AmountWithCurrency!
+  """Unique identifier, eg. property ID, concert ID, package ID, event ID"""
+  id: ID
+  """Name of additional fees"""
+  name: String
+}
+
+"""The address information for a Travel Experience advertisable"""
+type Address {
+  """Location city"""
+  city: String
+  """Location state or province"""
+  provinceState: String
+  """Location street name and number"""
+  streetAddress: String
+  """Location zip or postal code"""
+  zipCode: String
+  """Location latitude"""
+  latitude: String
+  """Location longitude"""
+  longitude: String
+  """Location region"""
+  regionName: String
+  """Location country"""
+  country: String
+  """Contact phone number"""
+  phoneNumber: String
+}
+
+"""A decimal amount and the associated currency for a money field, e.g. price"""
+type AmountWithCurrency {
+  """The amount"""
+  amount: DecimalNumber!
+  """The ISO 4217 code for the associated currency"""
+  currency: String
+}
+
+"""Allows user to describe certifications required by local regulations associated with a product"""
+type Certification {
+  """Authority issuing the certification"""
+  certificationAuthority: String!
+  """Name of the certification"""
+  certificationName: String!
+  """Code of the certification"""
+  certificationCode: String
+  """Value of the certification"""
+  certificationValue: String
+}
+
+"""Response object for createCreditCardProducts mutation query"""
+type CreateCreditCardProductResponse {
+  """Defines the error"""
+  errors: [ProductMutationError!]
+  """Array of product that were successfully processed for creation"""
+  response: [CreditCardProductCreateResponse!]
+}
+
+"""Response object for createShoppingProducts mutation query"""
+type CreateShoppingProductResponse {
+  """Defines the error"""
+  errors: [ProductMutationError!]
+  """Array of product that were successfully processed for creation"""
+  response: [ShoppingProductCreateResponse!]
+}
+
+"""An advertisable finance creditCard product"""
+type CreditCard implements FinanceProduct {
+  """Unique product identifier assigned by the advertiser"""
+  id: ID!
+  """The name of the card, verbatim including registration/trademarks. Please make sure all symbols are HTML encoded. The CJ search engine uses data in this field to locate words and phrases publishers enter in the search box to locate products."""
+  title: String!
+  """Advertisers feed id"""
+  adId: ID!
+  """Advertisers account id (CID)"""
+  advertiserId: ID!
+  """Advertisers Name"""
+  advertiserName: String!
+  """Whether the product has been deleted by the advertiser"""
+  isDeleted: Boolean!
+  """Main Product image URL"""
+  imageLink: String!
+  """Description of the card/ product."""
+  description: String!
+  """The URL of the page at which a shopper can buy the product."""
+  destinationUrl: String!
+  """Excellent, Good, etc"""
+  creditRating: String!
+  """MasterCard/Visa/American Express/Discover. Please make sure all symbols are HTML encoded."""
+  processingNetwork: String!
+  """How marketing member fropy should be displayed. Please make sure all bullets are HTML encoded"""
+  marketingCopy: String!
+  """List of available support applications"""
+  availableApplications: String!
+  """How non-introductory transfer APR should be displayed"""
+  nonIntroTransAPR: APR!
+  """How non-introductory purchase APR should be displayed"""
+  nonIntroPurchAPR: APR
+  """Balance transfer fee value"""
+  balanceTransFee: Fee!
+  """Coupons, Sweepstakes, Hot Product, Sale/Discount., Free  Shipping, seasonal Link, hot Product"""
+  promotionType: String
+  """Consumer, Business etc"""
+  usageType: String
+  """CoBrand, Lending, Mileage, Rewards etc"""
+  cardType: String
+  """How minimum deposit should be displayed"""
+  minimumDeposit: String
+  """Relevant card categories"""
+  categories: String
+  """How mobile copy should be displayed. Please make sure all bullets are HTML encoded"""
+  mobileCopy: String
+  """How additional copy should be displayed. Please make sure all bullets are HTML encoded"""
+  additionalCopy: String
+  """How custom promotion should be displayed"""
+  customPromotion: String
+  """Numeric value of rewards. If relevant, number should be paired with the appropriate symbol. ($,%, etc."""
+  rewardsBonus: String
+  """Reward Bonus terms, must be verbatim."""
+  rewardsBonusTerms: String
+  """List of non-approved categories"""
+  prohibitedCategories: String
+  """List of recommended or approved site types"""
+  recommendedSiteType: String
+  """URL for terms and additional details."""
+  detailsRatesFeesUrl: String
+  """The name of the card/offer, verbatim including registration/trademarks. Please make sure all symbols are HTML encoded."""
+  cardName: String
+  """This field gives the information on the Penalty APR details related to the product."""
+  penaltyAPR: APR
+  """This field gives the information on the Cash Advance APR details related to the product."""
+  cashAdvanceAPR: APR
+  """This field gives the information on the Regular APR details related to the product."""
+  regularAPR: APR
+  """This field gives the information on the Introductory purchase APR details related to the product."""
+  introPurchAPR: APR
+  """This field gives the information on the Introductory transfer APR details related to the product."""
+  introTransferAPR: APR
+  """How cash advance fee should be displayed"""
+  cashAdvanceFee: Fee
+  """Late payment fee value"""
+  latePaymentFee: Fee
+  """Return payment fee value"""
+  returnPaymentFee: Fee
+  """Over limit fee value"""
+  overLimitFee: Fee
+  """Foreign transaction fee value"""
+  foreignTransFee: Fee
+  """Introductory annual member fee value"""
+  introAnnualMemFee: Fee
+  """Annual member fee value"""
+  annualMemFee: Fee
+  """How purchase grace period should be displayed"""
+  purchGracePeriod: Period
+  """How introductory annual member fee  period should be displayed"""
+  introAnnualMemFeePeriod: Period
+  """How introductory purchase APR period should be displayed"""
+  introPurchAPRPeriod: Period
+  """How introductory transfer APR period should be displayed"""
+  introTransAPRPeriod: Period
+  """How transfer grace period should be displayed"""
+  transferGracePeriod: Period
+  """How cash grace period should be displayed"""
+  cashGracePeriod: Period
+  """This field is to give leverage for the advertiser to provide any custom fields."""
+  customField1: CustomField
+  """This field is to give leverage for the advertiser to provide any custom fields."""
+  customField2: CustomField
+  """This field is to give leverage for the advertiser to provide any custom fields."""
+  customField3: CustomField
+  """This field is to give leverage for the advertiser to provide any custom fields."""
+  customField4: CustomField
+  """This field is to give leverage for the advertiser to provide any custom fields."""
+  customField5: CustomField
+  """This field specifies the Rewards offered on the card"""
+  rewards1: Reward
+  """This field specifies the Rewards offered on the card"""
+  rewards2: Reward
+  """This field specifies the Rewards offered on the card"""
+  rewards3: Reward
+  """This field specifies the Rewards offered on the card"""
+  rewards4: Reward
+  """The link code for the product"""
+  linkCode(pid: ID!, shopperId: ID): LinkCode
+  """Last updated date of product"""
+  lastUpdated: Instant!
+  """The type of the feed the product belongs to (i.e. shopping, travel)"""
+  sourceFeedType: String
+  """Restrict search results based on the item list ID"""
+  itemListId: ID
+  """The name associated with the advertiser's item list"""
+  itemListName: String
+  """Advertisers publisher group name by Id"""
+  publisherGroupName: String
+}
+
+"""An advertisable credit card product"""
+type CreditCardProductCreateResponse {
+  """Unique product identifier assigned by the advertiser"""
+  id: ID!
+  """The name of the card, verbatim including registration/trademarks. Please make sure all symbols are HTML encoded. The CJ search engine uses data in this field to locate words and phrases publishers enter in the search box to locate products."""
+  title: String!
+  """Main Product image URL"""
+  imageLink: String!
+  """Description of the card/ product."""
+  description: String!
+  """The URL of the page at which a shopper can buy the product."""
+  destinationUrl: String!
+  """Excellent, Good, etc"""
+  creditRating: String!
+  """MasterCard/Visa/American Express/Discover. Please make sure all symbols are HTML encoded."""
+  processingNetwork: String!
+  """How marketing member copy should be displayed. Please make sure all bullets are HTML encoded"""
+  marketingCopy: String!
+  """List of available support applications"""
+  availableApplications: String!
+  """How non-introductory transfer APR should be displayed"""
+  nonIntroTransAPR: APR!
+  """How non-introductory purchase APR should be displayed"""
+  nonIntroPurchAPR: APR!
+  """Balance transfer fee value"""
+  balanceTransFee: Fee!
+  """Coupons, Sweepstakes, Hot Product, Sale/Discount., Free  Shipping, seasonal Link, hot Product"""
+  promotionType: String
+  """Consumer, Business etc"""
+  usageType: String
+  """CoBrand, Lending, Mileage, Rewards etc"""
+  cardType: String
+  """How minimum deposit should be displayed"""
+  minimumDeposit: String
+  """Relevant card categories"""
+  categories: String
+  """How mobile copy should be displayed. Please make sure all bullets are HTML encoded"""
+  mobileCopy: String
+  """How additional copy should be displayed. Please make sure all bullets are HTML encoded"""
+  additionalCopy: String
+  """How custom promotion should be displayed"""
+  customPromotion: String
+  """Numeric value of rewards. If relevant, number should be paired with the appropriate symbol. ($,%, etc."""
+  rewardsBonus: String
+  """Reward Bonus terms, must be verbatim."""
+  rewardsBonusTerms: String
+  """List of non-approved categories"""
+  prohibitedCategories: String
+  """List of recommended or approved site types"""
+  recommendedSiteType: String
+  """URL for terms and additional details."""
+  detailsRatesFeesUrl: String
+  """The name of the card/offer, verbatim including registration/trademarks. Please make sure all symbols are HTML encoded."""
+  cardName: String
+  """This field gives the information on the Penalty APR details related to the product."""
+  penaltyAPR: APR
+  """This field gives the information on the Cash Advance APR details related to the product."""
+  cashAdvanceAPR: APR
+  """This field gives the information on the Regular APR details related to the product."""
+  regularAPR: APR
+  """This field gives the information on the Introductory purchase APR details related to the product."""
+  introPurchAPR: APR
+  """This field gives the information on the Introductory transfer APR details related to the product."""
+  introTransferAPR: APR
+  """How cash advance fee should be displayed"""
+  cashAdvanceFee: Fee
+  """Late payment fee value"""
+  latePaymentFee: Fee
+  """Return payment fee value"""
+  returnPaymentFee: Fee
+  """Over limit fee value"""
+  overLimitFee: Fee
+  """Foreign transaction fee value"""
+  foreignTransFee: Fee
+  """Introductory annual member fee value"""
+  introAnnualMemFee: Fee
+  """Annual member fee value"""
+  annualMemFee: Fee
+  """How purchase grace period should be displayed"""
+  purchGracePeriod: Period
+  """How introductory annual member fee  period should be displayed"""
+  introAnnualMemFeePeriod: Period
+  """How introductory purchase APR period should be displayed"""
+  introPurchAPRPeriod: Period
+  """How introductory transfer APR period should be displayed"""
+  introTransAPRPeriod: Period
+  """How transfer grace period should be displayed"""
+  transferGracePeriod: Period
+  """How cash grace period should be displayed"""
+  cashGracePeriod: Period
+  """This field is to give leverage for the advertiser to provide any custom fields."""
+  customField1: CustomField
+  """This field is to give leverage for the advertiser to provide any custom fields."""
+  customField2: CustomField
+  """This field is to give leverage for the advertiser to provide any custom fields."""
+  customField3: CustomField
+  """This field is to give leverage for the advertiser to provide any custom fields."""
+  customField4: CustomField
+  """This field is to give leverage for the advertiser to provide any custom fields."""
+  customField5: CustomField
+  """This field specifies the Rewards offered on the card"""
+  rewards1: Reward
+  """This field specifies the Rewards offered on the card"""
+  rewards2: Reward
+  """This field specifies the Rewards offered on the card"""
+  rewards3: Reward
+  """This field specifies the Rewards offered on the card"""
+  rewards4: Reward
+  """The name associated with the advertiser's item list"""
+  itemListName: String
+}
+
+"""An advertisable update credit card product"""
+type CreditCardProductUpdateResponse {
+  """Unique product identifier assigned by the advertiser"""
+  id: ID!
+  """The name of the card, verbatim including registration/trademarks. Please make sure all symbols are HTML encoded. The CJ search engine uses data in this field to locate words and phrases publishers enter in the search box to locate products."""
+  title: String
+  """Main Product image URL"""
+  imageLink: String
+  """Description of the card/ product."""
+  description: String
+  """The URL of the page at which a shopper can buy the product."""
+  destinationUrl: String
+  """Excellent, Good, etc"""
+  creditRating: String
+  """MasterCard/Visa/American Express/Discover. Please make sure all symbols are HTML encoded."""
+  processingNetwork: String
+  """How marketing member copy should be displayed. Please make sure all bullets are HTML encoded"""
+  marketingCopy: String
+  """List of available support applications"""
+  availableApplications: String
+  """How non-introductory transfer APR should be displayed"""
+  nonIntroTransAPR: APR
+  """How non-introductory purchase APR should be displayed"""
+  nonIntroPurchAPR: APR
+  """Balance transfer fee value"""
+  balanceTransFee: Fee
+  """Coupons, Sweepstakes, Hot Product, Sale/Discount., Free  Shipping, seasonal Link, hot Product"""
+  promotionType: String
+  """Consumer, Business etc"""
+  usageType: String
+  """CoBrand, Lending, Mileage, Rewards etc"""
+  cardType: String
+  """How minimum deposit should be displayed"""
+  minimumDeposit: String
+  """Relevant card categories"""
+  categories: String
+  """How mobile copy should be displayed. Please make sure all bullets are HTML encoded"""
+  mobileCopy: String
+  """How additional copy should be displayed. Please make sure all bullets are HTML encoded"""
+  additionalCopy: String
+  """How custom promotion should be displayed"""
+  customPromotion: String
+  """Numeric value of rewards. If relevant, number should be paired with the appropriate symbol. ($,%, etc."""
+  rewardsBonus: String
+  """Reward Bonus terms, must be verbatim."""
+  rewardsBonusTerms: String
+  """List of non-approved categories"""
+  prohibitedCategories: String
+  """List of recommended or approved site types"""
+  recommendedSiteType: String
+  """URL for terms and additional details."""
+  detailsRatesFeesUrl: String
+  """The name of the card/offer, verbatim including registration/trademarks. Please make sure all symbols are HTML encoded."""
+  cardName: String
+  """This field gives the information on the Penalty APR details related to the product."""
+  penaltyAPR: APR
+  """This field gives the information on the Cash Advance APR details related to the product."""
+  cashAdvanceAPR: APR
+  """This field gives the information on the Regular APR details related to the product."""
+  regularAPR: APR
+  """This field gives the information on the Introductory purchase APR details related to the product."""
+  introPurchAPR: APR
+  """This field gives the information on the Introductory transfer APR details related to the product."""
+  introTransferAPR: APR
+  """How cash advance fee should be displayed"""
+  cashAdvanceFee: Fee
+  """Late payment fee value"""
+  latePaymentFee: Fee
+  """Return payment fee value"""
+  returnPaymentFee: Fee
+  """Over limit fee value"""
+  overLimitFee: Fee
+  """Foreign transaction fee value"""
+  foreignTransFee: Fee
+  """Introductory annual member fee value"""
+  introAnnualMemFee: Fee
+  """Annual member fee value"""
+  annualMemFee: Fee
+  """How purchase grace period should be displayed"""
+  purchGracePeriod: Period
+  """How introductory annual member fee  period should be displayed"""
+  introAnnualMemFeePeriod: Period
+  """How introductory purchase APR period should be displayed"""
+  introPurchAPRPeriod: Period
+  """How introductory transfer APR period should be displayed"""
+  introTransAPRPeriod: Period
+  """How transfer grace period should be displayed"""
+  transferGracePeriod: Period
+  """How cash grace period should be displayed"""
+  cashGracePeriod: Period
+  """This field is to give leverage for the advertiser to provide any custom fields."""
+  customField1: CustomField
+  """This field is to give leverage for the advertiser to provide any custom fields."""
+  customField2: CustomField
+  """This field is to give leverage for the advertiser to provide any custom fields."""
+  customField3: CustomField
+  """This field is to give leverage for the advertiser to provide any custom fields."""
+  customField4: CustomField
+  """This field is to give leverage for the advertiser to provide any custom fields."""
+  customField5: CustomField
+  """This field specifies the Rewards offered on the card"""
+  rewards1: Reward
+  """This field specifies the Rewards offered on the card"""
+  rewards2: Reward
+  """This field specifies the Rewards offered on the card"""
+  rewards3: Reward
+  """This field specifies the Rewards offered on the card"""
+  rewards4: Reward
+  """The name associated with the advertiser's item list"""
+  itemListName: String
+}
+
+"""Custom Field"""
+type CustomField {
+  """This field is to give leverage for the advertiser to provide any custom fields."""
+  customFieldName: String!
+  """Type of the custom field."""
+  customFieldType: String!
+  """Value of the custom field."""
+  customFieldValue: String!
+}
+
+"""Response object for deleteShoppingProducts mutation query"""
+type DeleteProductResponse {
+  """Defines the error"""
+  errors: [ProductMutationError!]
+  """Array of Delete Summary which provides status of every product deleted."""
+  deleteProductsResponse: [DeleteSummary!]
+}
+
+"""Delete object for every id"""
+type DeleteSummary {
+  """Unique product identifier"""
+  id: [ID!]!
+  """The messages returned as part of the delete request"""
+  messages: [String!]!
+}
+
+"""FEE"""
+type Fee {
+  """Fee Description"""
+  feeDescription: String
+  """Fee Value Percent"""
+  feeValuePercent: String
+  """Fee Value Amount"""
+  feeValueAmount: FinanceAmountWithCurrency
+}
+
+"""A string amount and the associated currency for a money field for finance, e.g. fee"""
+type FinanceAmountWithCurrency {
+  """The amount"""
+  amount: String!
+  """The ISO 4217 code for the associated currency"""
+  currency: String
+}
+
+"""The search results of a financeCreditCardProducts query"""
+type FinanceCreditCardProducts {
+  """Array of credit card"""
+  resultList: [CreditCard!]!
+  """The total number of records found for your query"""
+  totalCount: Int!
+  """Total number of records returned per page"""
+  limit: Int!
+  """The number of records returned"""
+  count: Int!
+}
+
+"""The search results of a finance products query"""
+type FinanceProducts {
+  """Array of products"""
+  resultList: [FinanceProduct!]!
+  """The total number of records found for your query"""
+  totalCount: Int!
+  """Total number of records returned per page"""
+  limit: Int!
+  """The number of records returned"""
+  count: Int!
+}
+
+"""Google Product Category"""
+type GoogleProductCategory {
+  """Google product category name"""
+  name: String
+  """Google product category id"""
+  id: Int
+}
+
+type IdChecksum {
+  """For internal use only"""
+  id: String!
+  """For internal use only"""
+  md5Sum: String
+  """For internal use only"""
+  itemListId: String
+  """For internal use only"""
+  createdAt: Instant
+}
+
+"""Installment"""
+type Installment {
+  """Months"""
+  months: Int
+  """Amount"""
+  amount: AmountWithCurrency
+}
+
+"""LinkCode"""
+type LinkCode {
+  """The product link code in html"""
+  html: LinkType
+  """The click URL for the product"""
+  clickUrl: String
+  """The image URL for the product"""
+  imageUrl: String
+}
+
+"""LinkType"""
+type LinkType {
+  """The code for promoting the product with a text link"""
+  text: String
+  """The code for promoting the product using an image element"""
+  image: String
+  """The code for promoting the product using a form element"""
+  form: String
+}
+
+"""Loyalty points"""
+type LoyaltyPoints {
+  """Name"""
+  name: String
+  """Points"""
+  points: Int
+  """Ratio"""
+  ratio: DecimalNumber
+}
+
+type Mutation {
+  """This allows you to create shopping products"""
+  createShoppingProducts(adId: ID!, shoppingProducts: [CreateShoppingProductRequest!]!): CreateShoppingProductResponse!
+  """This allows you to update shopping products"""
+  updateShoppingProducts(adId: ID!, shoppingProducts: [UpdateShoppingProductRequest!]!): UpdateShoppingProductResponse!
+  """This allows you to delete shopping products"""
+  deleteProducts(adId: ID!, ids: [ID!]!): DeleteProductResponse!
+  """This allows you to create credit card products"""
+  createCreditCardProducts(adId: ID!, creditCardProducts: [CreateCreditCardProductRequest!]!): CreateCreditCardProductResponse!
+  """This allows you to update credit card products"""
+  updateCreditCardProducts(adId: ID!, creditCardProducts: [UpdateCreditCardProductRequest!]!): UpdateCreditCardProductResponse!
+}
+
+"""Period"""
+type Period {
+  """Description of the period value"""
+  periodDescription: String!
+  """duration of the period"""
+  periodValue: String!
+  """Type of the duration which is either day/month/year"""
+  periodType: String!
+}
+
+"""ProductDetail field"""
+type ProductDetail {
+  """Whether the ProductDetail sectionName"""
+  sectionName: String
+  """Whether the ProductDetail attributeName"""
+  attributeName: String!
+  """Whether the ProductDetail attributeValue"""
+  attributeValue: String!
+}
+
+"""An advertisable product feed"""
+type ProductFeed {
+  """Product Feed id"""
+  adId: ID!
+  """Advertisers ID"""
+  advertiserId: String
+  """Advertisers Name"""
+  advertiserName: String
+  """Country with which product feed was created"""
+  advertiserCountry: String
+  """The type of the feed the product belongs to (i.e. shopping, travel)"""
+  sourceFeedType: String
+  """Currency"""
+  currency: String
+  """Language"""
+  language: String
+  """Feed Name"""
+  feedName: String
+  """Last Updated Date"""
+  lastUpdated: Instant
+  """Product Count"""
+  productCount: Int
+}
+
+"""The search results of a product feed query"""
+type ProductFeeds {
+  """Array of product feed"""
+  resultList: [ProductFeed!]!
+  """The total number of records found for your query"""
+  totalCount: Int!
+  """Total number of records returned per page"""
+  limit: Int!
+  """The number of records returned"""
+  count: Int!
+}
+
+type ProductFeedsResult {
+  """Advertisers link id"""
+  adId: String!
+  """Last updated date of product feed"""
+  lastUpdated: String
+  """Product Count for product feed"""
+  productCount: Int
+}
+
+"""Error object for every field"""
+type ProductMutationError {
+  """Unique product identifier"""
+  id: ID!
+  """The field returned as part of the request error"""
+  field: String
+  """The messages returned as part of the request error"""
+  messages: [String!]
+  """The warnings returned as part of the request error"""
+  warnings: [String!]
+  """The original value of field as part of request"""
+  originalValue: String
+}
+
+"""The search results of a products query"""
+type Products {
+  """Array of products"""
+  resultList: [Product!]!
+  """The total number of records found for your query"""
+  totalCount: Int!
+  """Total number of records returned per page"""
+  limit: Int!
+  """The number of records returned"""
+  count: Int!
+  """The nextPage used for paginate"""
+  nextPage: String
+}
+
+type Query {
+  """This query allows you to search for all common fields for all products"""
+  products(
+    companyId: ID!
+    adIds: [ID!]
+    keywords: [String!]
+    partnerIds: [ID!]
+    partnerStatus: PartnerStatus
+    excludePartnerIds: [ID!]
+    offset: Int
+    limit: Int
+    productIds: [ID!]
+    excludeProductIds: [ID!]
+    advertiserCountries: [String!]
+    highPrice: Float
+    lowPrice: Float
+    currency: String
+    itemListId: ID
+    itemListIds: [ID!]
+    includeDeletedProducts: Boolean
+    serviceableAreas: [String!]
+    excludeServiceableAreas: [String!]
+    availability: Availability
+    sortBy: SortBy
+    sortOrder: SortOrder
+    page: String
+    disableTotalCount: Boolean
+    googleProductCategoryIds: [ID!]
+    targetCountry: [String!]
+    brand: [String!]
+    discountPercentage: Float
+  ): Products!
+  """This query allows you to search for all fields for all Shopping products"""
+  shoppingProducts(
+    companyId: ID!
+    adIds: [ID!]
+    googleProductCategoryIds: [ID!]
+    googleProductCategoryNames: [String!]
+    keywords: [String!]
+    partnerIds: [ID!]
+    partnerStatus: PartnerStatus
+    gtin: String
+    offset: Int
+    limit: Int
+    productIds: [ID!]
+    advertiserCountries: [String!]
+    highPrice: Float
+    lowPrice: Float
+    currency: String
+    itemListId: ID
+    itemListIds: [ID!]
+    includeDeletedProducts: Boolean
+    availability: Availability
+    serviceableAreas: [String!]
+  ): ShoppingProducts!
+  """This query allows you to search for all fields for all TravelExperience products"""
+  travelExperienceProducts(
+    companyId: ID!
+    adIds: [ID!]
+    keywords: [String!]
+    partnerIds: [ID!]
+    partnerStatus: PartnerStatus
+    offset: Int
+    limit: Int
+    productIds: [ID!]
+    advertiserCountries: [String!]
+    highPrice: Float
+    lowPrice: Float
+    currency: String
+    itemListId: ID
+    itemListIds: [ID!]
+    includeDeletedProducts: Boolean
+    serviceableAreas: [String!]
+  ): TravelExperienceProducts!
+  """This query is for CJ registered applications only. For more information please contact CJ Developer Experience Group (dx at cj.com) to discuss your needs."""
+  productsFromApplication(
+    productIds: [ID!]
+    advertiserId: ID!
+    adIds: [ID!]
+    includeDeletedProducts: Boolean
+    offset: Int
+    limit: Int
+  ): Products!
+  """This query is for CJ registered applications only. For more information please contact CJ Developer Experience Group (dx at cj.com) to discuss your needs."""
+  shoppingProductsFromApplication(
+    productIds: [ID!]
+    advertiserId: ID!
+    includeDeletedProducts: Boolean
+    offset: Int
+    limit: Int
+  ): ShoppingProducts!
+  """This query is for CJ registered applications only. For more information please contact CJ Developer Experience Group (dx at cj.com) to discuss your needs."""
+  travelExperienceProductsFromApplication(
+    productIds: [ID!]
+    advertiserId: ID!
+    includeDeletedProducts: Boolean
+    offset: Int
+    limit: Int
+  ): TravelExperienceProducts!
+  """This query allows you to search for adIds/Product Feed"""
+  shoppingProductFeeds(
+    companyId: ID!
+    partnerIds: [ID!]
+    advertiserCountry: String
+    offset: Int
+    limit: Int
+  ): ShoppingProductFeeds!
+  """This query allows you to search for all common fields for all finance products"""
+  financeProducts(
+    companyId: ID!
+    adIds: [ID!]
+    partnerIds: [ID!]
+    partnerName: String
+    partnerStatus: PartnerStatus
+    productIds: [ID!]
+    title: String
+    usageType: String
+    cardType: String
+    categories: String
+    promotionType: String
+    keywords: [String!]
+    sinceLastUpdated: String
+    beforeLastUpdated: String
+    itemListIds: [ID!]
+    offset: Int
+    limit: Int
+  ): FinanceProducts!
+  """This query allows you to search for all common fields for all finance credit card product"""
+  financeCreditCardProducts(
+    companyId: ID!
+    productIds: [ID!]
+    partnerIds: [ID!]
+    partnerName: String
+    partnerStatus: PartnerStatus
+    adIds: [ID!]
+    title: String
+    usageType: String
+    cardType: String
+    categories: String
+    promotionType: String
+    keywords: [String!]
+    sinceLastUpdated: String
+    beforeLastUpdated: String
+    itemListIds: [ID!]
+    offset: Int
+    limit: Int
+  ): FinanceCreditCardProducts!
+  """This query allows you to search for adIds/Product Feed"""
+  productFeeds(
+    companyId: ID!
+    feedType: FeedType
+    partnerIds: [ID!]
+    advertiserCountry: String
+    offset: Int
+    limit: Int
+  ): ProductFeeds!
+}
+
+"""Reward Response Field"""
+type Reward {
+  """Reward rate must be verbatim."""
+  rewardRate: String
+  """Reward type must be verbatim."""
+  rewardType: String
+  """Terms on which the reward can be redeemed."""
+  rewardTerms: String
+}
+
+"""The shipping information for an advertisable product"""
+type Shipping {
+  """Fixed shipping cost, including VAT if required"""
+  price: ShippingAmountWithCurrency!
+  """Shipping service class or shipping speed"""
+  service: String
+  """Shipping location group name"""
+  locationGroupName: String
+  """Shipping region delivery area"""
+  region: String
+  """Shipping postal code"""
+  postalCode: String
+  """Shipping location identifier"""
+  locationId: ID
+  """Shipping country code (2 digit code)"""
+  country: String
+  """Shortest number of days between when an order is placed for a product and when the product ships"""
+  minimumHandlingTime: String
+  """Longest number of days between when an order is placed for a product and when the product ships"""
+  maximumHandlingTime: String
+  """minimum number of days between when a product is handed off to a shipping carrier and when it's delivered to the customer"""
+  minimumTransitTime: String
+  """maximum number of days between when a product is handed off to a shipping carrier and when it's delivered to the customer"""
+  maximumTransitTime: String
+}
+
+"""A decimal amount and the associated currency for a money field for shipping, e.g. price"""
+type ShippingAmountWithCurrency {
+  """The amount"""
+  amount: DecimalNumber
+  """The ISO 4217 code for the associated currency"""
+  currency: String
+}
+
+"""An advertisable Shopping product"""
+type Shopping implements Product {
+  """Up to 24 additional image URLs, separated with commas"""
+  additionalImageLink: [String!]
+  """Advertisers link id"""
+  adId: ID!
+  """Country that the advertiser is in"""
+  advertiserCountry: String
+  """Advertisers account id (CID)"""
+  advertiserId: ID!
+  """Advertisers Name"""
+  advertiserName: String!
+  """Product's brand"""
+  brand: String
+  """Product feed catalog id"""
+  catalogId: ID
+  """Advertiser custom product feed field"""
+  customLabel0: String
+  """Advertiser custom product feed field"""
+  customLabel1: String
+  """Advertiser custom product feed field"""
+  customLabel2: String
+  """Advertiser custom product feed field"""
+  customLabel3: String
+  """Advertiser custom product feed field"""
+  customLabel4: String
+  """Detailed product description"""
+  description: String!
+  """Unique product identifier"""
+  id: ID!
+  """Main image URL"""
+  imageLink: String
+  """Whether the product has been deleted by the advertiser"""
+  isDeleted: Boolean!
+  """Id associated with an advertisers item list"""
+  itemListId: ID
+  """The name associated with the advertiser's item list"""
+  itemListName: String
+  """Last updated date of product"""
+  lastUpdated: Instant!
+  """Landing page URL"""
+  link: String
+  """Mobile-optimized landing page when you have a different URL for mobile and desktop traffic"""
+  mobileLink: String
+  """Standard pricing"""
+  price: AmountWithCurrency!
+  """Effective price calculated from sale price or price"""
+  effectiveDerivedPrice: AmountWithCurrency
+  """Product's discount percentage"""
+  discountPercentage: Float
+  """Discounted or sale price"""
+  salePrice: AmountWithCurrency
+  """End date when the product’s sale price applies, if applicable"""
+  salePriceEffectiveDateEnd: Instant
+  """Start date when the product’s sale price applies, if applicable"""
+  salePriceEffectiveDateStart: Instant
+  """Servicable areas of the product (2 digit country code)"""
+  serviceableAreas: String
+  """Shipping cost"""
+  shipping: Shipping
+  """
+  The weight of your product to calculate shipping costs
+  Integer + unit. Supported units: in, cm
+  """
+  shippingWeight: String
+  """
+  The dimensions of your product to calculate shipping costs
+  Integer + unit. Supported units: in, cm
+  """
+  shippingLength: String
+  """
+  The dimensions of your product to calculate shipping costs
+  Integer + unit. Supported units: in, cm
+  """
+  shippingWidth: String
+  """
+  The dimensions of your product to calculate shipping costs
+  Integer + unit. Supported units: in, cm
+  """
+  shippingHeight: String
+  """The type of the feed the product belongs to (i.e. shopping, travel)"""
+  sourceFeedType: String
+  """The primary country where your products are available for sale, or to be shipped to"""
+  targetCountry: String
+  """Name of product"""
+  title: String
+  """
+  Product's availability
+  Values: IN_STOCK, OUT_OF_STOCK, PREORDER, BACKORDER
+  """
+  availability: String
+  """The date a preordered item becomes available"""
+  availabilityDate: Instant
+  """Allows user to describe certifications required by local regulations associated with a product"""
+  certification: Certification
+  """The date that your product stops being available"""
+  expirationDate: Instant
+  """
+  The measure and dimension of your product as it is sold
+  Numeric value + unit, eg. 1.5kg, 30sqft
+  """
+  unitPricingMeasure: String
+  """
+  The product’s base measure for pricing (e.g. 100ml means the price is calculated based on a 100ml units). Optional when you submit unit_pricing_measure.
+  Integer + unit
+  """
+  unitPricingBaseMeasure: String
+  """Details of an installment payment plan (BZ only)"""
+  installment: Installment
+  """Product’s parent-level ID. (Required for apparel products and only used if you have a set of products that come in different versions, for example apparel in different sizes and colors)"""
+  itemGroupId: ID
+  """The number and type of loyalty points a customer receives when buying a product (JP only)"""
+  loyaltyPoints: LoyaltyPoints
+  """The Google-defined category for the product"""
+  googleProductCategory: GoogleProductCategory
+  """Product category that you define for your product"""
+  productType: [String!]
+  """Your products Global Trade Item Number (GTIN)"""
+  gtin: String
+  """Product's manufacturer part number"""
+  mpn: String
+  """
+  Will be displayed if the new product doesn’t have a:
+  GTIN and brand or
+  MPN and brand
+  Values: yes, no, blank (default to yes)
+  """
+  identifierExists: String
+  """
+  Product’s condition 
+  Values: new, refurbished, used
+  """
+  condition: String
+  """Indicates if a product includes sexually suggestive content"""
+  adult: String
+  """The number of identical products sold together as a multipack"""
+  multipack: Int
+  """Indicates a product is a custom group of different products featuring one main product (e.g., a product sold in a bundle with related accessories)"""
+  isBundle: String
+  """
+  Your products energy label (EU & CH only)
+  Values: G,F,E,D,C,B,A,A+,A++,A+++
+  """
+  energyEfficiencyClass: String
+  """
+  Your products energy label (EU & CH only)
+  Values: G,F,E,D,C,B,A,A+,A++,A+++
+  """
+  energyEfficiencyClassMin: String
+  """
+  Your products energy label (EU & CH only)
+  Values: G,F,E,D,C,B,A,A+,A++,A+++
+  """
+  energyEfficiencyClassMax: String
+  """
+  Product’s targeted demographic (apparel products only)
+  Values: newborn, infant, toddler, kids, adult
+  """
+  ageGroup: String
+  """Product’s color(s) (apparel products only)"""
+  color: String
+  """
+  Product’s targeted gender (apparel products only)
+  Values: male, female, unisex
+  """
+  gender: String
+  """Product’s fabric or material"""
+  material: String
+  """Shortest number of days between when an order is placed for a product and when the product ships"""
+  minimumHandlingTime: String
+  """Longest number of days between when an order is placed for a product and when the product ships"""
+  maximumHandlingTime: String
+  """Product’s pattern or graphic print (apparel products only)"""
+  pattern: String
+  """Products size (apparel products only)"""
+  size: String
+  """
+  Apparel product's cut
+  Values: regular, petite, plus, big and tall, maternity
+  """
+  sizeType: String
+  """
+  The country of the size system your product is sized in
+  values: US, UK, EU, DE, FR, JP, CN, IT, BR, MEX, AU
+  """
+  sizeSystem: String
+  """Product sales tax details"""
+  tax: Tax
+  """Product's costOfGoodsSold"""
+  costOfGoodsSold: AmountWithCurrency
+  """Product's costOfGoodsSold"""
+  subscriptionCost: SubscriptionCost
+  """Product's productDetail"""
+  productDetail: ProductDetail
+  """Product's productHighlight"""
+  productHighlight: [String!]
+  """
+  The dimensions of your product to calculate shipping costs
+  Integer + unit. Supported units: in, cm
+  """
+  productLength: String
+  """
+  The dimensions of your product to calculate shipping costs
+  Integer + unit. Supported units: in, cm
+  """
+  productWidth: String
+  """
+  The dimensions of your product to calculate shipping costs
+  Integer + unit. Supported units: in, cm
+  """
+  productHeight: String
+  """
+  The weight of your product to calculate shipping costs
+  Integer + unit. Supported units: in, cm
+  """
+  productWeight: String
+  """Product's adsRedirect"""
+  adsRedirect: String
+  """Product's shoppingAdsExcludedCountry"""
+  shoppingAdsExcludedCountry: String
+  """Product's shipsFromCountry"""
+  shipsFromCountry: String
+  """Product's transitTimeLabel"""
+  transitTimeLabel: String
+  """Product feed catalog name"""
+  catalogName: String
+  """Whether the advertiser is joined to publisher"""
+  joinedStatus: Boolean!
+  """Created date of product"""
+  createdAt: Instant
+  """The link code for the product"""
+  linkCode(pid: ID!, shopperId: ID): LinkCode
+}
+
+"""An advertisable Shopping product"""
+type ShoppingProductCreateResponse {
+  """Up to 24 additional image URLs, separated with commas"""
+  additionalImageLink: [String!]
+  """Product's brand"""
+  brand: String
+  """Allows user to describe certifications required by local regulations associated with a product"""
+  certification: Certification
+  """Detailed product description"""
+  description: String!
+  """Unique product identifier"""
+  id: ID!
+  """Name of product"""
+  title: String!
+  """The Google-defined category for the product"""
+  googleProductCategory: GoogleProductCategory
+  """Standard pricing"""
+  price: AmountWithCurrency!
+  """Discounted or sale price"""
+  salePrice: AmountWithCurrency
+  """End date when the product’s sale price applies, if applicable"""
+  salePriceEffectiveDateEnd: String
+  """Start date when the product’s sale price applies, if applicable"""
+  salePriceEffectiveDateStart: String
+  """Shipping cost"""
+  shipping: Shipping
+  """
+  The weight of your product to calculate shipping costs
+  Integer + unit. Supported units: in, cm
+  """
+  shippingWeight: String
+  """
+  The dimensions of your product to calculate shipping costs
+  Integer + unit. Supported units: in, cm
+  """
+  shippingLength: String
+  """
+  The dimensions of your product to calculate shipping costs
+  Integer + unit. Supported units: in, cm
+  """
+  shippingWidth: String
+  """
+  The dimensions of your product to calculate shipping costs
+  Integer + unit. Supported units: in, cm
+  """
+  shippingHeight: String
+  """
+  Product's availability
+  Values: IN_STOCK, OUT_OF_STOCK, PREORDER
+  """
+  availability: String!
+  """The date a preordered item becomes available"""
+  availabilityDate: String
+  """The date that your product stops being available"""
+  expirationDate: String
+  """
+  The measure and dimension of your product as it is sold
+  Numeric value + unit, eg. 1.5kg, 30sqft
+  """
+  unitPricingMeasure: String
+  """
+  The product’s base measure for pricing (e.g. 100ml means the price is calculated based on a 100ml units). Optional when you submit unit_pricing_measure.
+  Integer + unit
+  """
+  unitPricingBaseMeasure: String
+  """Details of an installment payment plan (BZ only)"""
+  installment: Installment
+  """Main image URL"""
+  imageLink: String
+  """Landing page URL"""
+  link: String!
+  """Mobile-optimized landing page when you have a different URL for mobile and desktop traffic"""
+  mobileLink: String
+  """Advertiser custom product feed field"""
+  customLabel0: String
+  """Advertiser custom product feed field"""
+  customLabel1: String
+  """Advertiser custom product feed field"""
+  customLabel2: String
+  """Advertiser custom product feed field"""
+  customLabel3: String
+  """Advertiser custom product feed field"""
+  customLabel4: String
+  """Product’s parent-level ID. (Required for apparel products and only used if you have a set of products that come in different versions, for example apparel in different sizes and colors)"""
+  itemGroupId: ID
+  """The number and type of loyalty points a customer receives when buying a product (JP only)"""
+  loyaltyPoints: LoyaltyPoints
+  """Product category that you define for your product"""
+  productType: [String!]
+  """Your products Global Trade Item Number (GTIN)"""
+  gtin: String
+  """Product's manufacturer part number"""
+  mpn: String
+  """
+  Will be displayed if the new product doesn’t have a:
+  GTIN and brand or
+  MPN and brand
+  Values: yes, no, blank (default to yes)
+  """
+  identifierExists: String
+  """
+  Product’s condition
+  Values: new, refurbished, used
+  """
+  condition: String!
+  """Indicates if a product includes sexually suggestive content"""
+  adult: String
+  """The number of identical products sold together as a multipack"""
+  multipack: Int
+  """Indicates a product is a custom group of different products featuring one main product (e.g., a product sold in a bundle with related accessories)"""
+  isBundle: String
+  """
+  Your products energy label (EU & CH only)
+  Values: G,F,E,D,C,B,A,A+,A++,A+++
+  """
+  energyEfficiencyClass: String
+  """
+  Your products energy label (EU & CH only)
+  Values: G,F,E,D,C,B,A,A+,A++,A+++
+  """
+  energyEfficiencyClassMin: String
+  """
+  Your products energy label (EU & CH only)
+  Values: G,F,E,D,C,B,A,A+,A++,A+++
+  """
+  energyEfficiencyClassMax: String
+  """
+  Product’s targeted demographic (apparel products only)
+  Values: newborn, infant, toddler, kids, adult
+  """
+  ageGroup: String
+  """Product’s color(s) (apparel products only)"""
+  color: String
+  """
+  Product’s targeted gender (apparel products only)
+  Values: male, female, unisex
+  """
+  gender: String
+  """Product’s fabric or material"""
+  material: String
+  """Shortest number of days between when an order is placed for a product and when the product ships"""
+  minimumHandlingTime: String
+  """Longest number of days between when an order is placed for a product and when the product ships"""
+  maximumHandlingTime: String
+  """Product’s pattern or graphic print (apparel products only)"""
+  pattern: String
+  """Products size (apparel products only)"""
+  size: String
+  """
+  Apparel product's cut
+  Values: regular, petite, plus, big and tall, maternity
+  """
+  sizeType: String
+  """
+  The country of the size system your product is sized in
+  values: US, UK, EU, DE, FR, JP, CN, IT, BR, MEX, AU
+  """
+  sizeSystem: String
+  """Product sales tax details"""
+  tax: Tax
+  """The name associated with the advertiser's item list"""
+  itemListName: String
+  """Product's productDetail"""
+  productDetail: ProductDetail
+  """Product's adsRedirect"""
+  adsRedirect: String
+  """Product's productHighlight"""
+  productHighlight: [String!]
+  """Product's shoppingAdsExcludedCountry"""
+  shoppingAdsExcludedCountry: String
+  """Product's shipsFromCountry"""
+  shipsFromCountry: String
+  """Product's transitTimeLabel"""
+  transitTimeLabel: String
+  """Product's costOfGoodsSold"""
+  costOfGoodsSold: AmountWithCurrency
+  """Product's subscriptionCost"""
+  subscriptionCost: SubscriptionCost
+  """
+  The dimensions of your product to calculate shipping costs
+  Integer + unit. Supported units: in, cm
+  """
+  productLength: String
+  """
+  The dimensions of your product to calculate shipping costs
+  Integer + unit. Supported units: in, cm
+  """
+  productWidth: String
+  """
+  The dimensions of your product to calculate shipping costs
+  Integer + unit. Supported units: in, cm
+  """
+  productHeight: String
+  """
+  The weight of your product to calculate shipping costs
+  Integer + unit. Supported units: in, cm
+  """
+  productWeight: String
+}
+
+"""The search results of a product feed query"""
+type ShoppingProductFeeds {
+  """Array of product feed"""
+  resultList: [ProductFeed!]!
+  """The total number of records found for your query"""
+  totalCount: Int!
+  """Total number of records returned per page"""
+  limit: Int!
+  """The number of records returned"""
+  count: Int!
+}
+
+"""An advertisable Shopping product update response"""
+type ShoppingProductUpdateResponse {
+  """Up to 24 additional image URLs, separated with commas"""
+  additionalImageLink: [String!]
+  """Product's brand"""
+  brand: String
+  """Allows user to describe certifications required by local regulations associated with a product"""
+  certification: Certification
+  """Detailed product description"""
+  description: String
+  """Unique product identifier"""
+  id: ID!
+  """Name of product"""
+  title: String
+  """The Google-defined category for the product"""
+  googleProductCategory: GoogleProductCategory
+  """Standard pricing"""
+  price: AmountWithCurrency
+  """Discounted or sale price"""
+  salePrice: AmountWithCurrency
+  """End date when the product’s sale price applies, if applicable"""
+  salePriceEffectiveDateEnd: String
+  """Start date when the product’s sale price applies, if applicable"""
+  salePriceEffectiveDateStart: String
+  """Shipping cost"""
+  shipping: Shipping
+  """
+  The weight of your product to calculate shipping costs
+  Integer + unit. Supported units: in, cm
+  """
+  shippingWeight: String
+  """
+  The dimensions of your product to calculate shipping costs
+  Integer + unit. Supported units: in, cm
+  """
+  shippingLength: String
+  """
+  The dimensions of your product to calculate shipping costs
+  Integer + unit. Supported units: in, cm
+  """
+  shippingWidth: String
+  """
+  The dimensions of your product to calculate shipping costs
+  Integer + unit. Supported units: in, cm
+  """
+  shippingHeight: String
+  """
+  Product's availability
+  Values: IN_STOCK, OUT_OF_STOCK, PREORDER
+  """
+  availability: String
+  """The date a preordered item becomes available"""
+  availabilityDate: String
+  """The date that your product stops being available"""
+  expirationDate: String
+  """
+  The measure and dimension of your product as it is sold
+  Numeric value + unit, eg. 1.5kg, 30sqft
+  """
+  unitPricingMeasure: String
+  """
+  The product’s base measure for pricing (e.g. 100ml means the price is calculated based on a 100ml units). Optional when you submit unit_pricing_measure.
+  Integer + unit
+  """
+  unitPricingBaseMeasure: String
+  """Details of an installment payment plan (BZ only)"""
+  installment: Installment
+  """Main image URL"""
+  imageLink: String
+  """Landing page URL"""
+  link: String
+  """Mobile-optimized landing page when you have a different URL for mobile and desktop traffic"""
+  mobileLink: String
+  """Advertiser custom product feed field"""
+  customLabel0: String
+  """Advertiser custom product feed field"""
+  customLabel1: String
+  """Advertiser custom product feed field"""
+  customLabel2: String
+  """Advertiser custom product feed field"""
+  customLabel3: String
+  """Advertiser custom product feed field"""
+  customLabel4: String
+  """Product’s parent-level ID. (Required for apparel products and only used if you have a set of products that come in different versions, for example apparel in different sizes and colors)"""
+  itemGroupId: ID
+  """The number and type of loyalty points a customer receives when buying a product (JP only)"""
+  loyaltyPoints: LoyaltyPoints
+  """Product category that you define for your product"""
+  productType: [String!]
+  """Your products Global Trade Item Number (GTIN)"""
+  gtin: String
+  """Product's manufacturer part number"""
+  mpn: String
+  """
+  Will be displayed if the new product doesn’t have a:
+  GTIN and brand or
+  MPN and brand
+  Values: yes, no, blank (default to yes)
+  """
+  identifierExists: String
+  """
+  Product’s condition
+  Values: new, refurbished, used
+  """
+  condition: String
+  """Indicates if a product includes sexually suggestive content"""
+  adult: String
+  """The number of identical products sold together as a multipack"""
+  multipack: Int
+  """Indicates a product is a custom group of different products featuring one main product (e.g., a product sold in a bundle with related accessories)"""
+  isBundle: String
+  """
+  Your products energy label (EU & CH only)
+  Values: G,F,E,D,C,B,A,A+,A++,A+++
+  """
+  energyEfficiencyClass: String
+  """
+  Your products energy label (EU & CH only)
+  Values: G,F,E,D,C,B,A,A+,A++,A+++
+  """
+  energyEfficiencyClassMin: String
+  """
+  Your products energy label (EU & CH only)
+  Values: G,F,E,D,C,B,A,A+,A++,A+++
+  """
+  energyEfficiencyClassMax: String
+  """
+  Product’s targeted demographic (apparel products only)
+  Values: newborn, infant, toddler, kids, adult
+  """
+  ageGroup: String
+  """Product’s color(s) (apparel products only)"""
+  color: String
+  """
+  Product’s targeted gender (apparel products only)
+  Values: male, female, unisex
+  """
+  gender: String
+  """Product’s fabric or material"""
+  material: String
+  """Shortest number of days between when an order is placed for a product and when the product ships"""
+  minimumHandlingTime: String
+  """Longest number of days between when an order is placed for a product and when the product ships"""
+  maximumHandlingTime: String
+  """Product’s pattern or graphic print (apparel products only)"""
+  pattern: String
+  """Products size (apparel products only)"""
+  size: String
+  """
+  Apparel product's cut
+  Values: regular, petite, plus, big and tall, maternity
+  """
+  sizeType: String
+  """
+  The country of the size system your product is sized in
+  values: US, UK, EU, DE, FR, JP, CN, IT, BR, MEX, AU
+  """
+  sizeSystem: String
+  """Product sales tax details"""
+  tax: Tax
+  """The name associated with the advertiser's item list"""
+  itemListName: String
+  """Product's productDetail"""
+  productDetail: ProductDetail
+  """Product's adsRedirect"""
+  adsRedirect: String
+  """Product's productHighlight"""
+  productHighlight: [String!]
+  """Product's shoppingAdsExcludedCountry"""
+  shoppingAdsExcludedCountry: String
+  """Product's shipsFromCountry"""
+  shipsFromCountry: String
+  """Product's transitTimeLabel"""
+  transitTimeLabel: String
+  """Product's costOfGoodsSold"""
+  costOfGoodsSold: AmountWithCurrency
+  """Product's subscriptionCost"""
+  subscriptionCost: SubscriptionCost
+  """
+  The dimensions of your product to calculate shipping costs
+  Integer + unit. Supported units: in, cm
+  """
+  productLength: String
+  """
+  The dimensions of your product to calculate shipping costs
+  Integer + unit. Supported units: in, cm
+  """
+  productWidth: String
+  """
+  The dimensions of your product to calculate shipping costs
+  Integer + unit. Supported units: in, cm
+  """
+  productHeight: String
+  """
+  The weight of your product to calculate shipping costs
+  Integer + unit. Supported units: in, cm
+  """
+  productWeight: String
+}
+
+"""The search results of a shoppingProducts query"""
+type ShoppingProducts {
+  """Array of Shopping products"""
+  resultList: [Shopping!]!
+  """The total number of records found for your query"""
+  totalCount: Int!
+  """Total number of records returned per page"""
+  limit: Int!
+  """The number of records returned"""
+  count: Int!
+}
+
+type Subscription {
+  """This query allows you to request to download an advertiser's entire product feed of TravelExperience products. Please note that some advertisers' product feeds may take some time to complete due to the large number of products in the feed."""
+  travelExperienceProductCatalog(companyId: ID!, adId: ID!, includeDeletedProducts: Boolean): TravelExperience!
+  """This query allows you to request to download an advertiser's entire product feed of Shopping products. Please note that some advertisers' product feeds may take some time to complete due to the large number of products in the feed."""
+  shoppingProductCatalog(companyId: ID!, adId: ID!, includeDeletedProducts: Boolean): Shopping!
+  """This query allows you to request to download an advertiser's entire product feed of Finance products. Please note that some advertisers' product feeds may take some time to complete due to the large number of products in the feed."""
+  financeProductCatalog(companyId: ID!, adId: ID!, includeDeletedProducts: Boolean): FinanceProduct!
+  """This query is for CJ registered applications only. For more information please contact CJ Developer Experience Group (dx at cj.com) to discuss your needs."""
+  checksumFromApplication(advertiserId: ID!, adId: ID!): IdChecksum!
+  """This query allows you to request to download many advertiser's entire product feed of Shopping products. Please note that some advertisers' product feeds may take some time to complete due to the large number of products in the feed."""
+  productFeedsFromApplication(companyIds: [ID!], sinceLastUpdated: String, adIds: [ID]): ProductFeedsResult!
+}
+
+"""SubscriptionCost field"""
+type SubscriptionCost {
+  """Whether the SubscriptionCost sectionName"""
+  period: String!
+  """Whether the SubscriptionCost attributeName"""
+  periodLength: Int!
+  """Whether the SubscriptionCost attributeValue"""
+  amount: AmountWithCurrency!
+}
+
+"""Tax field"""
+type Tax {
+  """The product's tax rate as a percent"""
+  rate: DecimalNumber
+  """The two letter country code of the country the product can be delivered to"""
+  countryCode: String
+  """The region in which the tax rate applies"""
+  region: String
+  """The postal code in which the tax rate applies"""
+  postalCode: String
+  """The location id in which the tax rate applies"""
+  locationId: ID
+  """The location name in which the tax rate applies"""
+  locationGroupName: String
+  """Whether the advertiser charges a tax on the shipping cost"""
+  taxShip: String
+}
+
+"""An advertisable Travel and Experience product"""
+type TravelExperience implements Product {
+  """Up to 24 additional image URLs, separated with commas"""
+  additionalImageLink: [String!]
+  """Advertisers link id"""
+  adId: ID!
+  """Country that the advertiser is in"""
+  advertiserCountry: String
+  """Advertisers account id (CID)"""
+  advertiserId: ID!
+  """Advertisers Name"""
+  advertiserName: String!
+  """Product's brand"""
+  brand: String
+  """Product feed catalog id"""
+  catalogId: ID
+  """Advertiser custom product feed field"""
+  customLabel0: String
+  """Advertiser custom product feed field"""
+  customLabel1: String
+  """Advertiser custom product feed field"""
+  customLabel2: String
+  """Advertiser custom product feed field"""
+  customLabel3: String
+  """Advertiser custom product feed field"""
+  customLabel4: String
+  """Detailed product description"""
+  description: String!
+  """Unique product identifier"""
+  id: ID!
+  """Main image URL"""
+  imageLink: String
+  """Whether the product has been deleted by the advertiser"""
+  isDeleted: Boolean!
+  """Id associated with an advertisers item list"""
+  itemListId: ID
+  """The name associated with the advertiser's item list"""
+  itemListName: String
+  """Last updated date of product"""
+  lastUpdated: Instant!
+  """Landing page URL"""
+  link: String
+  """Mobile-optimized landing page when you have a different URL for mobile and desktop traffic"""
+  mobileLink: String
+  """Standard pricing"""
+  price: AmountWithCurrency!
+  """Effective price calculated from sale price or price"""
+  effectiveDerivedPrice: AmountWithCurrency
+  """Product's discount percentage"""
+  discountPercentage: Float
+  """Discounted or sale price"""
+  salePrice: AmountWithCurrency
+  """End date when the product’s sale price applies, if applicable"""
+  salePriceEffectiveDateEnd: Instant
+  """Start date when the product’s sale price applies, if applicable"""
+  salePriceEffectiveDateStart: Instant
+  """Servicable areas of the product (2 digit country code)"""
+  serviceableAreas: String
+  """Shipping cost"""
+  shipping: Shipping
+  """The type of the feed the product belongs to (i.e. shopping, travel)"""
+  sourceFeedType: String
+  """The primary country where the product is available for sale, or to be shipped to"""
+  targetCountry: String
+  """Name of product"""
+  title: String
+  """Comma-separated list of accessability features at the property"""
+  accessibility: String
+  """Details abo ut any additional fees"""
+  additionalFees: [AdditionalFee!]
+  """Details about location"""
+  address: Address
+  """Indicates if the product has age restrictions"""
+  ageRestrictions: String
+  """Whether your product's price includes food and activities"""
+  allInclusive: String
+  """Provide a comma-separated list of amenities at the property"""
+  amenities: String
+  """Sale availability end date"""
+  availabilityEnd: Instant
+  """Sale availability start date"""
+  availabilityStart: Instant
+  """Number of bathrooms in your hotel or vacation property"""
+  baths: DecimalNumber
+  """Number of bedrooms in your hotel or vacation property"""
+  bedrooms: Int
+  """Number of beds in your hotel or vacation property"""
+  beds: Int
+  """Description of the types of beds in your hotel or vacation property"""
+  bedsDescription: String
+  """Brand Identifier"""
+  brandId: String
+  """Indicates if product be cancelled online"""
+  cancellableOnline: String
+  """Advertiser defined category id"""
+  categoryId: ID
+  """Advertiser defined category name"""
+  categoryName: String
+  """The class or type of product"""
+  class: String
+  """Indicates if the product is targeted to personal or business travelers"""
+  customerSegment: String
+  """Advertiser defined additional category or identifier"""
+  customIdentifier1: String
+  """Advertiser defined additional category or identifier"""
+  customIdentifier2: String
+  """Destination city name"""
+  destinationCity: String
+  """Destination ID or IATA code"""
+  destinationCode: String
+  """Destination country code (two digit code)"""
+  destinationCountry: String
+  """Destination latitude code"""
+  destinationLatitude: String
+  """Destination longitude code"""
+  destinationLongitude: String
+  """Destination or arrival location name"""
+  destinationName: String
+  """Dining or restaurant options on your property"""
+  diningOptions: String
+  """Duration of product"""
+  duration: String
+  """Flight fare type"""
+  fareType: String
+  """Flight type"""
+  flightType: String
+  """Indicates whether the product includes free breakfast"""
+  freeBreakfast: String
+  """Indicates whether the product can be cancelled without penalty or fees"""
+  freeCancellation: String
+  """Indicates whether the product includes free internet"""
+  freeInternet: String
+  """Indicates if the price field is a starting or best price"""
+  fromPrice: String
+  """List of the activities that are included with the product"""
+  includedActivities: String
+  """The number of guests included in your product"""
+  includedGuestsCount: Int
+  """Your cruise or tour itinerary"""
+  itinerary: String
+  """Location name"""
+  locationName: String
+  """Location identifier"""
+  locationId: ID
+  """Indicates whether customers can pay for this product with loyalty points"""
+  loyaltyRedeemable: String
+  """The margin you make on this product (advertiser only)"""
+  margin: String
+  """Your rental car mileage options"""
+  mileage: String
+  """Hotel or property minimum stay"""
+  minimumStayDuration: String
+  """List of attractions near the product's property"""
+  nearbyAttractions: String
+  """Origin city name"""
+  originCity: String
+  """Origin ID or IATA code"""
+  originCode: String
+  """Origin country code (2 digit code)"""
+  originCountry: String
+  """Origin latitude code"""
+  originLatitude: String
+  """Origin Longitude code"""
+  originLongitude: String
+  """Origin or departure location name"""
+  originName: String
+  """Payment options for product"""
+  paymentOptions: String
+  """A list of performers or teams playing at this event"""
+  performers: String
+  """Indicates whether the property allows pets"""
+  petPolicy: String
+  """Description of the pet policy"""
+  petPolicyDescription: String
+  """Price of product in loyalty points"""
+  pointsPrice: DecimalNumber
+  """Promotional or marketing language"""
+  promotion: String
+  """The closest airport to your property"""
+  proximityAirport: String
+  """The closest city or metro area to your property"""
+  proximityCity: String
+  """Type of room"""
+  roomType: String
+  """Hotel or property star rating"""
+  starRating: String
+  """Number of stops on your flight or cruise"""
+  stops: String
+  """The amount of taxes and fees on top of the price of your product"""
+  taxFees: AmountWithCurrency
+  """
+  Primary category (hotel, air, etc.)
+  Must be one the following values: air, car, activity, cruise, event, hotel, package, restaurant, travel_guides, vacation_rental, other
+  """
+  travelType: String
+  """Travel start date"""
+  travelStartDate: Instant
+  """Travel end date"""
+  travelEndDate: Instant
+  """Upgrade price and description"""
+  upgradePrice: DecimalNumber
+  """Product feed catalog name"""
+  catalogName: String
+  """Whether the advertiser is joined to publisher"""
+  joinedStatus: Boolean!
+  """Created date of product"""
+  createdAt: Instant
+  """The link code for the product"""
+  linkCode(pid: ID!, shopperId: ID): LinkCode
+}
+
+"""The search results of a travelExperienceProducts query"""
+type TravelExperienceProducts {
+  """Array of TravelExperience products"""
+  resultList: [TravelExperience!]!
+  """The total number of records found for your query"""
+  totalCount: Int!
+  """Total number of records returned per page"""
+  limit: Int!
+  """The number of records returned"""
+  count: Int!
+}
+
+"""Response object for updateCreditCardProducts mutation query"""
+type UpdateCreditCardProductResponse {
+  """Defines the error"""
+  errors: [ProductMutationError!]
+  """Array of product that were successfully processed for creation"""
+  response: [CreditCardProductUpdateResponse!]
+}
+
+"""Response object for updateShoppingProducts mutation query"""
+type UpdateShoppingProductResponse {
+  """Defines the error"""
+  errors: [ProductMutationError!]
+  """Array of product that were successfully processed for updation"""
+  response: [ShoppingProductUpdateResponse!]
+}
+
+"""
+A numerical value, rendered in JSON as a string.
+
+This allows for a greater range of expression than GraphQL's default `Float`
+type supports.
+
+For reliable client-side parsing, the string value will always match the regex
+pattern `(-)?[0-9]+(\.[0-9]+)?`.
+"""
+scalar DecimalNumber
+
+"""An ISO 8601 datetime, rendered in JSON as a string."""
+scalar Instant
+

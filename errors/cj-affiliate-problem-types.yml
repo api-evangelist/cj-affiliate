@@ -1,0 +1,251 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  CJ's published error tables at
+  https://production-docs-assets.p.cjpowered.com/REST%20APIs/Overview.md,
+  .../REST%20APIs/Publisher%20Lookup.md,
+  .../Publisher%20Site%20Tracking/Click%20Events%20API.md,
+  .../Publisher%20Site%20Tracking/Publisher%20Tracking%20API.md,
+  .../Advertiser%20API%20Tracking/API%20Overview.md
+  — enriched by live unauthenticated probes of each host on 2026-08-13.
+provider: CJ Affiliate
+providerId: cj-affiliate
+format: vendor
+formats:
+  classic_rest: 'XML <cj-api><error-message> envelope'
+  click_apis: 'JSON { destinationUrl, errorMessages[], statusCode }'
+  graphql: 'GraphQL errors[] array with vendor message strings'
+  problem_json: >-
+    RFC 9457 application/problem+json is used by iam.cj.com, the internal
+    personal-access-token service, but by none of the public product APIs.
+rfc9457: false
+description: >-
+  CJ publishes an error reference for every API family, but no shared error
+  CODE vocabulary — errors are identified by human-readable message strings, and
+  the same condition can surface under different statuses on different APIs
+  (authorization failure is 403 on the Click Events API and 401 on the Publisher
+  Tracking API). CJ documents a fixed processing ORDER for validation, which is
+  the most actionable thing in the catalog: authentication, then schema
+  validation, then authorization, then field-level validation, stopping at the
+  first failing stage.
+error_precedence:
+- 1. Authentication
+- 2. Schema validation
+- 3. Authorization
+- 4. Additional field-level validation
+error_precedence_note: >-
+  You will not see schema errors until an authentication error is fixed, and you
+  will not see authorization or field-level errors until schema errors are
+  fixed. Retry logic must therefore re-read the response after each fix rather
+  than assume it has the full error set.
+problem_types:
+- id: rest-missing-authorization-header
+  status: 401
+  api: classic REST
+  message: You must provide an Authorization header.
+  observed: >-
+    Live, unauthenticated GET of https://link-search.api.cj.com/v2/link-search on
+    2026-08-13 returned HTTP 401 application/xml with exactly this body.
+  remediation: 'Send `Authorization: Bearer <personal-access-token>`.'
+- id: rest-missing-developer-key
+  status: 401
+  api: classic REST
+  message: You must specify a developer key.
+  remediation: Supply a Developer Key or Personal Access Token in the Authorization header.
+- id: rest-not-authenticated
+  status: 401
+  api: classic REST
+  message: 'Not Authenticated: xxxxxx'
+  meaning: >-
+    Invalid developer key. The message echoes the key that was used — treat the
+    response body as sensitive when logging.
+  remediation: Mint a fresh token at https://developers.cj.com/account/personal-access-tokens.
+- id: rest-incorrect-resource-url
+  status: 401
+  api: classic REST
+  message: (none)
+  meaning: An incorrect resource URL returns 401 with NO message rather than 404.
+  remediation: >-
+    Check the path against the documented endpoint. A silent 401 on CJ means
+    "wrong URL" at least as often as it means "bad credentials".
+- id: publisher-lookup-not-authorized
+  status: 400
+  api: cj-affiliate-publisher-lookup-api
+  message: Not Authorized
+  meaning: A publisher developer key was used; this API requires an advertiser key.
+- id: publisher-lookup-no-criterion
+  status: 400
+  api: cj-affiliate-publisher-lookup-api
+  message: 'At least one of the required query parameters (url, cid, pid, country, publisher-name, special-incentive) is needed.'
+- id: publisher-lookup-too-many-criteria
+  status: 400
+  api: cj-affiliate-publisher-lookup-api
+  message: 'Only one of the required query parameters (url, cid, pid, country, publisher-name, special-incentive) is allowed.'
+- id: publisher-lookup-invalid-key
+  status: 400
+  api: cj-affiliate-publisher-lookup-api
+  message: 'Invalid Key provided. Valid keys are: url, publisher-name, cid, pid, country, special-incentive.'
+- id: publisher-lookup-empty-criterion
+  status: 400
+  api: cj-affiliate-publisher-lookup-api
+  message: Search criterion is required.
+- id: publisher-lookup-invalid-page-number
+  status: 400
+  api: cj-affiliate-publisher-lookup-api
+  message: Invalid page-number provided.
+  meaning: Non-numeric page number.
+- id: publisher-lookup-negative-page-number
+  status: 400
+  api: cj-affiliate-publisher-lookup-api
+  message: Only positive value is allowed for page-number.
+- id: publisher-lookup-invalid-country
+  status: 400
+  api: cj-affiliate-publisher-lookup-api
+  message: Only ISO Code is allowed for country.
+- id: publisher-lookup-invalid-cid
+  status: 400
+  api: cj-affiliate-publisher-lookup-api
+  message: Only numeric value is allowed for cid.
+- id: publisher-lookup-negative-cid
+  status: 400
+  api: cj-affiliate-publisher-lookup-api
+  message: Only positive value is allowed for cid.
+- id: publisher-lookup-invalid-pid
+  status: 400
+  api: cj-affiliate-publisher-lookup-api
+  message: Only numeric value is allowed for pid.
+- id: publisher-lookup-negative-pid
+  status: 400
+  api: cj-affiliate-publisher-lookup-api
+  message: Only positive value is allowed for pid.
+- id: publisher-lookup-invalid-special-incentive
+  status: 400
+  api: cj-affiliate-publisher-lookup-api
+  message: Only 'yes' is allowed.
+- id: publisher-lookup-short-publisher-name
+  status: 400
+  api: cj-affiliate-publisher-lookup-api
+  message: Publisher Name has to be greater than 3 characters.
+- id: click-authentication-failed
+  status: 401
+  api: cj-affiliate-click-events-api
+  message: Authentication failed
+  meaning: The personal access token provided is not valid.
+  observed: >-
+    Live, unauthenticated POST of https://clicks.api.cj.com/partner/event with an
+    empty JSON body on 2026-08-13 returned HTTP 401
+    {"destinationUrl":"","errorMessages":["Authentication failed"]}.
+  remediation: >-
+    Mint a token from a user registered to the PARTNER's CJ account. Fall back to
+    a traditional CJ tracking Click URL for the consumer.
+- id: click-authorization-failed
+  status: 403
+  api: cj-affiliate-click-events-api
+  message: Authorization failed
+  meaning: You are not authorized to make this call.
+- id: publishertracking-invalid-token
+  status: 401
+  api: cj-affiliate-publisher-tracking-api
+  message: The provided bearer token is invalid or has expired
+- id: publishertracking-authorization-failed
+  status: 401
+  api: cj-affiliate-publisher-tracking-api
+  message: Authorization failed
+  note: >-
+    NOTE the divergence: the Publisher Tracking API returns 401 for authorization
+    failure where the Click Events API returns 403 for the same condition.
+- id: click-invalid-json
+  status: 400
+  api: [cj-affiliate-click-events-api, cj-affiliate-publisher-tracking-api]
+  message: Please specify valid JSON
+- id: click-missing-required-field
+  status: 400
+  api: [cj-affiliate-click-events-api, cj-affiliate-publisher-tracking-api]
+  message: 'Please include required field: XXxXX'
+- id: click-unknown-field
+  status: 400
+  api: [cj-affiliate-click-events-api, cj-affiliate-publisher-tracking-api]
+  message: 'Extra Unknown Field Detected: XXxXX'
+  meaning: >-
+    These APIs reject unknown fields rather than ignoring them. Forward
+    compatibility is NOT assumed — a client sending a field CJ does not know
+    fails the whole call.
+- id: click-pii-detected
+  status: 400
+  api: [cj-affiliate-click-events-api, cj-affiliate-publisher-tracking-api]
+  message: XXxXX included consumer Personally Identifiable Information
+  meaning: >-
+    An email pattern was detected in the named field. CJ actively enforces the
+    non-PII contract on `userIdentifier` and every other body field.
+- id: click-internal-error
+  status: 500
+  api: [cj-affiliate-click-events-api, cj-affiliate-publisher-tracking-api]
+  message: Internal Server Error
+  remediation: Contact CJ Support. Navigate the consumer to a traditional CJ tracking Click URL.
+- id: tracking-missing-token
+  status: 200
+  api: cj-affiliate-tracking-api
+  message: Missing Token
+  note: 'GraphQL: delivered inside the errors[] array, not as an HTTP status.'
+- id: tracking-invalid-token
+  status: 200
+  api: cj-affiliate-tracking-api
+  message: Invalid Token
+- id: tracking-unauthorized
+  status: 200
+  api: cj-affiliate-tracking-api
+  message: Unauthorized
+  meaning: The Enterprise ID is not associated with the authentication token provided.
+- id: tracking-invalid-syntax
+  status: 200
+  api: cj-affiliate-tracking-api
+  message: Invalid Syntax
+  meaning: Incorrectly formatted request.
+- id: tracking-wrongtype-missing-fields
+  status: 200
+  api: cj-affiliate-tracking-api
+  message: 'Validation error of type WrongType: argument ... is missing required fields $FIELDS'
+- id: tracking-wrongtype-bad-type
+  status: 200
+  api: cj-affiliate-tracking-api
+  message: 'Validation error of type WrongType: argument ... with value ... is not a valid $FIELD_TYPE'
+- id: tracking-wrongtype-bad-value
+  status: 200
+  api: cj-affiliate-tracking-api
+  message: 'Validation error of type WrongType: argument ... is not a valid $FIELD_Value'
+- id: tracking-wrongtype-unknown-field
+  status: 200
+  api: cj-affiliate-tracking-api
+  message: 'Validation error of type WrongType: argument ... with value ... contains a field not in $QUERY_TYPE'
+- id: tracking-too-many-items
+  status: 200
+  api: cj-affiliate-tracking-api
+  message: Order may not have more than 100 items
+- id: tracking-future-timestamp
+  status: 200
+  api: cj-affiliate-tracking-api
+  message: Order may not have a eventTime/updateTime in the future
+- id: tracking-excessive-load
+  status: 504
+  api: cj-affiliate-tracking-api
+  message: (generic)
+  meaning: >-
+    Documented as possibly caused by excessive load on the CJ system.
+  remediation: Reduce the batch to 10,000 records or fewer and resubmit.
+deferred_errors:
+  note: >-
+    CJ draws an explicit line between REAL-TIME validation errors (returned on
+    the call) and PROCESSING errors (found up to an hour later, when the order
+    reaches CJ's processing system). Processing failures are NOT returned to the
+    caller at all — the only signal is the absence of the record from Commission
+    Detail reporting, and CJ says a team member must be asked for detail. An
+    agent integrating the Tracking API cannot close the loop synchronously; it
+    must reconcile against commissions.api.cj.com afterwards.
+  conditions_checked_at_processing:
+  - Duplicate order id, per the advertiser's duplicate-order logic
+  - The order exists and is commissionable (restatements and cancellations)
+  - The order is not locked or closed
+  - The Action ID belongs to the same account as the Enterprise ID
+  - A restatement does not make a commissionable order non-commissionable
+  - A restatement does not change the publisher earning the commission
+  - Orders on an open-ended locking cycle carry the Status field

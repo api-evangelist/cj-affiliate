@@ -1,0 +1,430 @@
+generated: '2026-08-13'
+method: probed
+source: direct HTTPS GETs of each path on each host, 2026-08-13
+provider: CJ Affiliate
+providerId: cj-affiliate
+summary:
+  paths_probed: 96
+  hosts_probed: 12
+  documents_served: 0
+  result: NONE. CJ Affiliate serves no /.well-known/ document on any of its twelve API, portal or marketing
+    hosts.
+  false_positives: tracking.api.cj.com answers HTTP 200 to every /.well-known/* path with the GraphiQL
+    IDE HTML page, and developers.cj.com answers HTTP 200 to every path with its React SPA shell. Neither
+    is a document. No WellKnown or SecurityTxt pointer is emitted in apis.yml for this provider, because
+    none is served.
+notable:
+- No security.txt (RFC 9116) anywhere - see security/cj-affiliate-vulnerability-disclosure.yml.
+- 'No openid-configuration or oauth-authorization-server: CJ authenticates with long-lived personal access
+  tokens minted in the portal, not an OAuth authorization server. iam.cj.com (the PAT service host referenced
+  by the developer portal bundle) 404s both discovery documents.'
+- No agent-card.json or agent.json on any host - CJ publishes no A2A agent card.
+probes:
+- host: www.cj.com
+  path: /.well-known/security.txt
+  status: 404
+  content_type: text/html
+- host: www.cj.com
+  path: /.well-known/openid-configuration
+  status: 404
+  content_type: text/html
+- host: www.cj.com
+  path: /.well-known/oauth-authorization-server
+  status: 404
+  content_type: text/html
+- host: www.cj.com
+  path: /.well-known/oauth-protected-resource
+  status: 404
+  content_type: text/html
+- host: www.cj.com
+  path: /.well-known/api-catalog
+  status: 404
+  content_type: text/html
+- host: www.cj.com
+  path: /.well-known/ai-plugin.json
+  status: 404
+  content_type: text/html
+- host: www.cj.com
+  path: /.well-known/agent-card.json
+  status: 404
+  content_type: text/html
+- host: www.cj.com
+  path: /.well-known/agent.json
+  status: 404
+  content_type: text/html
+- host: developers.cj.com
+  path: /.well-known/security.txt
+  status: 200
+  content_type: text/html
+  note: HTTP 200 but the body is an HTML SPA shell, not a document - treated as a MISS
+- host: developers.cj.com
+  path: /.well-known/openid-configuration
+  status: 200
+  content_type: text/html
+  note: HTTP 200 but the body is an HTML SPA shell, not a document - treated as a MISS
+- host: developers.cj.com
+  path: /.well-known/oauth-authorization-server
+  status: 200
+  content_type: text/html
+  note: HTTP 200 but the body is an HTML SPA shell, not a document - treated as a MISS
+- host: developers.cj.com
+  path: /.well-known/oauth-protected-resource
+  status: 200
+  content_type: text/html
+  note: HTTP 200 but the body is an HTML SPA shell, not a document - treated as a MISS
+- host: developers.cj.com
+  path: /.well-known/api-catalog
+  status: 200
+  content_type: text/html
+  note: HTTP 200 but the body is an HTML SPA shell, not a document - treated as a MISS
+- host: developers.cj.com
+  path: /.well-known/ai-plugin.json
+  status: 200
+  content_type: text/html
+  note: HTTP 200 but the body is an HTML SPA shell, not a document - treated as a MISS
+- host: developers.cj.com
+  path: /.well-known/agent-card.json
+  status: 200
+  content_type: text/html
+  note: HTTP 200 but the body is an HTML SPA shell, not a document - treated as a MISS
+- host: developers.cj.com
+  path: /.well-known/agent.json
+  status: 200
+  content_type: text/html
+  note: HTTP 200 but the body is an HTML SPA shell, not a document - treated as a MISS
+- host: commissions.api.cj.com
+  path: /.well-known/security.txt
+  status: 404
+  content_type: text/plain
+- host: commissions.api.cj.com
+  path: /.well-known/openid-configuration
+  status: 404
+  content_type: text/plain
+- host: commissions.api.cj.com
+  path: /.well-known/oauth-authorization-server
+  status: 404
+  content_type: text/plain
+- host: commissions.api.cj.com
+  path: /.well-known/oauth-protected-resource
+  status: 404
+  content_type: text/plain
+- host: commissions.api.cj.com
+  path: /.well-known/api-catalog
+  status: 404
+  content_type: text/plain
+- host: commissions.api.cj.com
+  path: /.well-known/ai-plugin.json
+  status: 404
+  content_type: text/plain
+- host: commissions.api.cj.com
+  path: /.well-known/agent-card.json
+  status: 404
+  content_type: text/plain
+- host: commissions.api.cj.com
+  path: /.well-known/agent.json
+  status: 404
+  content_type: text/plain
+- host: ads.api.cj.com
+  path: /.well-known/security.txt
+  status: 404
+  content_type: text/plain
+- host: ads.api.cj.com
+  path: /.well-known/openid-configuration
+  status: 404
+  content_type: text/plain
+- host: ads.api.cj.com
+  path: /.well-known/oauth-authorization-server
+  status: 404
+  content_type: text/plain
+- host: ads.api.cj.com
+  path: /.well-known/oauth-protected-resource
+  status: 404
+  content_type: text/plain
+- host: ads.api.cj.com
+  path: /.well-known/api-catalog
+  status: 404
+  content_type: text/plain
+- host: ads.api.cj.com
+  path: /.well-known/ai-plugin.json
+  status: 404
+  content_type: text/plain
+- host: ads.api.cj.com
+  path: /.well-known/agent-card.json
+  status: 404
+  content_type: text/plain
+- host: ads.api.cj.com
+  path: /.well-known/agent.json
+  status: 404
+  content_type: text/plain
+- host: tracking.api.cj.com
+  path: /.well-known/security.txt
+  status: 200
+  content_type: text/html
+  note: HTTP 200 but the body is the GraphiQL IDE HTML page - tracking.api.cj.com serves GraphiQL as a
+    catch-all for every unmatched path. NOT a document; treated as a MISS.
+- host: tracking.api.cj.com
+  path: /.well-known/openid-configuration
+  status: 200
+  content_type: text/html
+  note: HTTP 200 but the body is the GraphiQL IDE HTML page - tracking.api.cj.com serves GraphiQL as a
+    catch-all for every unmatched path. NOT a document; treated as a MISS.
+- host: tracking.api.cj.com
+  path: /.well-known/oauth-authorization-server
+  status: 200
+  content_type: text/html
+  note: HTTP 200 but the body is the GraphiQL IDE HTML page - tracking.api.cj.com serves GraphiQL as a
+    catch-all for every unmatched path. NOT a document; treated as a MISS.
+- host: tracking.api.cj.com
+  path: /.well-known/oauth-protected-resource
+  status: 200
+  content_type: text/html
+  note: HTTP 200 but the body is the GraphiQL IDE HTML page - tracking.api.cj.com serves GraphiQL as a
+    catch-all for every unmatched path. NOT a document; treated as a MISS.
+- host: tracking.api.cj.com
+  path: /.well-known/api-catalog
+  status: 200
+  content_type: text/html
+  note: HTTP 200 but the body is the GraphiQL IDE HTML page - tracking.api.cj.com serves GraphiQL as a
+    catch-all for every unmatched path. NOT a document; treated as a MISS.
+- host: tracking.api.cj.com
+  path: /.well-known/ai-plugin.json
+  status: 200
+  content_type: text/html
+  note: HTTP 200 but the body is the GraphiQL IDE HTML page - tracking.api.cj.com serves GraphiQL as a
+    catch-all for every unmatched path. NOT a document; treated as a MISS.
+- host: tracking.api.cj.com
+  path: /.well-known/agent-card.json
+  status: 200
+  content_type: text/html
+  note: HTTP 200 but the body is the GraphiQL IDE HTML page - tracking.api.cj.com serves GraphiQL as a
+    catch-all for every unmatched path. NOT a document; treated as a MISS.
+- host: tracking.api.cj.com
+  path: /.well-known/agent.json
+  status: 200
+  content_type: text/html
+  note: HTTP 200 but the body is the GraphiQL IDE HTML page - tracking.api.cj.com serves GraphiQL as a
+    catch-all for every unmatched path. NOT a document; treated as a MISS.
+- host: link-search.api.cj.com
+  path: /.well-known/security.txt
+  status: 404
+  content_type: text/html
+- host: link-search.api.cj.com
+  path: /.well-known/openid-configuration
+  status: 404
+  content_type: text/html
+- host: link-search.api.cj.com
+  path: /.well-known/oauth-authorization-server
+  status: 404
+  content_type: text/html
+- host: link-search.api.cj.com
+  path: /.well-known/oauth-protected-resource
+  status: 404
+  content_type: text/html
+- host: link-search.api.cj.com
+  path: /.well-known/api-catalog
+  status: 404
+  content_type: text/html
+- host: link-search.api.cj.com
+  path: /.well-known/ai-plugin.json
+  status: 404
+  content_type: text/html
+- host: link-search.api.cj.com
+  path: /.well-known/agent-card.json
+  status: 404
+  content_type: text/html
+- host: link-search.api.cj.com
+  path: /.well-known/agent.json
+  status: 404
+  content_type: text/html
+- host: advertiser-lookup.api.cj.com
+  path: /.well-known/security.txt
+  status: 404
+  content_type: text/html
+- host: advertiser-lookup.api.cj.com
+  path: /.well-known/openid-configuration
+  status: 404
+  content_type: text/html
+- host: advertiser-lookup.api.cj.com
+  path: /.well-known/oauth-authorization-server
+  status: 404
+  content_type: text/html
+- host: advertiser-lookup.api.cj.com
+  path: /.well-known/oauth-protected-resource
+  status: 404
+  content_type: text/html
+- host: advertiser-lookup.api.cj.com
+  path: /.well-known/api-catalog
+  status: 404
+  content_type: text/html
+- host: advertiser-lookup.api.cj.com
+  path: /.well-known/ai-plugin.json
+  status: 404
+  content_type: text/html
+- host: advertiser-lookup.api.cj.com
+  path: /.well-known/agent-card.json
+  status: 404
+  content_type: text/html
+- host: advertiser-lookup.api.cj.com
+  path: /.well-known/agent.json
+  status: 404
+  content_type: text/html
+- host: publisher-lookup.api.cj.com
+  path: /.well-known/security.txt
+  status: 404
+  content_type: text/html
+- host: publisher-lookup.api.cj.com
+  path: /.well-known/openid-configuration
+  status: 404
+  content_type: text/html
+- host: publisher-lookup.api.cj.com
+  path: /.well-known/oauth-authorization-server
+  status: 404
+  content_type: text/html
+- host: publisher-lookup.api.cj.com
+  path: /.well-known/oauth-protected-resource
+  status: 404
+  content_type: text/html
+- host: publisher-lookup.api.cj.com
+  path: /.well-known/api-catalog
+  status: 404
+  content_type: text/html
+- host: publisher-lookup.api.cj.com
+  path: /.well-known/ai-plugin.json
+  status: 404
+  content_type: text/html
+- host: publisher-lookup.api.cj.com
+  path: /.well-known/agent-card.json
+  status: 404
+  content_type: text/html
+- host: publisher-lookup.api.cj.com
+  path: /.well-known/agent.json
+  status: 404
+  content_type: text/html
+- host: commission-detail.api.cj.com
+  path: /.well-known/security.txt
+  status: 404
+  content_type: text/html
+- host: commission-detail.api.cj.com
+  path: /.well-known/openid-configuration
+  status: 404
+  content_type: text/html
+- host: commission-detail.api.cj.com
+  path: /.well-known/oauth-authorization-server
+  status: 404
+  content_type: text/html
+- host: commission-detail.api.cj.com
+  path: /.well-known/oauth-protected-resource
+  status: 404
+  content_type: text/html
+- host: commission-detail.api.cj.com
+  path: /.well-known/api-catalog
+  status: 404
+  content_type: text/html
+- host: commission-detail.api.cj.com
+  path: /.well-known/ai-plugin.json
+  status: 404
+  content_type: text/html
+- host: commission-detail.api.cj.com
+  path: /.well-known/agent-card.json
+  status: 404
+  content_type: text/html
+- host: commission-detail.api.cj.com
+  path: /.well-known/agent.json
+  status: 404
+  content_type: text/html
+- host: clicks.api.cj.com
+  path: /.well-known/security.txt
+  status: 404
+  content_type: null
+- host: clicks.api.cj.com
+  path: /.well-known/openid-configuration
+  status: 404
+  content_type: null
+- host: clicks.api.cj.com
+  path: /.well-known/oauth-authorization-server
+  status: 404
+  content_type: null
+- host: clicks.api.cj.com
+  path: /.well-known/oauth-protected-resource
+  status: 404
+  content_type: null
+- host: clicks.api.cj.com
+  path: /.well-known/api-catalog
+  status: 404
+  content_type: null
+- host: clicks.api.cj.com
+  path: /.well-known/ai-plugin.json
+  status: 404
+  content_type: null
+- host: clicks.api.cj.com
+  path: /.well-known/agent-card.json
+  status: 404
+  content_type: null
+- host: clicks.api.cj.com
+  path: /.well-known/agent.json
+  status: 404
+  content_type: null
+- host: publishertracking.api.cj.com
+  path: /.well-known/security.txt
+  status: 404
+  content_type: null
+- host: publishertracking.api.cj.com
+  path: /.well-known/openid-configuration
+  status: 404
+  content_type: null
+- host: publishertracking.api.cj.com
+  path: /.well-known/oauth-authorization-server
+  status: 404
+  content_type: null
+- host: publishertracking.api.cj.com
+  path: /.well-known/oauth-protected-resource
+  status: 404
+  content_type: null
+- host: publishertracking.api.cj.com
+  path: /.well-known/api-catalog
+  status: 404
+  content_type: null
+- host: publishertracking.api.cj.com
+  path: /.well-known/ai-plugin.json
+  status: 404
+  content_type: null
+- host: publishertracking.api.cj.com
+  path: /.well-known/agent-card.json
+  status: 404
+  content_type: null
+- host: publishertracking.api.cj.com
+  path: /.well-known/agent.json
+  status: 404
+  content_type: null
+- host: iam.cj.com
+  path: /.well-known/security.txt
+  status: 404
+  content_type: text/plain
+- host: iam.cj.com
+  path: /.well-known/openid-configuration
+  status: 404
+  content_type: text/plain
+- host: iam.cj.com
+  path: /.well-known/oauth-authorization-server
+  status: 404
+  content_type: text/plain
+- host: iam.cj.com
+  path: /.well-known/oauth-protected-resource
+  status: 404
+  content_type: text/plain
+- host: iam.cj.com
+  path: /.well-known/api-catalog
+  status: 404
+  content_type: text/plain
+- host: iam.cj.com
+  path: /.well-known/ai-plugin.json
+  status: 404
+  content_type: text/plain
+- host: iam.cj.com
+  path: /.well-known/agent-card.json
+  status: 404
+  content_type: text/plain
+- host: iam.cj.com
+  path: /.well-known/agent.json
+  status: 404
+  content_type: text/plain

@@ -1,0 +1,39 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "CJ Affiliate Click Events API",
+    "version": "2026-08-13"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Click Events",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Register a consumer click and receive a tracked destination URL",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://clicks.api.cj.com/partner/event",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Server-to-server click registration for CJ partners. Returns the final landing page URL carrying the `cjevent` tracking parameter; the partner is responsible for navigating the consumer to it, and for falling back to a traditional CJ tracking Click URL on any error. Cannot be called from a browser. CJ asks partners to contact their CJ representative for integration validation before implementing."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

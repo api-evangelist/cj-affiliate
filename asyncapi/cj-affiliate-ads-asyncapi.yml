@@ -1,0 +1,221 @@
+asyncapi: 3.0.0
+info:
+  title: CJ Affiliate Product Catalog Streaming API
+  version: '2026-08-13'
+  description: >-
+    CJ Affiliate's ONLY event/streaming surface: the GraphQL subscriptions
+    declared on the ads API at https://ads.api.cj.com/query. These are bulk
+    catalog downloads — a subscription requests an advertiser's ENTIRE product
+    feed and CJ streams it back, because, in CJ's own words, "some advertisers'
+    product feeds may take some time to complete due to the large number of
+    products in the feed."
+
+
+    PROVENANCE: every channel, operation, argument name and description below was
+    read from a live `__schema` introspection response returned by
+    https://ads.api.cj.com/query on 2026-08-13, captured verbatim in
+    graphql/cj-affiliate-ads-schema.graphql. CJ does not publish an AsyncAPI
+    document; this one is DERIVED from CJ's own live schema.
+
+
+    KNOWN GAP — CJ documents no transport for these subscriptions. Neither the
+    developer portal documentation corpus nor the schema states whether they are
+    served over graphql-ws, graphql-transport-ws, or SSE, and CJ's REST APIs
+    documentation makes no mention of the subscription surface at all. The
+    binding below therefore records the endpoint CJ serves and states the
+    protocol as undetermined rather than guessing one.
+  contact:
+    name: API Evangelist
+    email: kin@apievangelist.com
+    url: https://developers.cj.com/graphql/reference/Product%20Search
+  x-source: https://ads.api.cj.com/query
+  x-method: derived
+  x-derived-from: graphql/cj-affiliate-ads-schema.graphql
+  x-transport-status: >-
+    undetermined - CJ publishes no subscription transport documentation. Verify
+    against the GraphQL reference before implementing.
+servers:
+  ads:
+    host: ads.api.cj.com
+    pathname: /query
+    protocol: https
+    protocolVersion: '1.1'
+    description: >-
+      The single CJ ads GraphQL endpoint. Queries and mutations are POSTed here;
+      the subscription transport is not documented by CJ.
+    security:
+    - $ref: '#/components/securitySchemes/personalAccessToken'
+channels:
+  shoppingProductCatalog:
+    address: shoppingProductCatalog
+    title: Shopping product catalog stream
+    description: >-
+      Requests download of an advertiser's entire product feed of Shopping
+      (retail) products.
+    servers:
+    - $ref: '#/servers/ads'
+    messages:
+      shoppingProduct:
+        $ref: '#/components/messages/shoppingProduct'
+  travelExperienceProductCatalog:
+    address: travelExperienceProductCatalog
+    title: Travel experience product catalog stream
+    description: >-
+      Requests download of an advertiser's entire product feed of
+      TravelExperience products.
+    servers:
+    - $ref: '#/servers/ads'
+    messages:
+      travelExperienceProduct:
+        $ref: '#/components/messages/travelExperienceProduct'
+  financeProductCatalog:
+    address: financeProductCatalog
+    title: Finance product catalog stream
+    description: >-
+      Requests download of an advertiser's entire product feed of Finance
+      products.
+    servers:
+    - $ref: '#/servers/ads'
+    messages:
+      financeProduct:
+        $ref: '#/components/messages/financeProduct'
+  productFeedsFromApplication:
+    address: productFeedsFromApplication
+    title: Multi-advertiser product feed stream (restricted)
+    description: >-
+      Downloads many advertisers' entire Shopping product feeds in one
+      subscription. RESTRICTED to CJ registered applications — CJ's schema
+      directs callers to the CJ Developer Experience Group (dx at cj.com).
+    servers:
+    - $ref: '#/servers/ads'
+    messages:
+      shoppingProduct:
+        $ref: '#/components/messages/shoppingProduct'
+  checksumFromApplication:
+    address: checksumFromApplication
+    title: Feed checksum stream (restricted)
+    description: >-
+      Streams id/checksum pairs for an advertiser's feed, for change detection
+      without re-downloading the whole catalog. RESTRICTED to CJ registered
+      applications.
+    servers:
+    - $ref: '#/servers/ads'
+    messages:
+      idChecksum:
+        $ref: '#/components/messages/idChecksum'
+operations:
+  subscribeShoppingProductCatalog:
+    action: receive
+    channel:
+      $ref: '#/channels/shoppingProductCatalog'
+    title: subscription shoppingProductCatalog
+    description: >-
+      GraphQL subscription field `shoppingProductCatalog(companyId: ID!, adId:
+      ID!, includeDeletedProducts: Boolean): Shopping`.
+    bindings:
+      http:
+        x-arguments:
+          companyId: 'ID! - required. The CID the request is made on behalf of.'
+          adId: 'ID! - required. The product feed (ad) to download.'
+          includeDeletedProducts: 'Boolean - optional.'
+    messages:
+    - $ref: '#/channels/shoppingProductCatalog/messages/shoppingProduct'
+  subscribeTravelExperienceProductCatalog:
+    action: receive
+    channel:
+      $ref: '#/channels/travelExperienceProductCatalog'
+    title: subscription travelExperienceProductCatalog
+    description: >-
+      GraphQL subscription field `travelExperienceProductCatalog(companyId: ID!,
+      adId: ID!, includeDeletedProducts: Boolean): TravelExperience`.
+    messages:
+    - $ref: '#/channels/travelExperienceProductCatalog/messages/travelExperienceProduct'
+  subscribeFinanceProductCatalog:
+    action: receive
+    channel:
+      $ref: '#/channels/financeProductCatalog'
+    title: subscription financeProductCatalog
+    description: >-
+      GraphQL subscription field `financeProductCatalog(companyId: ID!, adId: ID!,
+      includeDeletedProducts: Boolean)`.
+    messages:
+    - $ref: '#/channels/financeProductCatalog/messages/financeProduct'
+  subscribeProductFeedsFromApplication:
+    action: receive
+    channel:
+      $ref: '#/channels/productFeedsFromApplication'
+    title: subscription productFeedsFromApplication
+    description: >-
+      GraphQL subscription field `productFeedsFromApplication(companyIds: ...,
+      sinceLastUpdated: ..., adIds: ...)`. Registered applications only.
+    messages:
+    - $ref: '#/channels/productFeedsFromApplication/messages/shoppingProduct'
+  subscribeChecksumFromApplication:
+    action: receive
+    channel:
+      $ref: '#/channels/checksumFromApplication'
+    title: subscription checksumFromApplication
+    description: >-
+      GraphQL subscription field `checksumFromApplication(advertiserId: ...,
+      adId: ...): IdChecksum`. Registered applications only.
+    messages:
+    - $ref: '#/channels/checksumFromApplication/messages/idChecksum'
+components:
+  securitySchemes:
+    personalAccessToken:
+      type: httpApiKey
+      name: Authorization
+      in: header
+      description: >-
+        `Authorization: Bearer <personal-access-token>`, minted at
+        https://developers.cj.com/account/personal-access-tokens.
+  messages:
+    shoppingProduct:
+      name: shoppingProduct
+      title: Shopping product record
+      summary: One retail product from an advertiser feed.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/Shopping'
+    travelExperienceProduct:
+      name: travelExperienceProduct
+      title: Travel experience product record
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/TravelExperience'
+    financeProduct:
+      name: financeProduct
+      title: Finance product record
+      contentType: application/json
+      payload:
+        type: object
+        description: >-
+          A finance product record. The full field set is defined by the
+          `CreditCard` and finance product types in
+          graphql/cj-affiliate-ads-schema.graphql.
+    idChecksum:
+      name: idChecksum
+      title: Product id + checksum pair
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/IdChecksum'
+  schemas:
+    Shopping:
+      type: object
+      description: >-
+        CJ's retail product type. Carries advertiser and feed identifiers
+        (adId, advertiserId, catalogId, itemListId, itemGroupId), pricing
+        (price, salePrice, effectiveDerivedPrice, costOfGoodsSold), shipping and
+        tax by location, Google product category, certification, installment and
+        subscription terms, loyalty points, product detail attributes and the
+        placeable linkCode. See graphql/cj-affiliate-ads-schema.graphql for the
+        complete field list as served.
+    TravelExperience:
+      type: object
+      description: >-
+        CJ's travel product type. Adds brandId, categoryId, locationId, address
+        and additionalFees to the shared product shape. See
+        graphql/cj-affiliate-ads-schema.graphql.
+    IdChecksum:
+      type: object
+      description: 'Product id, itemListId and a checksum for change detection.'
