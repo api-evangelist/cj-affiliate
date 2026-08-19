@@ -43,7 +43,7 @@ tags:
 - Coupons
 created: '2026-07-05'
 modified: '2026-08-13'
-specificationVersion: '0.21'
+specificationVersion: '0.23'
 apis:
 - aid: cj-affiliate:cj-affiliate-commission-detail-api
   name: CJ Commission Detail API
