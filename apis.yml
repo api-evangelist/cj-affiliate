@@ -31,6 +31,21 @@ tags:
 - Affiliate Network
 - Commission
 - Product Search
+- Publishers
+- Advertiser
+- GraphQL
+- E-Commerce
+- Product Feeds
+- Conversion Tracking
+- Attribution
+- Performance Marketing
+- Retail
+- Coupons
+tags_raw:
+- Affiliate Marketing
+- Affiliate Network
+- Commission
+- Product Search
 - Publisher
 - Advertiser
 - GraphQL
@@ -48,6 +63,11 @@ apis:
 - aid: cj-affiliate:cj-affiliate-commission-detail-api
   name: CJ Commission Detail API
   tags:
+  - Commissions
+  - Transaction
+  - GraphQL
+  - Reporting
+  tags_raw:
   - Commissions
   - Transactions
   - GraphQL
@@ -80,6 +100,14 @@ apis:
 - aid: cj-affiliate:cj-affiliate-product-search-api
   name: CJ Product Search API
   tags:
+  - Product
+  - Product Feed
+  - GraphQL
+  - Shopping
+  - Travel
+  - Finance
+  - Catalog
+  tags_raw:
   - Products
   - Product Feed
   - GraphQL
@@ -191,6 +219,12 @@ apis:
   name: CJ Affiliate Advertiser Tracking API
   tags:
   - Tracking
+  - Order
+  - Transaction
+  - GraphQL
+  - Conversion
+  tags_raw:
+  - Tracking
   - Orders
   - Transactions
   - GraphQL
@@ -248,6 +282,11 @@ apis:
   - Click Tracking
   - Attribution
   - Privacy
+  - Publishers
+  tags_raw:
+  - Click Tracking
+  - Attribution
+  - Privacy
   - Publisher
   image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
   humanURL: https://developers.cj.com/docs/publisher-site-tracking/publisher-tracking-api
@@ -269,6 +308,11 @@ apis:
 - aid: cj-affiliate:cj-affiliate-commission-detail-legacy-api
   name: CJ Affiliate Commission Detail API (Legacy)
   tags:
+  - Commissions
+  - Transaction
+  - Deprecated
+  - REST
+  tags_raw:
   - Commissions
   - Transactions
   - Deprecated
