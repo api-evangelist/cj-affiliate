@@ -12,6 +12,18 @@ description: CJ Affiliate (formerly Commission Junction) is one of the largest a
   the Click Events API and the Publisher Tracking API. Everything authenticates with a single long-lived
   personal access token minted by hand in the CJ developer portal; there is no OAuth, no scopes and no
   programmatic token issuance. GraphQL introspection is open and unauthenticated on all three endpoints.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: high
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 accessModel:
   pricing: unknown
   onboarding: self-serve
