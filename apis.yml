@@ -44,10 +44,10 @@ image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/cj-affilia
 tags:
 - Affiliate Marketing
 - Affiliate Network
-- Commission
+- Commissions
 - Product Search
 - Publishers
-- Advertiser
+- Advertisers
 - GraphQL
 - E-Commerce
 - Product Feeds
@@ -116,7 +116,7 @@ apis:
   name: CJ Product Search API
   tags:
   - Product
-  - Product Feed
+  - Product Feeds
   - GraphQL
   - Shopping
   - Travel
