@@ -142,13 +142,6 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 components:
-  responses:
-    Unauthorized:
-      description: 'HTTP 401 for all CJ REST APIs. Documented cases: no message at all (incorrect resource URL); "You must specify a developer key." (no developer key specified); "Not Authenticated: xxxxxx" (invalid developer key, echoing the key used). A request with no Authorization header returns `<cj-api><error-message>You must provide an Authorization header.</error-message></cj-api>`.'
-      content:
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/CjApiError'
   schemas:
     CjApiError:
       type: object
@@ -163,6 +156,13 @@ components:
       description: The generic `<cj-api>` XML envelope. CJ does not publish an XSD; the commissions and item-detail element lists are documented in prose on the Commission Detail (Legacy) page.
       xml:
         name: cj-api
+  responses:
+    Unauthorized:
+      description: 'HTTP 401 for all CJ REST APIs. Documented cases: no message at all (incorrect resource URL); "You must specify a developer key." (no developer key specified); "Not Authenticated: xxxxxx" (invalid developer key, echoing the key used). A request with no Authorization header returns `<cj-api><error-message>You must provide an Authorization header.</error-message></cj-api>`.'
+      content:
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/CjApiError'
   securitySchemes:
     personalAccessToken:
       type: http

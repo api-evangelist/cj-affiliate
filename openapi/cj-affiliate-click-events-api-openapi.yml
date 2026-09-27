@@ -83,6 +83,19 @@ paths:
                 $ref: '#/components/schemas/ClickDestinationResponse'
 components:
   schemas:
+    ClickDestinationResponse:
+      type: object
+      description: The shared response envelope for both click APIs. `destinationUrl` is an empty string when an error occurred.
+      properties:
+        destinationUrl:
+          type: string
+        errorMessages:
+          type: array
+          items:
+            type: string
+        statusCode:
+          type: integer
+          description: Documented in the response table as a returned field.
     ClickEventRequest:
       type: object
       required:
@@ -133,19 +146,6 @@ components:
           type: string
         referringUrl:
           type: string
-    ClickDestinationResponse:
-      type: object
-      description: The shared response envelope for both click APIs. `destinationUrl` is an empty string when an error occurred.
-      properties:
-        destinationUrl:
-          type: string
-        errorMessages:
-          type: array
-          items:
-            type: string
-        statusCode:
-          type: integer
-          description: Documented in the response table as a returned field.
   securitySchemes:
     personalAccessToken:
       type: http
