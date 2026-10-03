@@ -143,17 +143,17 @@ paths:
           $ref: '#/components/responses/Unauthorized'
 components:
   schemas:
+    CjApiEnvelope:
+      type: object
+      description: The generic `<cj-api>` XML envelope. CJ does not publish an XSD; the commissions and item-detail element lists are documented in prose on the Commission Detail (Legacy) page.
+      xml:
+        name: cj-api
     CjApiError:
       type: object
       description: The `<cj-api>` XML envelope carrying an error message.
       properties:
         error-message:
           type: string
-      xml:
-        name: cj-api
-    CjApiEnvelope:
-      type: object
-      description: The generic `<cj-api>` XML envelope. CJ does not publish an XSD; the commissions and item-detail element lists are documented in prose on the Commission Detail (Legacy) page.
       xml:
         name: cj-api
   responses:

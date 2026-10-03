@@ -172,6 +172,28 @@ paths:
           $ref: '#/components/responses/Unauthorized'
 components:
   schemas:
+    LinkSearchResponse:
+      type: object
+      description: The `<cj-api><links>` document.
+      properties:
+        links:
+          type: object
+          properties:
+            total-matched:
+              type: integer
+              description: Total matching results in the index.
+            records-returned:
+              type: integer
+              description: Records returned in this response. Defaults to 100 per page.
+            page-number:
+              type: integer
+              description: Page number returned. Defaults to 1.
+            link:
+              type: array
+              items:
+                $ref: '#/components/schemas/Link'
+      xml:
+        name: cj-api
     Link:
       type: object
       properties:
@@ -245,28 +267,6 @@ components:
           type: string
         three-month-epc:
           type: string
-    LinkSearchResponse:
-      type: object
-      description: The `<cj-api><links>` document.
-      properties:
-        links:
-          type: object
-          properties:
-            total-matched:
-              type: integer
-              description: Total matching results in the index.
-            records-returned:
-              type: integer
-              description: Records returned in this response. Defaults to 100 per page.
-            page-number:
-              type: integer
-              description: Page number returned. Defaults to 1.
-            link:
-              type: array
-              items:
-                $ref: '#/components/schemas/Link'
-      xml:
-        name: cj-api
     CjApiError:
       type: object
       description: The `<cj-api>` XML envelope carrying an error message.

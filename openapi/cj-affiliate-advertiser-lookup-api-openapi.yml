@@ -97,33 +97,6 @@ paths:
           $ref: '#/components/responses/Unauthorized'
 components:
   schemas:
-    AdvertiserLookupResponse:
-      type: object
-      description: The `<cj-api><advertisers>` document.
-      properties:
-        advertisers:
-          type: object
-          properties:
-            total-matched:
-              type: integer
-            records-returned:
-              type: integer
-            page-number:
-              type: integer
-            advertiser:
-              type: array
-              items:
-                $ref: '#/components/schemas/Advertiser'
-      xml:
-        name: cj-api
-    CjApiError:
-      type: object
-      description: The `<cj-api>` XML envelope carrying an error message.
-      properties:
-        error-message:
-          type: string
-      xml:
-        name: cj-api
     Advertiser:
       type: object
       properties:
@@ -187,6 +160,33 @@ components:
         commission:
           type: object
           description: The advertiser's default commission for the action, plus per-item-list rates where item lists exist. Excludes Situations and Promotional Property rates — use the GraphQL Program Terms API for those.
+    CjApiError:
+      type: object
+      description: The `<cj-api>` XML envelope carrying an error message.
+      properties:
+        error-message:
+          type: string
+      xml:
+        name: cj-api
+    AdvertiserLookupResponse:
+      type: object
+      description: The `<cj-api><advertisers>` document.
+      properties:
+        advertisers:
+          type: object
+          properties:
+            total-matched:
+              type: integer
+            records-returned:
+              type: integer
+            page-number:
+              type: integer
+            advertiser:
+              type: array
+              items:
+                $ref: '#/components/schemas/Advertiser'
+      xml:
+        name: cj-api
   responses:
     Unauthorized:
       description: 'HTTP 401 for all CJ REST APIs. Documented cases: no message at all (incorrect resource URL); "You must specify a developer key." (no developer key specified); "Not Authenticated: xxxxxx" (invalid developer key, echoing the key used). A request with no Authorization header returns `<cj-api><error-message>You must provide an Authorization header.</error-message></cj-api>`.'
