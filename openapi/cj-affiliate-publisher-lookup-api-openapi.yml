@@ -105,6 +105,33 @@ paths:
           $ref: '#/components/responses/Unauthorized'
 components:
   schemas:
+    PublisherLookupResponse:
+      type: object
+      description: The `<cj-api><publishers>` document.
+      properties:
+        publishers:
+          type: object
+          properties:
+            total-matched:
+              type: integer
+            records-returned:
+              type: integer
+            page-number:
+              type: integer
+            publisher:
+              type: array
+              items:
+                $ref: '#/components/schemas/Publisher'
+      xml:
+        name: cj-api
+    CjApiError:
+      type: object
+      description: The `<cj-api>` XML envelope carrying an error message.
+      properties:
+        error-message:
+          type: string
+      xml:
+        name: cj-api
     Publisher:
       type: object
       properties:
@@ -158,33 +185,6 @@ components:
                 type: string
               category:
                 type: string
-    CjApiError:
-      type: object
-      description: The `<cj-api>` XML envelope carrying an error message.
-      properties:
-        error-message:
-          type: string
-      xml:
-        name: cj-api
-    PublisherLookupResponse:
-      type: object
-      description: The `<cj-api><publishers>` document.
-      properties:
-        publishers:
-          type: object
-          properties:
-            total-matched:
-              type: integer
-            records-returned:
-              type: integer
-            page-number:
-              type: integer
-            publisher:
-              type: array
-              items:
-                $ref: '#/components/schemas/Publisher'
-      xml:
-        name: cj-api
   responses:
     Unauthorized:
       description: 'HTTP 401 for all CJ REST APIs. Documented cases: no message at all (incorrect resource URL); "You must specify a developer key." (no developer key specified); "Not Authenticated: xxxxxx" (invalid developer key, echoing the key used). A request with no Authorization header returns `<cj-api><error-message>You must provide an Authorization header.</error-message></cj-api>`.'
