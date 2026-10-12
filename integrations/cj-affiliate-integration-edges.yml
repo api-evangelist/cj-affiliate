@@ -1,0 +1,16 @@
+generated: '2026-10-12'
+method: none
+source:
+- https://zapier.com/apps/cj-affiliate/integrations
+- https://n8n.io/integrations/cj-affiliate/
+- https://composio.dev/toolkits/cj-affiliate
+- https://monid.ai/tools/cj-affiliate
+checked:
+- https://composio.dev/toolkits/cj-affiliate
+- https://monid.ai/tools/cj-affiliate
+- https://n8n.io/integrations/cj-affiliate/
+- https://zapier.com/apps/cj-affiliate/integrations
+summary: null
+marketplace_apps: []
+edges: []
+templates: []
