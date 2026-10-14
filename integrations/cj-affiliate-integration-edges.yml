@@ -1,5 +1,5 @@
 generated: '2026-10-12'
-method: none
+method: searched
 source:
 - https://zapier.com/apps/cj-affiliate/integrations
 - https://n8n.io/integrations/cj-affiliate/
@@ -7,10 +7,53 @@ source:
 - https://monid.ai/tools/cj-affiliate
 checked:
 - https://composio.dev/toolkits/cj-affiliate
+- https://fivetran.com/docs/activations/destinations/available-destinations/cj-affiliate
+- https://hightouch.com/docs/destinations/commission-junction
 - https://monid.ai/tools/cj-affiliate
 - https://n8n.io/integrations/cj-affiliate/
 - https://zapier.com/apps/cj-affiliate/integrations
 summary: null
 marketplace_apps: []
-edges: []
+edges:
+- partner_name: Hightouch
+  partner: hightouch
+  partner_match: aggregator
+  marketplace: coverage
+  channel: partner-built
+  direction: partner-built
+  type: coverage
+  relationship: connector-coverage
+  evidence: https://hightouch.com/docs/destinations/commission-junction
+  coverage_role:
+  - destination
+  cdp_signals:
+    destination:
+      catalog_entries:
+      - commission-junction
+      status: released
+      sync_types:
+      - Orders
+      sync_modes:
+      - insert
+      - update
+      - upsert
+  detected_by: sweep-cdp.py
+  first_seen: '2026-10-14'
+- partner_name: Census
+  partner: getcensus
+  partner_match: aggregator
+  marketplace: coverage
+  channel: partner-built
+  direction: partner-built
+  type: coverage
+  relationship: connector-coverage
+  evidence: https://fivetran.com/docs/activations/destinations/available-destinations/cj-affiliate
+  coverage_role:
+  - destination
+  cdp_signals:
+    destination:
+      catalog_entries:
+      - cj-affiliate
+  detected_by: sweep-cdp.py
+  first_seen: '2026-10-14'
 templates: []
