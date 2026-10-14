@@ -27,3 +27,16 @@
   relationship: connector-coverage
   status: not-a-workflow
   arazzo: null
+- slug: cj-affiliate-okta-own
+  label: Okta (own)
+  partner: okta
+  partner_name: Okta (own)
+  category: Express Configuration
+  type: marketplace
+  marketplace: own
+  channel: partner-built
+  evidence: https://www.okta.com/integrations/integrator-2967109_cjaffiliate_2/
+  source: edge
+  relationship: platform-app
+  status: not-a-workflow
+  arazzo: null
