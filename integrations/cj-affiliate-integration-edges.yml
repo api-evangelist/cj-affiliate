@@ -7,6 +7,8 @@ source:
 - https://monid.ai/tools/cj-affiliate
 checked:
 - https://composio.dev/toolkits/cj-affiliate
+- https://connectors.airbyte.com/files/registries/v0/cloud_registry.json
+- https://connectors.airbyte.com/files/registries/v0/oss_registry.json
 - https://fivetran.com/docs/activations/destinations/available-destinations/cj-affiliate
 - https://hightouch.com/docs/destinations/commission-junction
 - https://monid.ai/tools/cj-affiliate
@@ -79,4 +81,34 @@ edges:
   features:
   - OIDC
   - PARTIAL_UNIVERSAL_LOGOUT
+- partner_name: Airbyte
+  partner: airbyte
+  partner_match: aggregator
+  type: marketplace
+  marketplace: airbyte-registry
+  channel: elt-connector
+  relationship: ipaas-bridge
+  direction: third-party
+  evidence: https://docs.airbyte.com/integrations/sources/commission-junction
+  category: null
+  contract_reference:
+    register: Airbyte connector registry (connectors.airbyte.com cloud_registry.json + oss_registry.json)
+    spec_file: null
+    role: elt-connector:airbyte-community
+    registered_name: Commission Junction (CJ Affiliate)
+    matched_domain: cj.com
+    matched_by: domain
+    detected_by: sweep-data-integration.py
+    detected: '2026-10-18'
+    signal_note: one edge per (provider, platform); connectors, streams, packages and usage are context, never read
+    connectors:
+    - airbyte/source-commission-junction
+    support_level:
+    - community
+    release_stage:
+    - alpha
+    in_cloud: true
+    builder: unknown (community connector; contributor not in the record)
+  detected_by: sweep-data-integration.py
+  first_seen: '2026-10-18'
 templates: []
