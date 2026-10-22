@@ -15,6 +15,7 @@ checked:
 - https://n8n.io/integrations/cj-affiliate/
 - https://zapier.com/apps/cj-affiliate/integrations
 - okta/integrations/okta-integration-edges.yml
+- adobe-commerce/integrations/adobe-commerce-integration-edges.yml
 summary: null
 marketplace_apps: []
 edges:
@@ -59,28 +60,6 @@ edges:
       - cj-affiliate
   detected_by: sweep-cdp.py
   first_seen: '2026-10-14'
-- partner_name: Okta (own)
-  partner: okta
-  partner_match: mirror
-  mirror_match: domain
-  type: marketplace
-  relationship: platform-app
-  direction: third-party
-  channel: partner-built
-  marketplace: own
-  evidence: https://www.okta.com/integrations/integrator-2967109_cjaffiliate_2/
-  mirror_of: okta/integrations/okta-integration-edges.yml
-  apps:
-  - CJ Affiliate
-  listing_count: 1
-  detected: '2026-10-14'
-  detected_by: mirror-platform-listings.py
-  category: Express Configuration
-  badges:
-  - OKTA_VERIFIED
-  features:
-  - OIDC
-  - PARTIAL_UNIVERSAL_LOGOUT
 - partner_name: Airbyte
   partner: airbyte
   partner_match: aggregator
@@ -111,4 +90,43 @@ edges:
     builder: unknown (community connector; contributor not in the record)
   detected_by: sweep-data-integration.py
   first_seen: '2026-10-18'
+- partner_name: Okta (own)
+  partner: okta
+  partner_match: mirror
+  mirror_match: domain
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: own
+  evidence: https://www.okta.com/integrations/integrator-2967109_cjaffiliate_2/
+  mirror_of: okta/integrations/okta-integration-edges.yml
+  apps:
+  - CJ Affiliate
+  listing_count: 1
+  detected: '2026-10-14'
+  detected_by: mirror-platform-listings.py
+  category: Express Configuration
+  badges:
+  - OKTA_VERIFIED
+  features:
+  - OIDC
+  - PARTIAL_UNIVERSAL_LOGOUT
+- partner_name: Adobe Commerce (own)
+  partner: adobe-commerce
+  partner_match: mirror
+  mirror_match: domain
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: own
+  evidence: https://commercemarketplace.adobe.com/cjpublicis-universal-tag-module.html
+  mirror_of: adobe-commerce/integrations/adobe-commerce-integration-edges.yml
+  apps:
+  - CJ Affiliate Network Integration
+  listing_count: 1
+  detected: '2026-10-22'
+  detected_by: mirror-platform-listings.py
+  category: Adobe Commerce Marketplace extension
 templates: []
