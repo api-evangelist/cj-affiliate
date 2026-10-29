@@ -1,4 +1,4 @@
-# CJ Affiliate (cj-affiliate)
+# CJ Affiliate
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -64,153 +64,177 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-CJ Affiliate (formerly Commission Junction) is one of the largest affiliate
-marketing networks, connecting publishers with thousands of advertiser programs.
-Its developer platform is **primarily a modern GraphQL API** - the Commission
-Detail API at `commissions.api.cj.com` and the Product Search / ads GraphQL API
-at `ads.api.cj.com` - covering commission and transaction data, product feeds,
-and advertiser discovery. A set of **legacy REST APIs** (Link Search, Advertiser
-Lookup, Publisher Lookup, and the legacy Product Search) remains documented for
-finding links, advertisers, publishers, and products.
+CJ Affiliate (formerly Commission Junction) is one of the largest affiliate marketing networks, connecting publishers with thousands of advertiser programs. Its current developer platform is three GraphQL APIs - Commission Detail at commissions.api.cj.com for near-real-time commission and transaction data, Product Search / Ads at ads.api.cj.com for product discovery, product feeds and catalog writes, and Advertiser Tracking at tracking.api.cj.com for submitting, restating and cancelling orders. Alongside them CJ still documents a family of classic XML REST APIs - Link Search, Advertiser Lookup, Publisher Lookup, the Automated Offer Feed and a deprecated Commission Detail - plus two JSON click-tracking APIs, the Click Events API and the Publisher Tracking API. Everything authenticates with a single long-lived personal access token minted by hand in the CJ developer portal; there is no OAuth, no scopes and no programmatic token issuance. GraphQL introspection is open and unauthenticated on all three endpoints.
 
-**APIs.json:** [https://raw.githubusercontent.com/api-evangelist/cj-affiliate/refs/heads/main/apis.yml](https://raw.githubusercontent.com/api-evangelist/cj-affiliate/refs/heads/main/apis.yml)
+**Areas:** Affiliate Marketing · Affiliate Network · Commissions · Product Search · Publishers · Advertisers · GraphQL · E-Commerce · Product Feeds · Conversion Tracking · Attribution · Performance Marketing
 
-## Access Model
+## CJ Affiliate on APIs.io
 
-- **Network membership is free to join** as a publisher; the APIs are a benefit
-  of holding a CJ account, not a separately-priced product.
-- **Authentication is a personal access token (PAT)** created in the CJ developer
-  portal and sent as `Authorization: Bearer <token>`. Many calls also need your
-  CJ **company id (CID)** (as a `requestor-cid` REST parameter or a `companyId`
-  GraphQL argument).
-- What data you can read (an advertiser's product feed, your commission records)
-  is governed by your **account type and program relationships** - the `products`
-  / `shoppingProducts` queries only return advertisers you have joined, while
-  `shoppingProductFeeds` lists every feed in the network for cold discovery.
-- Constraints on usage are **rate limits and pagination**, not a per-call price.
+Everything profiled for CJ Affiliate is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/cj-affiliate/](https://apis.io/providers/cj-affiliate/)** — or go straight to one of the APIs or properties below.
 
-## GraphQL is primary
+### APIs (9)
 
-CJ's newer surface is GraphQL. Both GraphQL APIs share the same request pattern:
-`POST` a `{ "query": "..." }` body with a Bearer PAT.
+- [CJ Commission Detail API](https://apis.io/apis/cj-affiliate/cj-affiliate-commission-detail-api/) — GraphQL API serving near-real-time commission and transaction data. The publisherCommissions and advertiserCommissions queries return commission records…
+- [CJ Product Search API](https://apis.io/apis/cj-affiliate/cj-affiliate-product-search-api/) — GraphQL API for product discovery, product feeds and catalog management across advertiser feeds. Ten queries cover common products, retail shoppingProducts…
+- [CJ Affiliate Advertiser Lookup API](https://apis.io/apis/cj-affiliate/cj-affiliate-advertiser-lookup-api/) — Publisher-side REST API for finding advertisers in the CJ network by CID, program name, program URL or keywords, joined or not joined, returning account…
+- [CJ Affiliate Link Search API](https://apis.io/apis/cj-affiliate/cj-affiliate-link-search-api/) — Publisher-side REST API for finding placeable advertiser links across the whole CJ network in one call - by keyword, sub-category, link type, promotion type…
+- [CJ Affiliate Publisher Lookup API](https://apis.io/apis/cj-affiliate/cj-affiliate-publisher-lookup-api/) — Advertiser-side REST API for looking up the publishers joined to a program - program terms with accept and expiry dates and join status, promotional…
+- [CJ Affiliate Advertiser Tracking API](https://apis.io/apis/cj-affiliate/cj-affiliate-tracking-api/) — GraphQL API through which advertisers submit the full transaction lifecycle - createOrders for new orders, restateOrders for changes and additions,…
+- [CJ Affiliate Click Events API](https://apis.io/apis/cj-affiliate/cj-affiliate-click-events-api/) — Server-to-server JSON REST API through which CJ partners register a consumer click and receive back the final landing-page URL carrying the cjevent tracking…
+- [CJ Affiliate Publisher Tracking API](https://apis.io/apis/cj-affiliate/cj-affiliate-publisher-tracking-api/) — Server-to-server JSON REST API through which publishers exchange a standard CJ tracking link for a final destination URL, taking the consumer straight to…
+- [CJ Affiliate Commission Detail API (Legacy)](https://apis.io/apis/cj-affiliate/cj-affiliate-commission-detail-legacy-api/) — DEPRECATED XML REST API for near-real-time commission and item-detail data. CJ's own documentation states it was to be removed on 1 June 2019 and directs…
 
-- **Commission Detail** — `POST https://commissions.api.cj.com/query`
-  (`publisherCommissions`, `advertiserCommissions`) — near-real-time commission
-  and transaction data.
-- **Product Search / Ads** — `POST https://ads.api.cj.com/query` (`products`,
-  `shoppingProducts`, `shoppingProductFeeds`) — product discovery across
-  advertiser feeds.
+### Published properties
 
-See [graphql/cj-affiliate-graphql.md](graphql/cj-affiliate-graphql.md) and the
-partial schema at [graphql/cj-affiliate-schema.graphql](graphql/cj-affiliate-schema.graphql).
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
-## Tags
+#### AsyncAPI (1)
 
-- Affiliate Marketing
-- Affiliate Network
-- Commission
-- Product Search
-- Publisher
-- Advertiser
-- GraphQL
-- Ecommerce
+Event-driven and webhook contracts.
 
-## Timestamps
+- [CJ Affiliate Product Catalog Streaming API](https://apis.io/asyncapis/cj-affiliate/cj-affiliate-ads-asyncapi/)
 
-- **Created:** 2026-07-05
-- **Modified:** 2026-07-05
+#### Event channels (5)
 
-## APIs
+Individual events and webhooks the provider emits.
 
-### CJ Commission Detail API (GraphQL)
+- [checksumFromApplication](https://apis.io/channels/cj-affiliate/checksumfromapplication/)
+- [financeProductCatalog](https://apis.io/channels/cj-affiliate/financeproductcatalog/)
+- [productFeedsFromApplication](https://apis.io/channels/cj-affiliate/productfeedsfromapplication/)
+- [shoppingProductCatalog](https://apis.io/channels/cj-affiliate/shoppingproductcatalog/)
+- [travelExperienceProductCatalog](https://apis.io/channels/cj-affiliate/travelexperienceproductcatalog/)
 
-Modern GraphQL API serving near-real-time commission and transaction data. The
-`publisherCommissions` and `advertiserCommissions` queries return commission
-records filtered by posting-date range, action status, advertiser or publisher
-IDs, and order / shopper IDs, with monetary amounts and line-item detail.
+#### GraphQL (1)
 
-- **Human URL:** [https://developers.cj.com/graphql/reference/Commission Detail](https://developers.cj.com/graphql/reference/Commission%20Detail)
-- **Base URL:** `https://commissions.api.cj.com/query`
-- **Properties:** [GraphQL Schema](graphql/cj-affiliate-schema.graphql), [GraphQL Guide](graphql/cj-affiliate-graphql.md), [Postman Collection](collections/cj-affiliate.postman_collection.json), [Open Collection](collections/cj-affiliate.opencollection.json)
+GraphQL schemas.
 
-### CJ Product Search API (GraphQL)
+- [CJ Affiliate GraphQL APIs](https://apis.io/graphqls/cj-affiliate/cj-affiliate-graphql/)
 
-Modern GraphQL API for product discovery across advertiser product feeds. Search
-products by keyword, price range, currency, country / serviceable area, UPC, and
-advertiser; `shoppingProductFeeds` lists every advertiser feed in the network
-for cold discovery regardless of join status.
+#### MCP servers (1)
 
-- **Human URL:** [https://developers.cj.com/graphql/reference/Product Search](https://developers.cj.com/graphql/reference/Product%20Search)
-- **Base URL:** `https://ads.api.cj.com/query`
-- **Properties:** [GraphQL Schema](graphql/cj-affiliate-schema.graphql), [GraphQL Guide](graphql/cj-affiliate-graphql.md)
+Model Context Protocol servers that expose the API to agents.
 
-### CJ Link Search API (REST, legacy)
+- [cj-affiliate-mcp.yml](https://apis.io/servers/cj-affiliate/cj-affiliate-mcp-yml/)
 
-Legacy REST API to search advertiser links by keyword, country, category,
-targeted / serviceable area, advertiser relationship status, link type, and
-promotion type (Coupon, Free Shipping, Sale).
+#### Agentic access (1)
 
-- **Human URL:** [https://developers.cj.com/docs/rest-apis/link-search](https://developers.cj.com/docs/rest-apis/link-search)
-- **Base URL:** `https://link-search.api.cj.com/v2/link-search`
-- **Properties:** [OpenAPI](openapi/cj-affiliate-openapi.yml), [Postman Collection](collections/cj-affiliate.postman_collection.json), [Open Collection](collections/cj-affiliate.opencollection.json)
+Which operations an agent can call, which act, and which need a human in the loop.
 
-### CJ Advertiser Lookup API (REST)
+- [Cj Affiliate Agentic Access](https://apis.io/agentic-access/cj-affiliate/cj-affiliate-agentic-access/)
 
-Legacy REST API letting publishers find advertisers by CID, program name,
-program URL, keywords, category, or relationship status, and read program
-details such as commission rates, category, and performance-incentive options.
+#### Collections (7)
 
-- **Human URL:** [https://developers.cj.com/docs/rest-apis/advertiser-lookup](https://developers.cj.com/docs/rest-apis/advertiser-lookup)
-- **Base URL:** `https://advertiser-lookup.api.cj.com/v2/advertiser-lookup`
-- **Properties:** [OpenAPI](openapi/cj-affiliate-openapi.yml), [Postman Collection](collections/cj-affiliate.postman_collection.json), [Open Collection](collections/cj-affiliate.opencollection.json)
+Postman and Open Collection request collections.
 
-### CJ Publisher Lookup API (REST)
+- [CJ Affiliate APIs](https://apis.io/collections/cj-affiliate/open-cj-affiliate/)
+- [CJ Affiliate Advertiser Lookup API](https://apis.io/collections/cj-affiliate/open-cj-affiliate-advertiser-lookup-api/)
+- [CJ Affiliate Click Events API](https://apis.io/collections/cj-affiliate/open-cj-affiliate-click-events-api/)
+- [CJ Affiliate Commission Detail (Legacy) API](https://apis.io/collections/cj-affiliate/open-cj-affiliate-commission-detail-legacy-api/)
+- [CJ Affiliate Link Search API](https://apis.io/collections/cj-affiliate/open-cj-affiliate-link-search-api/)
+- [CJ Affiliate Publisher Lookup API](https://apis.io/collections/cj-affiliate/open-cj-affiliate-publisher-lookup-api/)
+- [CJ Affiliate Publisher Tracking API](https://apis.io/collections/cj-affiliate/open-cj-affiliate-publisher-tracking-api/)
 
-Legacy REST API letting advertisers search publishers within their program by
-criteria such as country or relationship status, and view details about those
-publishers.
+#### Overlays (6)
 
-- **Human URL:** [https://developers.cj.com/docs/rest-apis/publisher-lookup](https://developers.cj.com/docs/rest-apis/publisher-lookup)
-- **Base URL:** `https://publisher-lookup.api.cj.com/v2/joined-publisher-lookup`
-- **Properties:** [OpenAPI](openapi/cj-affiliate-openapi.yml), [Postman Collection](collections/cj-affiliate.postman_collection.json), [Open Collection](collections/cj-affiliate.opencollection.json)
+OpenAPI overlays, including conversational phrasing for each operation.
 
-### CJ Product Search (Legacy) API (REST)
+- [Cj Affiliate Advertiser Lookup Api Overlay](https://apis.io/overlays/cj-affiliate/cj-affiliate-advertiser-lookup-api-overlay/)
+- [Cj Affiliate Click Events Api Overlay](https://apis.io/overlays/cj-affiliate/cj-affiliate-click-events-api-overlay/)
+- [Cj Affiliate Commission Detail Legacy Api Overlay](https://apis.io/overlays/cj-affiliate/cj-affiliate-commission-detail-legacy-api-overlay/)
+- [Cj Affiliate Link Search Api Overlay](https://apis.io/overlays/cj-affiliate/cj-affiliate-link-search-api-overlay/)
+- [Cj Affiliate Publisher Lookup Api Overlay](https://apis.io/overlays/cj-affiliate/cj-affiliate-publisher-lookup-api-overlay/)
+- [Cj Affiliate Publisher Tracking Api Overlay](https://apis.io/overlays/cj-affiliate/cj-affiliate-publisher-tracking-api-overlay/)
 
-Legacy REST product catalog search across advertiser product feeds. CJ now
-steers new integrations to the GraphQL Product Search API; this endpoint remains
-documented for existing integrations.
+#### Security (2)
 
-- **Human URL:** [https://developers.cj.com/docs/rest-apis/product-search-(legacy)](https://developers.cj.com/docs/rest-apis/product-search-\(legacy\))
-- **Base URL:** `https://product-search.api.cj.com/v2/product-search`
-- **Properties:** [OpenAPI](openapi/cj-affiliate-openapi.yml)
+Authentication, trust centre, and vulnerability disclosure.
 
-## Grounding & Honesty Notes
+- [Cj Affiliate Authentication](https://apis.io/security/cj-affiliate/cj-affiliate-authentication/)
+- [Cj Affiliate Domain Security](https://apis.io/security/cj-affiliate/cj-affiliate-domain-security/)
 
-- **Confirmed:** the two GraphQL endpoints (`commissions.api.cj.com/query`,
-  `ads.api.cj.com/query`) and their query names; the Bearer personal access
-  token + company id (CID) auth model; and the Advertiser Lookup and Publisher
-  Lookup REST endpoints (documented by CJ with `curl` examples).
-- **Modeled:** the Link Search and legacy Product Search REST paths follow the
-  documented `<service>.api.cj.com/v2/<service>` family pattern, and several
-  individual query parameters and response / schema field names in
-  `openapi/cj-affiliate-openapi.yml` and `graphql/cj-affiliate-schema.graphql`
-  are inferred from CJ knowledge-base articles and shopping-feed conventions.
-  The CJ developer portal is a JavaScript-rendered SPA, so exact current field
-  names should be confirmed against the live reference at
-  [https://developers.cj.com/](https://developers.cj.com/).
+#### Plans and pricing (1)
 
-## Common Properties
+Published plans, tiers and prices.
+
+- [Cj Affiliate Plans Pricing](https://apis.io/plans/cj-affiliate/cj-affiliate-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Cj Affiliate Rate Limits](https://apis.io/rate-limits/cj-affiliate/cj-affiliate-rate-limits/)
+
+#### FinOps (1)
+
+What the API costs to run, by operation.
+
+- [Cj Affiliate Finops](https://apis.io/finops/cj-affiliate/cj-affiliate-finops/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
 
 - [Website](https://www.cj.com/)
-- [LinkedIn](https://www.linkedin.com/company/cj-affiliate-by-conversant)
 - [Documentation](https://developers.cj.com/)
-- [Authentication](https://developers.cj.com/account/personal-access-tokens)
-- [Plans](plans/cj-affiliate-plans-pricing.yml)
-- [Rate Limits](rate-limits/cj-affiliate-rate-limits.yml)
-- [Fin Ops](finops/cj-affiliate-finops.yml)
+- [Getting started](https://developers.cj.com/account/personal-access-tokens)
+- [API reference](https://developers.cj.com/graphql/reference/)
+- [Sign up](https://www.cj.com/join)
+- [Support](https://www.cj.com/support)
 - [Blog](https://junction.cj.com/)
+- [Terms of service](https://www.cj.com/legal/terms)
+- [Privacy policy](https://www.cj.com/legal/privacy)
 
-## Maintainers
+## API Evangelist rating
 
-**FN:** Kin Lane
-**Email:** kin@apievangelist.com
+**Kin Score 45.6** — developing · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 73.2 |
+| Contract quality | 62.9 |
+| Contract governance | 18.2 |
+| Operational transparency | 39.5 |
+| Developer ergonomics | 17.3 |
+| Access clarity | 55.3 |
+
+**Agent readiness 32.2** — agent-ready
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | — |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | documented (partial credit) |
+| Error Semantics | verified |
+| OpenAPI Examples | — |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | derived (partial credit) |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+| Pagination Ratio | na |
+| Operation Distinctiveness | distinct |
+
+**Regulatory alignment 24.5** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/cj-affiliate/](https://apis.io/providers/cj-affiliate/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for CJ Affiliate: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/cj-affiliate/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
